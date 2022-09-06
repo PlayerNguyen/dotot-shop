@@ -1,0 +1,32 @@
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+
+app.use(bodyParser.text());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(morgan("dev"));
+
+// app.use("/", (req, res, next) => {
+//   res.json({
+//     message: "Perfectly working.",
+//   });
+// });
+
+app.use("/provinces", require("./routes/provinces/ProvincesRouter"));
+
+/**
+ * Listen function
+ */
+(async () => {
+  const PORT = await require("./../scripts/check-port")(
+    process.env.PORT || 3000
+  );
+
+  app.listen(PORT, () => {
+    console.log(`Listening to ${PORT}`);
+  });
+})();
