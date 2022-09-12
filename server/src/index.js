@@ -30,3 +30,6 @@ app.use("/provinces", require("./routes/provinces/ProvincesRouter"));
     console.log(`Listening to ${PORT}`);
   });
 })();
+
+// For testing
+module.exports = app;
