@@ -21,6 +21,6 @@ module.exports = knex({
     password: getEnvironmentVariable("DATABASE_PASSWORD"),
     database: getEnvironmentVariable("DATABASE_NAME"),
   },
-  debug: true,
+  debug: process.env.NODE_ENV.toString() === "dev",
   // asyncStackTraces: true,
 });
