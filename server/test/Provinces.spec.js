@@ -1,25 +1,13 @@
 const app = require("./../src/index");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-
 const { expect } = require("chai");
+const {
+  hasSuccessfulResponse,
+  hasErrorResponse,
+} = require("./utils/AssertionUtil");
 
 chai.use(chaiHttp);
-
-function haveSuccessfulResponse(which) {
-  expect(which).to.haveOwnProperty("status");
-  expect(which.status).to.eq("success");
-  expect(which).to.haveOwnProperty("data");
-  expect(which).to.not.haveOwnProperty("error");
-}
-
-function haveErrorResponse(which) {
-  expect(which).to.haveOwnProperty(`status`);
-  expect(which.status).to.eq("error");
-
-  // Error contains message
-  expect(which).to.haveOwnProperty(`message`);
-}
 
 describe("/provinces/", async function testAllProvinces() {
   it("should successfully response province", (done) => {
@@ -28,7 +16,8 @@ describe("/provinces/", async function testAllProvinces() {
       .get("/provinces/")
       .then((response) => {
         expect(response).to.have.status(200);
-        haveSuccessfulResponse(response.body);
+        hasSuccessfulResponse(response.body);
+
         done();
       })
       .catch(console.error);
@@ -66,7 +55,7 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
       .get(`/provinces/province/${Id}`)
       .then((res) => {
         expect(res).to.have.status(200);
-        haveSuccessfulResponse(res.body);
+        hasSuccessfulResponse(res.body);
 
         expect(res.body.data).to.haveOwnProperty("Id");
         expect(res.body.data).to.haveOwnProperty("Name");
@@ -87,7 +76,7 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
       .then((res) => {
         expect(res).to.have.status(404);
 
-        haveErrorResponse(res.body);
+        hasErrorResponse(res.body);
 
         expect(res.body.message).to.contains("not found");
         done();
@@ -125,17 +114,9 @@ describe("/province/:provinceId/districts", async function testAllDistricts() {
     chai
       .request(app)
       .get(`/provinces/province/${Id}/districts`)
-      .then((res) => {
-        console.log(res.body);
-        expect(res).to.have.status(200);
+      .then((response) => {
+        // console.log(response);
 
-        haveSuccessfulResponse(res.body);
-
-        expect(res.body.data).to.haveOwnProperty("Id");
-        expect(res.body.data).to.haveOwnProperty("Name");
-
-        expect(res.body.data.Name).to.eq(Name);
-        expect(res.body.data.Id).to.eq(Id);
         done();
       });
   });

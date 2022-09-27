@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env PORT=3000 nodemon ./src/index.js",
+    "start": "cross-env NODE_ENV=dev PORT=3000 nodemon ./src/index.js",
     "setup-db": "node -r dotenv/config ./scripts/setup-db.js",
     "setup": "node -r dotenv/config ./scripts/setup-db.js && node -r dotenv/config ./scripts/fetch-provinces",
     "test": "cross-env NODE_ENV=test mocha --exit"

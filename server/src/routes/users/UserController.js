@@ -9,6 +9,7 @@ module.exports = {
    * @param {express.NextFunction} next
    */
   createUser: (req, res, next) => {
-    
+    next(new Error("no implementation"));
   },
+  
 };
