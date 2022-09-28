@@ -1,3 +1,4 @@
+"use strict";
 module.exports = {
   createSuccessResponse: (data) => {
     // Set to success if the status is empty
@@ -20,7 +21,7 @@ module.exports = {
    * @param {string} message
    * @param {number | string | undefined} code
    * @param {any | undefined} data
-   * @returns
+   * @return {object} an object
    */
   createErrorResponse: (message, code, data) => {
     if (!message) {
