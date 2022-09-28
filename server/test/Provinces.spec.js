@@ -172,8 +172,8 @@ describe("/district/:districtId/wards", () => {
             expect(res).to.have.status(200);
             expect(res.body.data).to.instanceOf(Array);
             expect(res.body.data).to.have.lengthOf.greaterThan(0);
-            console.log(res.body.data[0]);
-            a = res.body.data[0];
+
+            currentDistrict = res.body.data[0];
             done();
           });
         // await done();
@@ -181,9 +181,14 @@ describe("/district/:districtId/wards", () => {
       .catch(console.error);
   });
 
-  it(`successfully response `, (done) => {
-    console.log(currentProvince, currentDistrict);
+  it(`successfully response when get wards`, async () => {
+    const res = await chai
+      .request(app)
+      .get(`/provinces/district/${currentDistrict.Id}/wards`);
 
-    done();
+    // Must response 200
+    // console.log(res.body);
+    hasSuccessfulResponse(res.body);
+    expect(res.data).to.not.be.null;
   });
 });
