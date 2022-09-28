@@ -1,3 +1,4 @@
+"use strict";
 const app = require("./../src/index");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -25,7 +26,7 @@ describe("/provinces/", async function testAllProvinces() {
 });
 
 describe("/provinces/province/:provinceId", async function testSelectSpecificProvince() {
-  let provinceList = [];
+  const provinceList = [];
   before("retrieves data from provinces list", (done) => {
     chai
       .request(app)
@@ -34,7 +35,7 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
         // Must success status 200
         expect(response).to.have.status(200);
 
-        let provinceResponseData = response.body.data;
+        const provinceResponseData = response.body.data;
 
         // Validate response data
         expect(provinceResponseData).to.not.be.undefined;
@@ -48,7 +49,7 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
   });
 
   it(`should successfully response when retrieving a province with id`, (done) => {
-    let { Id, Name } = provinceList[0];
+    const { Id, Name } = provinceList[0];
 
     chai
       .request(app)
@@ -68,7 +69,7 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
   });
 
   it(`should failed response if not found province from id`, (done) => {
-    let dummyId = provinceList.length;
+    const dummyId = provinceList.length;
 
     chai
       .request(app)
@@ -85,17 +86,17 @@ describe("/provinces/province/:provinceId", async function testSelectSpecificPro
   });
 });
 
-describe("/province/:provinceId/districts", async function testAllDistricts() {
-  let provinceList = [];
+describe("/provinces/province/:provinceId/districts", async function testAllDistricts() {
+  const provinceList = [];
   before("retrieves data from provinces list", (done) => {
     chai
       .request(app)
       .get("/provinces/")
       .then((response) => {
         // Must success status 200
-        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
 
-        let provinceResponseData = response.body.data;
+        const provinceResponseData = response.body.data;
 
         // Validate response data
         expect(provinceResponseData).to.not.be.undefined;
@@ -109,15 +110,80 @@ describe("/province/:provinceId/districts", async function testAllDistricts() {
   });
 
   it(`should successfully response districts from province id`, (done) => {
-    let { Id, Name } = provinceList[0];
+    const { Id } = provinceList[0];
 
     chai
       .request(app)
       .get(`/provinces/province/${Id}/districts`)
       .then((response) => {
-        // console.log(response);
+        hasSuccessfulResponse(response.body);
+        expect(response.body).to.be.instanceOf(Object);
+        expect(response.body.status).to.eq("success");
+        expect(response.body.data).to.be.instanceOf(Array);
+        expect(response.body.data).to.have.lengthOf.gt(0);
 
         done();
-      });
+      })
+      .catch(console.error);
+  });
+
+  it(`should failed response districts from undefined province id`, (done) => {
+    const Id = Number.MAX_SAFE_INTEGER;
+
+    chai
+      .request(app)
+      .get(`/provinces/province/${Id}/districts`)
+      .then((response) => {
+        hasErrorResponse(response.body);
+        done();
+      })
+      .catch(console.error);
+  });
+});
+
+describe("/district/:districtId/wards", () => {
+  let currentProvince;
+  let currentDistrict;
+
+  before((done) => {
+    chai
+      .request(app)
+      .get("/provinces/")
+      .then((response) => {
+        // Must success status 200
+        expect(response).to.have.status(200);
+
+        const provinceResponseData = response.body.data;
+
+        // Validate response data
+        expect(provinceResponseData).to.not.be.undefined;
+        expect(provinceResponseData).to.be.an("array");
+        expect(provinceResponseData).to.have.length.greaterThan(0);
+
+        currentProvince = provinceResponseData[provinceResponseData.length - 1];
+      })
+      .then(async () => {
+        // done();
+
+        chai
+          .request(app)
+          .get(`/provinces/province/${currentProvince.Id}/districts`)
+          .then((res) => {
+            expect(res).to.have.status(200);
+            expect(res.body.data).to.instanceOf(Array);
+            expect(res.body.data).to.have.lengthOf.greaterThan(0);
+            console.log(res.body.data[0]);
+            a = res.body.data[0];
+            done();
+          });
+        // await done();
+      })
+      .catch(console.error);
+  });
+
+  it(`successfully response `, (done) => {
+    console.log(currentProvince, currentDistrict);
+
+    done();
   });
 });

@@ -1,9 +1,7 @@
-const express = require("express");
+"use strict";
 const driver = require("../../../driver/KnexDriver");
 const Tables = require("../../../driver/Table");
 const {
-  createResponse,
-  ResponseStatus,
   createErrorResponse,
   createSuccessResponse,
 } = require("../../utils/ResponseFactory");
@@ -11,11 +9,10 @@ const {
 const ProvincesController = {
   /**
    *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
+   * @param {Express.Request} _req
+   * @param {Express.Response} res
    */
-  selectAllProvinces: async (req, res, next) => {
+  selectAllProvinces: async (_req, res) => {
     const dataResponse = await driver.select("*").from(Tables.Provinces);
     // Unless found any province
     if (dataResponse.length == 0) {
@@ -25,11 +22,10 @@ const ProvincesController = {
   },
   /**
    *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    */
-  selectProvinceById: async (req, res, next) => {
+  selectProvinceById: async (req, res) => {
     const { provinceId } = req.params;
 
     // If the provinceId is invalid
@@ -48,9 +44,9 @@ const ProvincesController = {
   },
   /**
    *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
+   * @param {Express.Request} req
+   * @param {Express.Response} res
+   * @param {Express.NextFunction} next
    */
   selectAllDistricts: async (req, res, next) => {
     const { provinceId } = req.params;
@@ -68,7 +64,7 @@ const ProvincesController = {
     }
 
     // Select all districts from province id
-    let districtResponse = await driver
+    const districtResponse = await driver
       .select("*")
       .from(Tables.Districts)
       .where("ProvinceId", "=", provinceId);
@@ -77,15 +73,15 @@ const ProvincesController = {
       return next(Error("District response is undefined"));
     }
 
-    res.json(createResponse(districtResponse));
+    res.json(createSuccessResponse(districtResponse));
   },
   /**
    *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
+   * @param {Express.Request} req
+   * @param {Express.Response} res
+   * @param {Express.NextFunction} _next
    */
-  selectAllWardsByDistrict: async (req, res, next) => {
+  selectAllWardsByDistrict: async (req, res, _next) => {
     const { districtId } = req.params;
 
     // Check If Has districtId
@@ -108,11 +104,11 @@ const ProvincesController = {
   },
   /**
    *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
+   * @param {Express.Request} req
+   * @param {Express.Response} res
+   * @param {Express.NextFunction} _next
    */
-  selectWardById: async (req, res, next) => {
+  selectWardById: async (req, res, _next) => {
     const { wardId } = req.params;
 
     // Select the ward from id
