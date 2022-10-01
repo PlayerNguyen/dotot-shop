@@ -30,19 +30,6 @@ describe("/users/register", () => {
   };
 
   before((done) => {
-    // chai
-    //   .request(app)
-    //   .post(endpoint.register)
-    //   .send(dummyUser)
-    //   .then((response) => {
-    //     expect(response).to.have.status(200);
-    //     hasSuccessfulResponse(response.body);
-    //     expect(response.body.data).to.haveOwnProperty("id");
-
-    //     done();
-    //   })
-    //   .catch(console.error);
-
     KnexDriver.insert(dummyUser)
       .into(Tables.Users)
       .then((res) => {
@@ -54,10 +41,12 @@ describe("/users/register", () => {
   });
 
   after((done) => {
-    KnexDriver.del()
+    KnexDriver.delete()
       .from(Tables.Users)
-      .where({ id: uuid() })
-      .then(() => {
+      .where({ Id: dummyUser.id })
+      .then((response) => {
+        console.log(`Clean up ~ removing ${response} row(s)`);
+
         done();
       })
       .catch(handleError);
@@ -80,6 +69,7 @@ describe("/users/register", () => {
       })
       .catch(handleError);
   });
+
   it(`register with existed user response`, (done) => {
     chai
       .request(app)
