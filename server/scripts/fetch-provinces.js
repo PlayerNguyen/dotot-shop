@@ -1,3 +1,4 @@
+"use strict";
 const path = require("path");
 const fetch = require("node-fetch");
 const chalk = require("chalk");
@@ -16,15 +17,16 @@ async function fetchProvinces(overwrite) {
   // Check file whether exists
   if (fs.existsSync(SAMPLE_FILE_NAME) && overwrite === false) {
     console.log(
-      chalk.red(`The file is existed and no overwrite permission granted`)
+      chalk.red(`The file is existed and no overwrite permission granted`),
     );
     return;
   }
 
   // Make a directory first whether is not possible
   const sampleDirName = path.dirname(SAMPLE_FILE_NAME);
-  if (!fs.existsSync(sampleDirName))
+  if (!fs.existsSync(sampleDirName)) {
     fs.mkdirSync(sampleDirName, { recursive: true });
+  }
 
   // Then starting to fetch the file
   console.log(`Fetching and writing a file into ${SAMPLE_FILE_NAME} ...`);
@@ -67,7 +69,7 @@ async function supplyProvinces() {
   //   // });
   // });
 
-  for (let province of provinces) {
+  for (const province of provinces) {
     const provinceExist =
       (
         await driver(Tables.Provinces)
@@ -84,7 +86,7 @@ async function supplyProvinces() {
     }
 
     // Iterate to create districts
-    for (let district of province.districts) {
+    for (const district of province.districts) {
       const districtExist =
         (
           await driver(Tables.Districts)
@@ -102,7 +104,7 @@ async function supplyProvinces() {
       }
 
       // Iterate to create wards
-      for (let ward of district.wards) {
+      for (const ward of district.wards) {
         const wardExist =
           (await driver(Tables.Wards).select("*").where("Id", "=", ward.code))
             .length !== 0;
