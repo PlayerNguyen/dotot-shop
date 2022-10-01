@@ -1,13 +1,13 @@
 "use strict";
-const { v4: uuid } = require("uuid");
-const { validationResult } = require("express-validator");
 const KnexDriver = require("../../../driver/KnexDriver");
+const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
+const { v4: uuid } = require("uuid");
 const Tables = require("../../../driver/Table");
 const {
   createErrorResponse,
   createSuccessResponse,
 } = require("../../utils/ResponseFactory");
-const bcrypt = require("bcryptjs");
 
 /**
  *
@@ -29,12 +29,13 @@ async function createUser(req, res, next) {
     const { phone, email } = req.body;
     const lookupResponse = await KnexDriver.select("*")
       .from(Tables.Users)
-      .where({ Phone: phone, Email: email });
+      .where({ Phone: phone })
+      .orWhere({ Email: email });
 
     if (lookupResponse.length !== 0) {
       res
         .status(409)
-        .json(createErrorResponse("User with phone and email is found"));
+        .json(createErrorResponse("User with phone or email is found"));
       return;
     }
 
@@ -53,6 +54,7 @@ async function createUser(req, res, next) {
       Password: hashedPassword,
     }).into(Tables.Users);
 
+    // Response after create
     if (responseInsertion.length === 1 && responseInsertion[0] === 0) {
       res.json(createSuccessResponse({ id: generatedUniqueId }));
     } else {

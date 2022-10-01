@@ -88,7 +88,8 @@ describe("/users/register", () => {
       .then((res) => {
         expect(res).to.have.status(409);
         hasErrorResponse(res.body);
-        expect(res.body.message).match(/User with phone and email is found/);
+        expect(res.body.message).to.eq("User with phone or email is found");
+
         done();
       })
       .catch(handleError);
