@@ -1,5 +1,7 @@
 "use strict";
 // const uuid = require("uuid");
+const { validationResult } = require("express-validator");
+const { createErrorResponse } = require("../../utils/ResponseFactory");
 
 /**
  *
@@ -8,7 +10,16 @@
  * @param {express.NextFunction} next
  */
 function createUser(req, res, next) {
-  next(new Error("no implementation"));
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res
+      .status(400)
+      .json(
+        createErrorResponse(`Missing or invalid fields`, undefined, errors),
+      );
+  } else {
+  }
 }
 
 module.exports = {

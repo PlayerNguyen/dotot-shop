@@ -15,6 +15,7 @@
     "max-len": ["error", { "code": 2000, "ignoreUrls": true }],
     "indent": "off",
     "strict": "error",
-    "no-var": "error"
+    "no-var": "error",
+    "operator-linebreak": ["error", "before"]
   }
 }
