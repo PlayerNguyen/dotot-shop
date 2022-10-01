@@ -5,18 +5,23 @@ const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 const { faker } = require("@faker-js/faker");
 const { expect } = require("chai");
-const {
-  hasErrorResponse,
-  hasSuccessfulResponse,
-} = require("./utils/AssertionUtil");
+const { hasErrorResponse } = require("./utils/AssertionUtil");
 const chalk = require("chalk");
+const KnexDriver = require("../driver/KnexDriver");
+const Tables = require("../driver/Table");
+const { v4: uuid } = require("uuid");
 
 const endpoint = {
   register: `/users/register`,
 };
 
+const handleError = (err) => {
+  console.error(chalk.red(err.stack));
+};
+
 describe("/users/register", () => {
   const dummyUser = {
+    id: uuid(),
     phone: faker.phone.number("0#########"),
     email: faker.internet.email(),
     password: faker.internet.password(),
@@ -25,17 +30,37 @@ describe("/users/register", () => {
   };
 
   before((done) => {
-    chai
-      .request(app)
-      .post(endpoint.register)
-      .send(dummyUser)
-      .then((response) => {
-        expect(response).to.have.status(200);
-        hasSuccessfulResponse(response);
-        expect(response.body.data).to.haveOwnProperty("id");
+    // chai
+    //   .request(app)
+    //   .post(endpoint.register)
+    //   .send(dummyUser)
+    //   .then((response) => {
+    //     expect(response).to.have.status(200);
+    //     hasSuccessfulResponse(response.body);
+    //     expect(response.body.data).to.haveOwnProperty("id");
 
+    //     done();
+    //   })
+    //   .catch(console.error);
+
+    KnexDriver.insert(dummyUser)
+      .into(Tables.Users)
+      .then((res) => {
+        if (res.length === 1 && res[0] === 0) {
+          done();
+        }
+      })
+      .catch(handleError);
+  });
+
+  after((done) => {
+    KnexDriver.del()
+      .from(Tables.Users)
+      .where({ id: uuid() })
+      .then(() => {
         done();
-      });
+      })
+      .catch(handleError);
   });
 
   it(`request body without fields response`, (done) => {
@@ -53,7 +78,19 @@ describe("/users/register", () => {
 
         done();
       })
-      .catch((err) => console.error(chalk.redBright(err.stack)));
+      .catch(handleError);
   });
-  it(``);
+  it(`register with existed user response`, (done) => {
+    chai
+      .request(app)
+      .post(endpoint.register)
+      .send(dummyUser)
+      .then((res) => {
+        expect(res).to.have.status(409);
+        hasErrorResponse(res.body);
+        expect(res.body.message).match(/User with phone and email is found/);
+        done();
+      })
+      .catch(handleError);
+  });
 });
