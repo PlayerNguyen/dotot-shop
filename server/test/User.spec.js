@@ -16,6 +16,7 @@ const { v4: uuid } = require("uuid");
 
 const endpoint = {
   register: `/users/register`,
+  getUser: `/users/`,
 };
 
 const handleError = (err) => {
@@ -114,5 +115,70 @@ describe("/users/register", () => {
         done();
       })
       .catch(handleError);
+  });
+});
+
+describe("/users/:userId", () => {
+  const dummyUser = generateDummyUser();
+  let generatedUserId;
+  before((done) => {
+    KnexDriver.insert(dummyUser)
+      .into(Tables.Users)
+      .then((res) => {
+        if (res.length === 1 && res[0] === 0) {
+          generatedUserId = dummyUser.id;
+          done();
+        }
+      })
+      .catch(handleError);
+  });
+  after((done) => {
+    // Then handle all history users
+    KnexDriver.from(Tables.Users)
+      .where("Id", generatedUserId)
+      .del()
+      .then((response) => {
+        console.log(`Clean up ~ removing ${response} row(s)`);
+
+        done();
+      })
+      .catch(handleError);
+  });
+
+  it(`user not found 404 response`, (done) => {
+    chai
+      .request(app)
+      .get(`${endpoint.getUser}${uuid()}`)
+      .then((response) => {
+        expect(response).to.have.status(404);
+        hasErrorResponse(response.body);
+
+        done();
+      })
+      .catch(handleError);
+  });
+
+  it(`successfully get user with 200 response`, (done) => {
+    chai
+      .request(app)
+      .get(`${endpoint.getUser}${generatedUserId}`)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        const { data } = response.body;
+
+        expect(data).to.haveOwnProperty("id");
+        expect(data).to.haveOwnProperty("firstName");
+        expect(data).to.haveOwnProperty("lastName");
+
+        const { id, firstName, lastName } = data;
+        expect(id).to.eq(dummyUser.id);
+        expect(firstName).to.eq(dummyUser.firstName);
+        expect(lastName).to.eq(dummyUser.lastName);
+
+        done();
+      })
+      .catch(hasErrorResponse);
   });
 });

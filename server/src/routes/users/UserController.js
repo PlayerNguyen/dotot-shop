@@ -1,4 +1,6 @@
 "use strict";
+// eslint-disable-next-line
+const express = require("express");
 const KnexDriver = require("../../../driver/KnexDriver");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
@@ -63,6 +65,41 @@ async function createUser(req, res, next) {
   }
 }
 
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getUserProfile(req, res, next) {
+  const { userId } = req.params;
+
+  // If not found user field
+  if (!userId) {
+    return res.status(409).json(createErrorResponse(`User field not found`));
+  }
+
+  // Fetch user and response
+  const userResponse = await KnexDriver.select("Id", "FirstName", "LastName")
+    .from(Tables.Users)
+    .where({ Id: userId });
+
+  // if not found user
+  if (userResponse.length === 0) {
+    return res.status(404).json(createErrorResponse(`User not found`));
+  }
+
+  const { Id, FirstName, LastName } = userResponse[0];
+  res.json(
+    createSuccessResponse({
+      id: Id,
+      firstName: FirstName,
+      lastName: LastName,
+    }),
+  );
+}
+
 module.exports = {
   createUser,
+  getUserProfile,
 };

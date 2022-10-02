@@ -1,6 +1,6 @@
 "use strict";
 const express = require("express");
-const { createUser } = require("./UserController");
+const { createUser, getUserProfile } = require("./UserController");
 // eslint-disable-next-line
 const router = express.Router();
 const { check } = require("express-validator");
@@ -20,5 +20,7 @@ router.post(
     .withMessage("Password length must above 5 characters"),
   createUser,
 );
+
+router.get("/:userId", getUserProfile);
 
 module.exports = router;
