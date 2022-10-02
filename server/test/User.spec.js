@@ -5,7 +5,10 @@ const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 const { faker } = require("@faker-js/faker");
 const { expect } = require("chai");
-const { hasErrorResponse } = require("./utils/AssertionUtil");
+const {
+  hasErrorResponse,
+  hasSuccessfulResponse,
+} = require("./utils/AssertionUtil");
 const chalk = require("chalk");
 const KnexDriver = require("../driver/KnexDriver");
 const Tables = require("../driver/Table");
@@ -19,21 +22,27 @@ const handleError = (err) => {
   console.error(chalk.red(err.stack));
 };
 
-describe("/users/register", () => {
-  const dummyUser = {
-    id: uuid(),
+const generateDummyUser = () => {
+  const id = uuid();
+  return {
+    id,
     phone: faker.phone.number("0#########"),
     email: faker.internet.email(),
     password: faker.internet.password(),
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
   };
+};
 
+describe("/users/register", () => {
+  const dummyUser = generateDummyUser();
+  const historyUserIds = [];
   before((done) => {
     KnexDriver.insert(dummyUser)
       .into(Tables.Users)
       .then((res) => {
         if (res.length === 1 && res[0] === 0) {
+          historyUserIds.push(dummyUser.id);
           done();
         }
       })
@@ -41,9 +50,12 @@ describe("/users/register", () => {
   });
 
   after((done) => {
-    KnexDriver.delete()
-      .from(Tables.Users)
-      .where({ Id: dummyUser.id })
+    // Clean history users
+    console.log([...historyUserIds]);
+    // Then handle all history users
+    KnexDriver.from(Tables.Users)
+      .whereIn("Id", [...historyUserIds])
+      .del()
       .then((response) => {
         console.log(`Clean up ~ removing ${response} row(s)`);
 
@@ -79,6 +91,25 @@ describe("/users/register", () => {
         expect(res).to.have.status(409);
         hasErrorResponse(res.body);
         expect(res.body.message).to.eq("User with phone or email is found");
+
+        done();
+      })
+      .catch(handleError);
+  });
+
+  it(`success register response`, (done) => {
+    const genUser = generateDummyUser();
+
+    chai
+      .request(app)
+      .post(endpoint.register)
+      .send(genUser)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data).to.haveOwnProperty("id");
+        historyUserIds.push(response.body.data.id);
 
         done();
       })
