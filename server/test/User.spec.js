@@ -23,6 +23,11 @@ const handleError = (err) => {
   console.error(chalk.red(err.stack));
 };
 
+/**
+ *
+ * @deprecated using UserUtil.js#generateDummyUser instead
+ * @return {Object} an object literal of generated user fields
+ */
 const generateDummyUser = () => {
   const id = uuid();
   return {
