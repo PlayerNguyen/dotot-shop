@@ -1,3 +1,4 @@
+"use strict";
 const chalk = require("chalk");
 const Tables = require("../driver/Table");
 const driver = require("./../driver/KnexDriver");

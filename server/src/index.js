@@ -1,8 +1,10 @@
+"use strict";
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const ErrorHandler = require("./utils/ErrorHandler");
 
 app.use(bodyParser.text());
 app.use(bodyParser.json());
@@ -17,13 +19,19 @@ app.use(morgan("dev"));
 // });
 
 app.use("/provinces", require("./routes/provinces/ProvincesRouter"));
+app.use("/users", require("./routes/users/UserRouter"));
+
+/**
+ * Register error catcher level
+ */
+app.use(ErrorHandler);
 
 /**
  * Listen function
  */
 (async () => {
   const PORT = await require("./../scripts/check-port")(
-    process.env.PORT || 3000
+    process.env.PORT || 3000,
   );
 
   app.listen(PORT, () => {

@@ -1,5 +1,6 @@
 {
   "singleAttributePerLine": true,
   "bracketSpacing": true,
-  "arrowParens": "always"
+  "arrowParens": "always",
+  "trailingComma": "all"
 }
