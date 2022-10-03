@@ -16,6 +16,7 @@
     "indent": "off",
     "strict": "error",
     "no-var": "error",
-    "operator-linebreak": ["error", "before"]
+    "operator-linebreak": ["error", "before"],
+    "new-cap": ["error", { "capIsNewExceptions": ["Router"] }]
   }
 }
