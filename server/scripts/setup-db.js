@@ -3,6 +3,12 @@ const chalk = require("chalk");
 const Tables = require("../driver/Table");
 const driver = require("./../driver/KnexDriver");
 
+/**
+ * Check whether the table exists and create it
+ *
+ * @param {*} tableName a table name to create
+ * @param {*} callback a callback response after generated
+ */
 async function createTableIfNotExists(tableName, callback) {
   try {
     if (!(await driver.schema.hasTable(tableName))) {
@@ -14,6 +20,9 @@ async function createTableIfNotExists(tableName, callback) {
   }
 }
 
+/**
+ * Setup and generate tables
+ */
 async function setupDatabase() {
   await createTableIfNotExists(Tables.Users, (userTable) => {
     userTable.string("Id").notNullable().primary().unique();
