@@ -24,27 +24,37 @@ chai.use(chaiHttp);
 
 describe("/auth/login/", () => {
   const user = generateDummyUser();
+  const registerEndpoint = "/users/register";
   const authEndpoint = "/auth/login/";
+  let initialUserId;
 
   /**
    * Put the user into the database before running test
    */
-  before(async () => {
+  before((done) => {
     console.log(
       chalk.gray(`Inserting user ${JSON.stringify(user)} into users table`),
     );
-    await KnexDriver.insert(user).into(Tables.Users);
 
-    const res = await KnexDriver.select("*")
-      .from(Tables.Users)
-      .where("Id", user.id);
-    expect(res.length).above(0);
+    chai
+      .request(app)
+      .post(registerEndpoint)
+      .send(user)
+      .then((res) => {
+        expect(res).to.have.status(200);
+        hasSuccessfulResponse(res.body);
+        expect(res.body.data).to.haveOwnProperty("id");
+        initialUserId = res.body.data.id;
+        expect(validator.default.isUUID(initialUserId)).to.be.true;
+      })
+
+      .then(done);
   });
 
   after(async () => {
     const affects = await KnexDriver.delete()
       .from(Tables.Users)
-      .where("Id", user.id);
+      .where("Id", initialUserId);
     expect(affects).to.eq(1);
   });
 
