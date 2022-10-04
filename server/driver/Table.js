@@ -1,3 +1,4 @@
+"use strict";
 const Tables = {
   Users: "Users",
   Wards: "Wards",

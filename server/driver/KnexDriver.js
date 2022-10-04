@@ -21,10 +21,10 @@ module.exports = knex({
     user: getEnvironmentVariable("DATABASE_USERNAME"),
     password: getEnvironmentVariable("DATABASE_PASSWORD"),
     database:
-      getEnvironmentVariable("NODE_ENV") === "test"
+      process.env.NODE_ENV && process.env.NODE_ENV === "test"
         ? getEnvironmentVariable("DATABASE_TEST")
         : getEnvironmentVariable("DATABASE_NAME"),
   },
-  debug: process.env.NODE_ENV.toString() === "dev",
+  debug: process.env.NODE_ENV && process.env.NODE_ENV.toString() === "dev",
   // asyncStackTraces: true,
 });
