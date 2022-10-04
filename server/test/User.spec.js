@@ -13,6 +13,7 @@ const chalk = require("chalk");
 const KnexDriver = require("../driver/KnexDriver");
 const Tables = require("../driver/Table");
 const { v4: uuid } = require("uuid");
+const bcryptjs = require("bcryptjs");
 
 const endpoint = {
   register: `/users/register`,
@@ -49,6 +50,7 @@ describe("/users/register", () => {
       .then((res) => {
         if (res.length === 1 && res[0] === 0) {
           historyUserIds.push(dummyUser.id);
+
           done();
         }
       })
@@ -102,6 +104,39 @@ describe("/users/register", () => {
       })
       .catch(handleError);
   });
+  it(`password format must be bcryptjs`, (done) => {
+    const genUser = generateDummyUser();
+    let generatedUniqueId;
+    chai
+      .request(app)
+      .post(endpoint.register)
+      .send(genUser)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data).to.haveOwnProperty("id");
+        historyUserIds.push(response.body.data.id);
+        generatedUniqueId = response.body.data.id;
+      })
+      .then(() => {
+        // Password must match with bcryptjs
+
+        KnexDriver.select("*")
+          .from(Tables.Users)
+          .where("Id", generatedUniqueId)
+          .then((_response) => {
+            // console.log(`_response`, _response);
+            const curResponseUser = _response[0];
+            expect(
+              bcryptjs.compareSync(genUser.password, curResponseUser.Password),
+            ).to.be.true;
+          })
+          .catch(handleError);
+      })
+      .then(done)
+      .catch(handleError);
+  });
 
   it(`success register response`, (done) => {
     const genUser = generateDummyUser();
@@ -117,6 +152,7 @@ describe("/users/register", () => {
         expect(response.body.data).to.haveOwnProperty("id");
         historyUserIds.push(response.body.data.id);
 
+        // Password must match with bcryptjs
         done();
       })
       .catch(handleError);
