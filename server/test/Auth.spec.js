@@ -47,7 +47,6 @@ describe("/auth/login/", () => {
         initialUserId = res.body.data.id;
         expect(validator.default.isUUID(initialUserId)).to.be.true;
       })
-
       .then(done);
   });
 

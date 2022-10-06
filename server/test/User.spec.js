@@ -14,10 +14,13 @@ const KnexDriver = require("../driver/KnexDriver");
 const Tables = require("../driver/Table");
 const { v4: uuid } = require("uuid");
 const bcryptjs = require("bcryptjs");
+const { printTrace } = require("./utils/TracePrintUtil");
 
 const endpoint = {
   register: `/users/register`,
-  getUser: `/users/`,
+  getUser: `/users/user/`,
+  getProfile: `/users/profile`,
+  signIn: `/auth/login`,
 };
 
 const handleError = (err) => {
@@ -191,6 +194,7 @@ describe("/users/:userId", () => {
       .request(app)
       .get(`${endpoint.getUser}${uuid()}`)
       .then((response) => {
+        console.log(response.body);
         expect(response).to.have.status(404);
         hasErrorResponse(response.body);
 
@@ -221,5 +225,114 @@ describe("/users/:userId", () => {
         done();
       })
       .catch(hasErrorResponse);
+  });
+});
+
+describe(`/users/profile`, () => {
+  const requestUser = generateDummyUser();
+  let responseUserId;
+  let responseToken;
+  /**
+   * Generate users
+   */
+  before((done) => {
+    chai
+      .request(app)
+      .post(endpoint.register)
+      .send(requestUser)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+        expect(response.body.data.id).to.not.be.undefined;
+
+        responseUserId = response.body.data.id;
+      })
+      // Sign in
+      .then(() => {
+        chai
+          .request(app)
+          .post(endpoint.signIn)
+          .send({
+            phoneOrEmail: requestUser.email,
+            password: requestUser.password,
+          })
+          .then((response) => {
+            expect(response).to.have.status(200);
+            hasSuccessfulResponse(response.body);
+
+            responseToken = response.body.data.token;
+            console.log(responseToken);
+          });
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  after((done) => {
+    KnexDriver.del()
+      .from(Tables.Users)
+      .where("Id", responseUserId)
+      .then(() => {
+        KnexDriver.select("*")
+          .from(Tables.Users)
+          .where("Id", responseUserId)
+          .then((responseList) => {
+            expect(responseList).to.have.lengthOf.eq(0);
+          });
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`non-token request header response`, (done) => {
+    chai
+      .request(app)
+      .get(endpoint.getProfile)
+      .then((response) => {
+        expect(response).to.have.status(401);
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.eq(`Unauthorized`);
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`send invalid authorization header response`, (done) => {
+    chai
+      .request(app)
+      .get(endpoint.getProfile)
+      .set("authorization", `JWT`)
+      .then((response) => {
+        expect(response).to.have.status(401);
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.eq(
+          "Invalid authorization requested header. It must be `JWT ${token}`",
+        );
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`success get profile response`, (done) => {
+    chai
+      .request(app)
+      .get(endpoint.getProfile)
+      .set({ authorization: `JWT ${String(responseToken)}` })
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+        expect(response.body).to.haveOwnProperty("data");
+
+        const { id, firstName, lastName, email, phone } = response.body.data;
+        // console.log(response.body.data);
+
+        expect(id).not.to.be.null;
+        expect(firstName).not.to.be.null;
+        expect(lastName).not.to.be.null;
+        expect(email).not.to.be.null;
+        expect(phone).not.to.be.null;
+      })
+      .then(done)
+      .catch(printTrace);
   });
 });
