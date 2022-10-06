@@ -20,6 +20,7 @@ app.use(morgan("dev"));
 
 app.use("/provinces", require("./routes/provinces/ProvincesRouter"));
 app.use("/users", require("./routes/users/UserRouter"));
+app.use("/auth", require("./routes/auth/AuthRouter"));
 
 /**
  * Register error catcher level
