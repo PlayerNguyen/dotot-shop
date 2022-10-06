@@ -1,9 +1,10 @@
 "use strict";
 const express = require("express");
-const { createUser, getUserProfile } = require("./UserController");
+const { createUser, getUserById, getUserProfile } = require("./UserController");
 // eslint-disable-next-line
 const router = express.Router();
 const { check } = require("express-validator");
+const AuthMiddleware = require("../../middlewares/AuthMiddleware");
 
 router.post(
   `/register`,
@@ -21,6 +22,7 @@ router.post(
   createUser,
 );
 
-router.get("/:userId", getUserProfile);
+router.get("/user/:userId", getUserById);
+router.get("/profile", AuthMiddleware.requestAuthenticate, getUserProfile);
 
 module.exports = router;

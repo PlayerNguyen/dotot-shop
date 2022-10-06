@@ -10,8 +10,10 @@ const {
   createErrorResponse,
   createSuccessResponse,
 } = require("../../utils/ResponseFactory");
+const { getUserFromAuth } = require("../../middlewares/AuthMiddleware");
 
 /**
+ * Create a new user
  *
  * @param {express.Request} req
  * @param {express.Response} res
@@ -66,12 +68,13 @@ async function createUser(req, res, next) {
 }
 
 /**
+ * Get user by supply user's id
  *
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-async function getUserProfile(req, res, next) {
+async function getUserById(req, res, next) {
   const { userId } = req.params;
 
   // If not found user field
@@ -98,8 +101,19 @@ async function getUserProfile(req, res, next) {
     }),
   );
 }
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getUserProfile(req, res, next) {
+  const user = getUserFromAuth(req);
+  res.json(createSuccessResponse(user));
+}
 
 module.exports = {
   createUser,
+  getUserById,
   getUserProfile,
 };
