@@ -56,7 +56,7 @@ async function setupDatabase() {
   await createTableIfNotExists(Tables.Products, (table) => {
     table.string("Id").primary().notNullable().unique();
     table.string("Name").notNullable();
-
+    table.float("Price").notNullable();
     table.string("Description").notNullable();
     table.integer("Views").defaultTo(0);
     table.integer("Likes").defaultTo(0);
