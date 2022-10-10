@@ -52,6 +52,32 @@ async function setupDatabase() {
     t.string("Name").notNullable();
     t.integer("DistrictId").notNullable().references(`${Tables.Districts}.Id`);
   });
+
+  await createTableIfNotExists(Tables.Products, (table) => {
+    table.string("Id").primary().notNullable().unique();
+    table.string("Name").notNullable();
+
+    table.string("Description").notNullable();
+    table.integer("Views").defaultTo(0);
+    table.integer("Likes").defaultTo(0);
+  });
+
+  await createTableIfNotExists(Tables.Categories, (table) => {
+    table.primary(["Id"]);
+    table.increments("Id");
+    table.string("Name").notNullable();
+    table.string("Slug").notNullable();
+    table.string("Description").notNullable();
+  });
+
+  await createTableIfNotExists(Tables.ProductCategory, (table) => {
+    table.string("ProductId").notNullable().references(`${Tables.Products}.Id`);
+    table
+      .integer("CategoryId")
+      .unsigned()
+      .notNullable()
+      .references(`${Tables.Categories}.Id`);
+  });
 }
 
 (async () => {
@@ -62,4 +88,6 @@ async function setupDatabase() {
   // require("./fetch-provinces");
 })()
   .then(process.exit)
-  .catch(console.error);
+  .catch((err) => {
+    console.error(chalk.red(err.stack));
+  });
