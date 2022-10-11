@@ -80,6 +80,11 @@ async function setupDatabase() {
       .notNullable()
       .references(`${Tables.Categories}.Id`);
   });
+
+  await createTableIfNotExists(Tables.UserProducts, (table) => {
+    table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
+    table.string("ProductId").notNullable().references(`${Tables.Products}.Id`);
+  });
 }
 
 (async () => {
