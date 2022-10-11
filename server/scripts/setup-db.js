@@ -57,7 +57,7 @@ async function setupDatabase() {
     table.string("Id").primary().notNullable().unique();
     table.string("Name").notNullable();
     table.float("Price").notNullable();
-    table.string("Description");
+    table.text("Description");
 
     // Statistic
     table.integer("Views").defaultTo(0);
