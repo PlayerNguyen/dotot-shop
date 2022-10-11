@@ -7,5 +7,6 @@ const Tables = {
   Products: "Products",
   ProductCategory: "ProductCategory",
   Categories: "Categories",
+  UserProducts: "UserProducts",
 };
 module.exports = Tables;
