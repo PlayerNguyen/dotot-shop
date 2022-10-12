@@ -122,9 +122,8 @@ describe("/users/register", () => {
         historyUserIds.push(response.body.data.id);
         generatedUniqueId = response.body.data.id;
       })
+      // Password must match with bcryptjs
       .then(() => {
-        // Password must match with bcryptjs
-
         KnexDriver.select("*")
           .from(Tables.Users)
           .where("Id", generatedUniqueId)
@@ -194,7 +193,7 @@ describe("/users/:userId", () => {
       .request(app)
       .get(`${endpoint.getUser}${uuid()}`)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.have.status(404);
         hasErrorResponse(response.body);
 
@@ -261,7 +260,7 @@ describe(`/users/profile`, () => {
             hasSuccessfulResponse(response.body);
 
             responseToken = response.body.data.token;
-            console.log(responseToken);
+            // console.log(responseToken);
           });
       })
       .then(done)
