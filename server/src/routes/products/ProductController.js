@@ -140,7 +140,46 @@ async function getProductFromId(req, res, next) {
  * @param {express.Response} res  the response parameter
  * @param {express.NextFunction} next the next function
  */
-async function removeProduct(req, res, next) {}
+async function removeProduct(req, res, next) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res
+      .status(400)
+      .json(createErrorResponse("Invalid parameter", undefined, errors));
+    return next();
+  }
+
+  try {
+    const { productId } = req.params;
+    const selectedProduct = await KnexDriver.select(
+      `${Tables.Products}.*`,
+      `${Tables.UserProducts}.UserId`,
+    )
+      .from(Tables.Products)
+      .where(`${Tables.Products}.Id`, productId)
+      .join(
+        `${Tables.UserProducts}`,
+        `${Tables.Products}.Id`,
+        "=",
+        `${Tables.UserProducts}.ProductId`,
+      )
+      .first();
+
+    const user = getUserFromAuth(req);
+
+    // Check if the product is empty or not
+    if (!selectedProduct) {
+      res.status(404).json(createErrorResponse("Product not found"));
+      next();
+    }
+
+    // Not the owner and not admin
+    // if (!)
+  } catch (e) {
+    next(e);
+  }
+}
 
 /**
  * Get all products with limit
@@ -153,4 +192,9 @@ async function getAllProducts(req, res, next) {
   // const { limit, page, search } = req.params;
 }
 
-module.exports = { createProduct, getProductFromId, getAllProducts };
+module.exports = {
+  createProduct,
+  getProductFromId,
+  removeProduct,
+  getAllProducts,
+};
