@@ -8,5 +8,6 @@ const Tables = {
   ProductCategory: "ProductCategory",
   Categories: "Categories",
   UserProducts: "UserProducts",
+  UserRoles: "UserRoles",
 };
 module.exports = Tables;

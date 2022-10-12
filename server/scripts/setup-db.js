@@ -25,6 +25,7 @@ async function createTableIfNotExists(tableName, callback) {
  */
 async function setupDatabase() {
   await createTableIfNotExists(Tables.Users, (userTable) => {
+    userTable.primary(["Id", "Phone", "Email"]);
     userTable.string("Id").notNullable().primary().unique();
     userTable.string("Password").notNullable();
     userTable.string("Email").notNullable();
@@ -84,6 +85,11 @@ async function setupDatabase() {
   await createTableIfNotExists(Tables.UserProducts, (table) => {
     table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
     table.string("ProductId").notNullable().references(`${Tables.Products}.Id`);
+  });
+
+  await createTableIfNotExists(Tables.UserRoles, (table) => {
+    table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
+    table.enu("Role", [`admin`, `moderate`]);
   });
 }
 
