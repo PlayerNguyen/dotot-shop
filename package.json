@@ -1,0 +1,38 @@
+{
+  "name": "khmer-furniture",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:server": "cross-env NODE_ENV=dev PORT=3000 nodemon ./src/index.js",
+    "test:server": "cd server && yarn test"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.3.0",
+    "mocha": "^10.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "node-fetch": "2",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "uuid": "^9.0.0",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.5.0",
+    "chalk": "4.1.2",
+    "cross-env": "^7.0.3",
+    "detect-port": "^1.3.0",
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.19",
+    "yarn": "^1.22.19"
+  }
+}
