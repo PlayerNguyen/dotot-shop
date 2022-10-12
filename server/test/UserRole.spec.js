@@ -64,6 +64,9 @@ describe(`UserRole`, () => {
       .catch(printTrace);
   });
 
+  /**
+   * Clean up stuffs
+   */
   after((done) => {
     KnexDriver.del()
       .from(Tables.UserRoles)
