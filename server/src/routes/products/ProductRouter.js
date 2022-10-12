@@ -5,6 +5,9 @@ const AuthMiddleware = require("../../middlewares/AuthMiddleware");
 const { createProduct, getProductFromId } = require("./ProductController");
 const router = express.Router();
 
+/**
+ * Create new product
+ */
 router.post(
   `/product/`,
   AuthMiddleware.requestAuthenticate,
@@ -18,6 +21,11 @@ router.post(
     .withMessage("The price must be a float and greater than 0.0"),
   createProduct,
 );
+
+/**
+ * Get product using the specific id
+ *
+ */
 router.get(
   `/product/:productId`,
   param("productId")
@@ -25,5 +33,13 @@ router.get(
     .withMessage("The product id must be in a format of uuid v4"),
   getProductFromId,
 );
+
+router.delete(
+  `/product/:productId`,
+  param("productId")
+    .isUUID(4)
+    .withMessage("The product id must be in a format of uuid v4"),
+);
+
 // router.get(`/`, param());
 module.exports = router;

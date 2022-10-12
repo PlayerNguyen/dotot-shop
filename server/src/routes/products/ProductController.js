@@ -82,6 +82,7 @@ async function getProductFromId(req, res, next) {
     res
       .status(400)
       .json(createErrorResponse("Invalid parameter", undefined, errors));
+    return next();
   }
 
   const { productId } = req.params;
@@ -132,6 +133,15 @@ async function getProductFromId(req, res, next) {
     next(e);
   }
 }
+/**
+ * Remove the product using specific id
+ *
+ * @param {express.Request} req the request parameter
+ * @param {express.Response} res  the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function removeProduct(req, res, next) {}
+
 /**
  * Get all products with limit
  *
