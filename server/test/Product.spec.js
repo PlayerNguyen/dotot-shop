@@ -347,4 +347,18 @@ describe("GET /products/product/:productId", () => {
       .then(done)
       .catch(printTrace);
   });
+  it(`not uuid fail response`, (done) => {
+    chai
+      .request(app)
+      .get(`/products/product/${faker.word.adjective()}`)
+      .set("Authorization", `JWT ${accessToken}`)
+      .then((response) => {
+        expect(response).to.have.status(400);
+        hasErrorResponse(response.body);
+
+        expect(response.body.message).to.eq("Invalid parameter");
+      })
+      .then(done)
+      .catch(printTrace);
+  });
 });
