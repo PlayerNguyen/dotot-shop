@@ -40,13 +40,20 @@ async function requestAuthenticate(req, res, next) {
 
     // Select user from database
     const responseUser = await KnexDriver.select([
-      "Email",
-      "FirstName",
-      "LastName",
-      "Phone",
+      `${Tables.Users}.Email`,
+      `${Tables.Users}.FirstName`,
+      `${Tables.Users}.LastName`,
+      `${Tables.Users}.Phone`,
+      `${Tables.UserRoles}.Role`,
     ])
       .from(Tables.Users)
       .where("Id", id)
+      .leftJoin(
+        Tables.UserRoles,
+        `${Tables.Users}.Id`,
+        "=",
+        `${Tables.UserRoles}.UserId`,
+      )
       .first();
 
     // Handle if the user not found
@@ -56,13 +63,14 @@ async function requestAuthenticate(req, res, next) {
         .json(createErrorResponse("Invalid user, unauthorized"));
     }
 
-    const { Email, FirstName, LastName, Phone } = responseUser;
+    const { Email, FirstName, LastName, Phone, Role } = responseUser;
     req.sessionUser = {
       id,
       email: Email,
       firstName: FirstName,
       lastName: LastName,
       phone: Phone,
+      role: Role,
     };
 
     next();
