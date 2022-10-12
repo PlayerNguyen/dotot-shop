@@ -1,8 +1,8 @@
 "use strict";
 const express = require("express");
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 const AuthMiddleware = require("../../middlewares/AuthMiddleware");
-const { createProduct } = require("./ProductController");
+const { createProduct, getProductFromId } = require("./ProductController");
 const router = express.Router();
 
 router.post(
@@ -18,5 +18,12 @@ router.post(
     .withMessage("The price must be a float and greater than 0.0"),
   createProduct,
 );
-
+router.get(
+  `/product/:productId`,
+  param("productId")
+    .isUUID(4)
+    .withMessage("The product id must be in a format of uuid v4"),
+  getProductFromId,
+);
+// router.get(`/`, param());
 module.exports = router;

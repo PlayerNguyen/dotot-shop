@@ -68,4 +68,79 @@ async function createProduct(req, res, next) {
   }
 }
 
-module.exports = { createProduct };
+/**
+ * Get a product by a specific id
+ *
+ * @param {express.Request} req the request parameter
+ * @param {express.Response} res  the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function getProductFromId(req, res, next) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res
+      .status(400)
+      .json(createErrorResponse("Invalid parameter", undefined, errors));
+  }
+
+  const { productId } = req.params;
+
+  try {
+    const product = await KnexDriver.select(
+      `${Tables.Products}.*`,
+      `${Tables.Users}.Id as userId`,
+      `${Tables.Users}.FirstName`,
+      `${Tables.Users}.LastName`,
+    )
+      .from(Tables.Products)
+      .where(`${Tables.Products}.Id`, productId)
+      .join(
+        Tables.UserProducts,
+        `${Tables.Products}.Id`,
+        "=",
+        `${Tables.UserProducts}.ProductId`,
+      )
+      .join(
+        Tables.Users,
+        `${Tables.UserProducts}.UserId`,
+        "=",
+        `${Tables.Users}.Id`,
+      )
+      .first();
+    if (!product) {
+      res.status(404).json(createErrorResponse("Product not found"));
+      return next();
+    }
+
+    const responseUser = {
+      name: product.Name,
+      description: product.Description,
+      price: product.Price,
+      id: product.Id,
+      views: product.Views,
+      likes: product.Likes,
+      user: {
+        id: product.userId,
+        firstName: product.FirstName,
+        lastName: product.LastName,
+      },
+    };
+
+    res.json(createSuccessResponse(responseUser));
+  } catch (e) {
+    next(e);
+  }
+}
+/**
+ * Get all products with limit
+ *
+ * @param {express.Request} req the request parameter
+ * @param {express.Response} res  the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function getAllProducts(req, res, next) {
+  // const { limit, page, search } = req.params;
+}
+
+module.exports = { createProduct, getProductFromId, getAllProducts };

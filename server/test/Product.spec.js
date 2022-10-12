@@ -1,18 +1,32 @@
 "use strict";
 const app = require("../src/index");
 const chaiHttp = require("chai-http");
+const chai = require("chai");
 const { expect } = require("chai");
 const {
   hasErrorResponse,
   hasSuccessfulResponse,
 } = require("./utils/AssertionUtil");
-const chai = require("chai");
+
 const { printTrace } = require("./utils/TracePrintUtil");
 const { generateDummyUser } = require("./utils/UserUtil");
-chai.use(chaiHttp);
 const { faker } = require("@faker-js/faker");
+const { v4: uuid } = require("uuid");
+
+chai.use(chaiHttp);
 const KnexDriver = require("../driver/KnexDriver");
 const Tables = require("../driver/Table");
+/**
+ * Generate a random value product for test
+ * @return {Object} a dummy product to test
+ */
+function createDummyProduct() {
+  return {
+    name: `${faker.commerce.productAdjective()} ${faker.commerce.product()}`,
+    price: faker.finance.amount(1, 1000000),
+    description: faker.lorem.paragraphs(),
+  };
+}
 
 describe("POST /products/product", () => {
   const productCreateEndpoint = "/products/product";
@@ -37,7 +51,7 @@ describe("POST /products/product", () => {
         generatedUserId = response.body.data.id;
       })
       // Login with cached user, return token
-      .then(() => {
+      .then(() =>
         chai
           .request(app)
           .post("/auth/login")
@@ -51,9 +65,8 @@ describe("POST /products/product", () => {
             accessToken = response.body.data.token;
 
             // console.log(chalk.green(accessToken));
-          })
-          .catch(printTrace);
-      })
+          }),
+      )
       .then(done)
       .catch(printTrace);
   });
@@ -68,33 +81,25 @@ describe("POST /products/product", () => {
         console.log(`Cleaning middle-link ${response} from Product.spec.js...`);
       })
 
-      .then(() => {
+      .then(() =>
         KnexDriver.del()
           .from(Tables.Users)
           .where("Id", generatedUserId)
           .then((response) => {
             console.log(`Cleaning ${response} from Product.spec.js...`);
-          })
-          .catch(printTrace);
-      })
-      .then(() => {
+          }),
+      )
+      .then(() =>
         // Assertion is not that type
-        KnexDriver.select("*")
-          .from(Tables.Users)
-          .where("Id", generatedUserId)
-          // .then((response) => {
-          //   expect(response).to.have.lengthOf.lessThanOrEqual(0);
-          // })
-          .catch(printTrace);
-      })
-      .then(() => {
+        KnexDriver.select("*").from(Tables.Users).where("Id", generatedUserId),
+      )
+      .then(() =>
         // Remove products
         KnexDriver.del()
           .from(Tables.Products)
           .whereIn("Id", generatedProducts)
-          .then((res) => console.log(`res here ${res}`))
-          .catch(printTrace);
-      })
+          .then((res) => console.log(`res here ${res}`)),
+      )
       .then(done)
       .catch(printTrace);
   });
@@ -182,11 +187,7 @@ describe("POST /products/product", () => {
 
   it("successful create response", (done) => {
     let _productId;
-    const product = {
-      name: `${faker.commerce.productAdjective()} ${faker.commerce.product()}`,
-      price: faker.finance.amount(1, 1000000),
-      description: faker.lorem.paragraphs(),
-    };
+    const product = createDummyProduct();
     chai
       .request(app)
       .post(productCreateEndpoint)
@@ -201,7 +202,7 @@ describe("POST /products/product", () => {
 
         _productId = response.body.data.id;
       })
-      .then(() => {
+      .then(() =>
         KnexDriver.select("*")
           .from(Tables.UserProducts)
           .where({ ProductId: _productId, UserId: generatedUserId })
@@ -210,8 +211,138 @@ describe("POST /products/product", () => {
             // console.log(`first: `, response);
             expect(response.ProductId).to.be.eq(_productId);
             expect(response.UserId).to.be.eq(generatedUserId);
-          })
-          .catch(printTrace);
+          }),
+      )
+      .then(done)
+      .catch(printTrace);
+  });
+});
+
+describe("GET /products/product/:productId", () => {
+  const dummyProduct = createDummyProduct();
+  const testUser = generateDummyUser();
+  let generatedUserId;
+
+  let accessToken;
+  const generatedProducts = [];
+
+  /**
+   * Initialize user
+   */
+  before((done) => {
+    // Register the account first
+    chai
+      .request(app)
+      .post("/users/register")
+      .send(testUser)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+        expect(response.body.data.id).not.to.be.undefined;
+
+        generatedUserId = response.body.data.id;
+      })
+      // Login with cached user, return token
+      .then(() =>
+        chai
+          .request(app)
+          .post("/auth/login")
+          .send({ phoneOrEmail: testUser.email, password: testUser.password })
+          .then((response) => {
+            expect(response).to.have.status(200);
+            hasSuccessfulResponse(response.body);
+
+            expect(response.body.data.token).not.to.be.undefined;
+
+            accessToken = response.body.data.token;
+          }),
+      )
+      // Create a product
+      .then(() =>
+        chai
+          .request(app)
+          .post("/products/product")
+          .set("Authorization", `JWT ${accessToken}`)
+          .send(dummyProduct)
+          .then((response) => {
+            expect(response).to.have.status(200);
+            hasSuccessfulResponse(response.body);
+
+            expect(response.body.data.id).not.to.be.undefined;
+            generatedProducts.push(response.body.data.id);
+          }),
+      )
+      .then(done)
+      .catch(printTrace);
+  });
+  /**
+   * Remove the user and clean up after usage
+   */
+  after((done) => {
+    KnexDriver.del()
+      .from(Tables.UserProducts)
+      .where("UserId", generatedUserId)
+      .then((response) => {
+        console.log(`Cleaning middle-link ${response} from Product.spec.js...`);
+      })
+      .then(() =>
+        KnexDriver.del()
+          .from(Tables.Users)
+          .where("Id", generatedUserId)
+          .then((response) => {
+            console.log(`Cleaning ${response} from Product.spec.js...`);
+          }),
+      )
+      .then(() =>
+        // Assertion is not that type
+        KnexDriver.select("*").from(Tables.Users).where("Id", generatedUserId),
+      )
+      .then(() =>
+        // Remove products
+        KnexDriver.del()
+          .from(Tables.Products)
+          .whereIn("Id", generatedProducts)
+          .then((res) => console.log(`res here ${res}`)),
+      )
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`unknown product fail response`, (done) => {
+    chai
+      .request(app)
+      .get(`/products/product/${uuid()}`)
+      .then((response) => {
+        expect(response).to.have.status(404);
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.be.eq("Product not found");
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+  it(`success response`, (done) => {
+    chai
+      .request(app)
+      .get(`/products/product/${generatedProducts[0]}`)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        // eslint-disable-next-line
+        const { name, price, description, views, likes, user } =
+          response.body.data;
+
+        expect(name).to.eq(dummyProduct.name);
+        expect(price).to.closeTo(Number.parseFloat(dummyProduct.price), 0.03);
+        expect(description).to.eq(dummyProduct.description);
+        expect(views).to.eq(0);
+        expect(likes).to.eq(0);
+
+        expect(user).not.to.be.undefined;
+        // Check if the same user with creator
+        expect(user.id).to.eq(generatedUserId);
+        expect(user.firstName).to.eq(testUser.firstName);
+        expect(user.lastName).to.eq(testUser.lastName);
       })
       .then(done)
       .catch(printTrace);
