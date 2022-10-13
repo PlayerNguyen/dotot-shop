@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start:server": "cross-env NODE_ENV=dev PORT=3000 nodemon ./src/index.js",
-    "test:server": "cd server && yarn test"
+    "test:server": "cd server && yarn test",
+    "build": "exit 0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
