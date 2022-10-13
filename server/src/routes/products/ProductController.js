@@ -109,6 +109,7 @@ async function getProductFromId(req, res, next) {
         `${Tables.Users}.Id`,
       )
       .first();
+
     if (!product) {
       res.status(404).json(createErrorResponse("Product not found"));
       return next();
@@ -171,11 +172,30 @@ async function removeProduct(req, res, next) {
     // Check if the product is empty or not
     if (!selectedProduct) {
       res.status(404).json(createErrorResponse("Product not found"));
-      next();
+      return next();
     }
 
     // Not the owner and not admin
-    // if (!)
+    console.log(user, selectedProduct);
+    if (
+      !(user && user.role !== "admin" && user.id !== selectedProduct.UserId)
+    ) {
+      res
+        .status(401)
+        .json(createErrorResponse("You have no permission to do this action"));
+      return next();
+    }
+
+    // Remove the product
+    await KnexDriver.del()
+      .from(Tables.UserProducts)
+      .where("ProductId", productId);
+    await KnexDriver.del()
+      .from(Tables.ProductCategory)
+      .where("ProductId", productId);
+    await KnexDriver.del().from(Tables.Products).where("Id", productId);
+
+    res.json(createSuccessResponse());
   } catch (e) {
     next(e);
   }

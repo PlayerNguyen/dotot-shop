@@ -89,17 +89,20 @@ describe("POST /products/product", () => {
             console.log(`Cleaning ${response} from Product.spec.js...`);
           }),
       )
+      .then(() => {})
       .then(() =>
         // Assertion is not that type
         KnexDriver.select("*").from(Tables.Users).where("Id", generatedUserId),
       )
-      .then(() =>
-        // Remove products
-        KnexDriver.del()
-          .from(Tables.Products)
-          .whereIn("Id", generatedProducts)
-          .then((res) => console.log(`res here ${res}`)),
+      .then(
+        () =>
+          // Remove products
+          KnexDriver.del()
+            .from(Tables.Products)
+            .whereIn("Id", generatedProducts),
+        // .then((res) => console.log(`res here ${res}`)),
       )
+      .then(() => {})
       .then(done)
       .catch(printTrace);
   });
@@ -247,31 +250,32 @@ describe("GET /products/product/:productId", () => {
         chai
           .request(app)
           .post("/auth/login")
-          .send({ phoneOrEmail: testUser.email, password: testUser.password })
-          .then((response) => {
-            expect(response).to.have.status(200);
-            hasSuccessfulResponse(response.body);
-
-            expect(response.body.data.token).not.to.be.undefined;
-
-            accessToken = response.body.data.token;
-          }),
+          .send({ phoneOrEmail: testUser.email, password: testUser.password }),
       )
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data.token).not.to.be.undefined;
+
+        accessToken = response.body.data.token;
+        // console.log(`access Token`, accessToken);
+      })
       // Create a product
       .then(() =>
         chai
           .request(app)
           .post("/products/product")
           .set("Authorization", `JWT ${accessToken}`)
-          .send(dummyProduct)
-          .then((response) => {
-            expect(response).to.have.status(200);
-            hasSuccessfulResponse(response.body);
-
-            expect(response.body.data.id).not.to.be.undefined;
-            generatedProducts.push(response.body.data.id);
-          }),
+          .send(dummyProduct),
       )
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data.id).not.to.be.undefined;
+        generatedProducts.push(response.body.data.id);
+      })
       .then(done)
       .catch(printTrace);
   });
@@ -293,17 +297,20 @@ describe("GET /products/product/:productId", () => {
             console.log(`Cleaning ${response} from Product.spec.js...`);
           }),
       )
+      .then(() => {})
       .then(() =>
         // Assertion is not that type
         KnexDriver.select("*").from(Tables.Users).where("Id", generatedUserId),
       )
-      .then(() =>
-        // Remove products
-        KnexDriver.del()
-          .from(Tables.Products)
-          .whereIn("Id", generatedProducts)
-          .then((res) => console.log(`res here ${res}`)),
+      .then(
+        () =>
+          // Remove products
+          KnexDriver.del()
+            .from(Tables.Products)
+            .whereIn("Id", generatedProducts),
+        // .then((res) => console.log(`res here ${res}`)),
       )
+      .then(() => {})
       .then(done)
       .catch(printTrace);
   });
@@ -357,6 +364,152 @@ describe("GET /products/product/:productId", () => {
         hasErrorResponse(response.body);
 
         expect(response.body.message).to.eq("Invalid parameter");
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+});
+
+describe("DELETE /products/product/:productId", () => {
+  const dummyProduct = createDummyProduct();
+  const testUser = generateDummyUser();
+  let generatedUserId;
+
+  let accessToken;
+  const generatedProducts = [];
+
+  /**
+   * Initialize user
+   */
+  before((done) => {
+    // Register the account first
+    chai
+      .request(app)
+      .post("/users/register")
+      .send(testUser)
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+        expect(response.body.data.id).not.to.be.undefined;
+
+        generatedUserId = response.body.data.id;
+      })
+      // Login with cached user, return token
+      .then(() =>
+        chai
+          .request(app)
+          .post("/auth/login")
+          .send({ phoneOrEmail: testUser.email, password: testUser.password }),
+      )
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data.token).not.to.be.undefined;
+
+        accessToken = response.body.data.token;
+        // console.log(`access Token`, accessToken);
+      })
+      // Create a product
+      .then(() =>
+        chai
+          .request(app)
+          .post("/products/product")
+          .set("Authorization", `JWT ${accessToken}`)
+          .send(dummyProduct),
+      )
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        expect(response.body.data.id).not.to.be.undefined;
+        generatedProducts.push(response.body.data.id);
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+  /**
+   * Remove the user and clean up after usage
+   */
+  after((done) => {
+    KnexDriver.del()
+      .from(Tables.UserProducts)
+      .where("UserId", generatedUserId)
+      .then((response) => {
+        // console.log(`Cleaning middle-link ${response} from Product.spec.js...`);
+      })
+      .then(() =>
+        KnexDriver.del()
+          .from(Tables.UserRoles)
+          .where("UserId", generatedUserId),
+      )
+      .then(() =>
+        KnexDriver.del().from(Tables.Users).where("Id", generatedUserId),
+      )
+      .then(() => {})
+      .then(() =>
+        // Assertion is not that type
+        KnexDriver.select("*").from(Tables.Users).where("Id", generatedUserId),
+      )
+      .then(
+        () =>
+          // Remove products
+          KnexDriver.del()
+            .from(Tables.Products)
+            .whereIn("Id", generatedProducts),
+        // .then((res) => console.log(`res here ${res}`)),
+      )
+      .then(() => {})
+      .then(done)
+      .catch(printTrace);
+  });
+  it(`unauthorized access`, (done) => {
+    chai
+      .request(app)
+      .delete(`/products/product/${generatedProducts[0]}`)
+      .then((response) => {
+        expect(response).to.have.status(401);
+
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.eq("Unauthorized");
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`no permission response`, (done) => {
+    chai
+      .request(app)
+      .delete(`/products/product/${generatedProducts[0]}`)
+      .set("Authorization", `JWT ${accessToken}`)
+      .then((response) => {
+        expect(response).to.have.status(401);
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.eq(
+          `You have no permission to do this action`,
+        );
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`successfully without admin permission response`, (done) => {
+    // Set admin for all
+    KnexDriver.insert({ UserId: generatedUserId, Role: "admin" })
+      .into(Tables.UserRoles)
+      .then((response) => {})
+      .then(() =>
+        chai
+          .request(app)
+          .delete(`/products/product/${generatedProducts[0]}`)
+          .set("Authorization", `JWT ${accessToken}`),
+      )
+      .then((response) => {
+        expect(response).to.have.status(401);
+        hasErrorResponse(response.body);
+        expect(response.body.message).to.eq(
+          `You have no permission to do this action`,
+        );
       })
       .then(done)
       .catch(printTrace);

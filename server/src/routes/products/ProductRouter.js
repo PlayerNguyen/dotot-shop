@@ -2,7 +2,11 @@
 const express = require("express");
 const { check, param } = require("express-validator");
 const AuthMiddleware = require("../../middlewares/AuthMiddleware");
-const { createProduct, getProductFromId } = require("./ProductController");
+const {
+  createProduct,
+  getProductFromId,
+  removeProduct,
+} = require("./ProductController");
 const router = express.Router();
 
 /**
@@ -36,9 +40,11 @@ router.get(
 
 router.delete(
   `/product/:productId`,
+  AuthMiddleware.requestAuthenticate,
   param("productId")
     .isUUID(4)
     .withMessage("The product id must be in a format of uuid v4"),
+  removeProduct,
 );
 
 // router.get(`/`, param());
