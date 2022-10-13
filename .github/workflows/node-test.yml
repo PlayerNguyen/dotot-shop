@@ -23,6 +23,7 @@ jobs:
       DATABASE_USERNAME: "root"
       DATABASE_PASSWORD: "root"
       DATABASE_TEST: "khmer_furniture_test"
+      JWT_SECRET_OR_KEY: "khmer#920081789$kx)_.cJU82sj##$$"
     steps:
       - name: Set up MySQL
         run: |
