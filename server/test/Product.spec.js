@@ -1,5 +1,5 @@
 "use strict";
-const app = require("../src/index");
+const app = require("../src/app");
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const { expect } = require("chai");
@@ -333,7 +333,7 @@ describe("GET /products/product/:productId", () => {
           response.body.data;
 
         expect(name).to.eq(dummyProduct.name);
-        expect(price).to.closeTo(Number.parseFloat(dummyProduct.price), 0.03);
+        expect(price).to.closeTo(Number.parseFloat(dummyProduct.price), 0.1);
         expect(description).to.eq(dummyProduct.description);
         expect(views).to.eq(0);
         expect(likes).to.eq(0);
