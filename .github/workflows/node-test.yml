@@ -17,8 +17,17 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    env:
+      DATABASE_HOST: "127.0.0.1"
+      DATABASE_PORT: "3306"
+      DATABASE_USERNAME: "root"
+      DATABASE_PASSWORD: "root"
+      DATABASE_TEST: "khmer_furniture_test"
     steps:
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DATABASE_TEST }};' -u${{ env.DATABASE_USERNAME }} -p${{ env.DATABASE_PASSWORD }}
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
