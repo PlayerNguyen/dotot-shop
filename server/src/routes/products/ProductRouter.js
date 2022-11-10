@@ -6,6 +6,7 @@ const {
   createProduct,
   getProductFromId,
   removeProduct,
+  updateProduct,
 } = require("./ProductController");
 const router = express.Router();
 
@@ -45,6 +46,15 @@ router.delete(
     .isUUID(4)
     .withMessage("The product id must be in a format of uuid v4"),
   removeProduct,
+);
+
+router.put(
+  `/product/:productId`,
+  AuthMiddleware.requestAuthenticate,
+  param("productId")
+    .isUUID(4)
+    .withMessage("The product id must be in a format of uuid v4"),
+  updateProduct,
 );
 
 // router.get(`/`, param());

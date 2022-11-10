@@ -11,6 +11,7 @@ const {
 const { v4: uuid } = require("uuid");
 const chalk = require("chalk");
 const { getUserFromAuth } = require("./../../middlewares/AuthMiddleware");
+const AuthMiddleware = require("./../../middlewares/AuthMiddleware");
 
 /**
  * Create a new product
@@ -176,7 +177,6 @@ async function removeProduct(req, res, next) {
     }
 
     // Not the owner and not admin
-    console.log(user, selectedProduct);
     if (
       !(user && user.role !== "admin" && user.id !== selectedProduct.UserId)
     ) {
@@ -200,7 +200,77 @@ async function removeProduct(req, res, next) {
     next(e);
   }
 }
+/**
+ * Update product using specific id
+ * @param {express.Request} req  the request parameter
+ * @param {express.Response} res the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function updateProduct(req, res, next) {
+  try {
+    const errors = validationResult(req);
 
+    const { productId } = req.params;
+    // Select the product
+    const selectedProduct = await KnexDriver.select(
+      `${Tables.Products}.*`,
+      `${Tables.UserProducts}.UserId`,
+    )
+      .from(Tables.Products)
+      .where("Id", productId)
+      .join(
+        Tables.UserProducts,
+        `${Tables.UserProducts}.ProductId`,
+        "=",
+        `${Tables.Products}.Id`,
+      )
+      .first();
+
+    // Not found product
+    if (selectedProduct === null || selectedProduct === undefined) {
+      res.status(404).json(createErrorResponse("Product not found"));
+      return next();
+    }
+
+    // The updated body is empty
+    if (errors.isEmpty()) {
+      res
+        .status(400)
+        .json(createErrorResponse("Invalid parameter", undefined, errors));
+      return next();
+    }
+
+    const user = AuthMiddleware.getUserFromAuth(req);
+    const hasAnyPermission = user.role !== "admin" || user.role !== "moderate";
+
+    // Whether current user do not have permissions to do the action
+    if (!(user && hasAnyPermission && user.id !== selectedProduct.UserId)) {
+      res
+        .status(401)
+        .json(createErrorResponse("You have no permission to do this action"));
+      return next();
+    }
+
+    // Catch everything from body
+    // const { Name, Description, Price } = req.body;
+    // if (!(Name && Description && Price)) {
+    //   res.status(400).json(createErrorResponse("Empty body request"));
+    //   return next();
+    // }
+
+    // eslint-disable-next-line
+    await KnexDriver(Tables.Products)
+      .update({ Name, Description, Price })
+      .where("Id", productId);
+    res.json(
+      createSuccessResponse({
+        id: productId,
+      }),
+    );
+  } catch (err) {
+    next(err);
+  }
+}
 /**
  * Get all products with limit
  *
@@ -217,4 +287,5 @@ module.exports = {
   getProductFromId,
   removeProduct,
   getAllProducts,
+  updateProduct,
 };

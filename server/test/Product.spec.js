@@ -9,13 +9,21 @@ const {
 } = require("./utils/AssertionUtil");
 
 const { printTrace } = require("./utils/TracePrintUtil");
-const { generateDummyUser } = require("./utils/UserUtil");
+const {
+  generateDummyUser,
+  createUserIntoDatabase,
+  removeUserFromDatabase,
+} = require("./utils/UserUtil");
 const { faker } = require("@faker-js/faker");
 const { v4: uuid } = require("uuid");
 
 chai.use(chaiHttp);
 const KnexDriver = require("../driver/KnexDriver");
 const Tables = require("../driver/Table");
+const {
+  createDatabaseProduct,
+  removeDatabaseProduct,
+} = require("./utils/ProductUtil");
 /**
  * Generate a random value product for test
  * @return {Object} a dummy product to test
@@ -211,7 +219,6 @@ describe("POST /products/product", () => {
           .where({ ProductId: _productId, UserId: generatedUserId })
           .first()
           .then((response) => {
-            // console.log(`first: `, response);
             expect(response.ProductId).to.be.eq(_productId);
             expect(response.UserId).to.be.eq(generatedUserId);
           }),
@@ -510,6 +517,91 @@ describe("DELETE /products/product/:productId", () => {
         expect(response.body.message).to.eq(
           `You have no permission to do this action`,
         );
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+});
+
+/**
+ * Update product using its productId
+ */
+describe("PUT /products/product/:productId", () => {
+  let _user;
+  let _product;
+  let accessToken;
+  before((done) => {
+    createUserIntoDatabase(true)
+      .then((user) => {
+        _user = user;
+      })
+      .then(() => {
+        console.log(`user `, _user);
+      })
+      .then(() =>
+        chai
+          .request(app)
+          .post(`/auth/login`)
+          .send({ phoneOrEmail: _user.email, password: _user.password }),
+      )
+      .then((response) => {
+        expect(response).to.have.status(200);
+        hasSuccessfulResponse(response.body);
+
+        // Set access token
+        accessToken = response.body.data.token;
+      })
+      .then(() => createDatabaseProduct(_user.id))
+      .then((product) => {
+        _product = product;
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  after((done) => {
+    removeDatabaseProduct(_product.Id)
+      .then(() => removeUserFromDatabase(_user.id))
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`un-authorization access response`, (done) => {
+    chai
+      .request(app)
+      .put(`/products/product/${_product.Id}`)
+
+      .then((response) => {
+        expect(response).to.have.status(401);
+        hasErrorResponse(response.body);
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`not found product response`, (done) => {
+    chai
+      .request(app)
+      .put(`/products/product/${uuid()}`)
+      .set("Authorization", `JWT ${accessToken}`)
+      .then((response) => {
+        expect(response).to.have.status(404);
+        hasErrorResponse(response.body);
+      })
+      .then(done)
+      .catch(printTrace);
+  });
+
+  it(`empty-requested body response`, (done) => {
+    chai
+      .request(app)
+      .put(`/products/product/${_product.Id}`)
+      .set("Authorization", `JWT ${accessToken}`)
+      .then((response) => {
+        expect(response).to.have.status(400);
+        hasErrorResponse(response.body);
+
+        expect(response.body.message).to.eq("Invalid parameter");
       })
       .then(done)
       .catch(printTrace);
