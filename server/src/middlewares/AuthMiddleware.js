@@ -7,6 +7,17 @@ const KnexDriver = require("../../driver/KnexDriver");
 const Tables = require("../../driver/Table");
 
 /**
+ * @typedef SessionUser
+ * @type {object}
+ * @property {string} id
+ * @property {string} email
+ * @property {string} firstName
+ * @property {string} lastName
+ * @property {string} phone
+ * @property {undefined | "admin" | "moderate"} role
+ */
+
+/**
  * Request authenticate middlewares
  *
  * @param {express.Request} req request object passed from the previous middleware
@@ -82,7 +93,7 @@ async function requestAuthenticate(req, res, next) {
 /**
  *
  * @param {express.Request} request the express request from previous middleware
- * @return {Object}
+ * @return {SessionUser}
  */
 function getUserFromAuth(request) {
   return request.sessionUser;
