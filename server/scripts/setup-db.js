@@ -25,6 +25,7 @@ async function createTableIfNotExists(tableName, callback) {
  */
 async function setupDatabase() {
   await createTableIfNotExists(Tables.Users, (userTable) => {
+    userTable.primary(["Id", "Phone", "Email"]);
     userTable.string("Id").notNullable().primary().unique();
     userTable.string("Password").notNullable();
     userTable.string("Email").notNullable();
@@ -52,6 +53,44 @@ async function setupDatabase() {
     t.string("Name").notNullable();
     t.integer("DistrictId").notNullable().references(`${Tables.Districts}.Id`);
   });
+
+  await createTableIfNotExists(Tables.Products, (table) => {
+    table.string("Id").primary().notNullable().unique();
+    table.string("Name").notNullable();
+    table.float("Price").notNullable();
+    table.text("Description");
+
+    // Statistic
+    table.integer("Views").defaultTo(0);
+    table.integer("Likes").defaultTo(0);
+  });
+
+  await createTableIfNotExists(Tables.Categories, (table) => {
+    table.primary(["Id"]);
+    table.increments("Id");
+    table.string("Name").notNullable();
+    table.string("Slug").notNullable();
+    table.string("Description").notNullable();
+  });
+
+  await createTableIfNotExists(Tables.ProductCategory, (table) => {
+    table.string("ProductId").notNullable().references(`${Tables.Products}.Id`);
+    table
+      .integer("CategoryId")
+      .unsigned()
+      .notNullable()
+      .references(`${Tables.Categories}.Id`);
+  });
+
+  await createTableIfNotExists(Tables.UserProducts, (table) => {
+    table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
+    table.string("ProductId").notNullable().references(`${Tables.Products}.Id`);
+  });
+
+  await createTableIfNotExists(Tables.UserRoles, (table) => {
+    table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
+    table.enu("Role", [`admin`, `moderate`]);
+  });
 }
 
 (async () => {
@@ -62,4 +101,6 @@ async function setupDatabase() {
   // require("./fetch-provinces");
 })()
   .then(process.exit)
-  .catch(console.error);
+  .catch((err) => {
+    console.error(chalk.red(err.stack));
+  });

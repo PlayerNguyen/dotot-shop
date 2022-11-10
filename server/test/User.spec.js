@@ -1,5 +1,5 @@
 "use strict";
-const app = require("./../src/index");
+const app = require("./../src/app");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
@@ -122,9 +122,8 @@ describe("/users/register", () => {
         historyUserIds.push(response.body.data.id);
         generatedUniqueId = response.body.data.id;
       })
-      .then(() => {
-        // Password must match with bcryptjs
-
+      // Password must match with bcryptjs
+      .then(() =>
         KnexDriver.select("*")
           .from(Tables.Users)
           .where("Id", generatedUniqueId)
@@ -134,9 +133,8 @@ describe("/users/register", () => {
             expect(
               bcryptjs.compareSync(genUser.password, curResponseUser.Password),
             ).to.be.true;
-          })
-          .catch(handleError);
-      })
+          }),
+      )
       .then(done)
       .catch(handleError);
   });
@@ -171,9 +169,9 @@ describe("/users/:userId", () => {
       .then((res) => {
         if (res.length === 1 && res[0] === 0) {
           generatedUserId = dummyUser.id;
-          done();
         }
       })
+      .then(done)
       .catch(handleError);
   });
   after((done) => {
@@ -183,9 +181,8 @@ describe("/users/:userId", () => {
       .del()
       .then((response) => {
         console.log(`Clean up ~ removing ${response} row(s)`);
-
-        done();
       })
+      .then(done)
       .catch(handleError);
   });
 
@@ -194,7 +191,7 @@ describe("/users/:userId", () => {
       .request(app)
       .get(`${endpoint.getUser}${uuid()}`)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.have.status(404);
         hasErrorResponse(response.body);
 
@@ -248,7 +245,7 @@ describe(`/users/profile`, () => {
         responseUserId = response.body.data.id;
       })
       // Sign in
-      .then(() => {
+      .then(() =>
         chai
           .request(app)
           .post(endpoint.signIn)
@@ -261,9 +258,9 @@ describe(`/users/profile`, () => {
             hasSuccessfulResponse(response.body);
 
             responseToken = response.body.data.token;
-            console.log(responseToken);
-          });
-      })
+            // console.log(responseToken);
+          }),
+      )
       .then(done)
       .catch(printTrace);
   });
@@ -272,14 +269,14 @@ describe(`/users/profile`, () => {
     KnexDriver.del()
       .from(Tables.Users)
       .where("Id", responseUserId)
-      .then(() => {
+      .then(() =>
         KnexDriver.select("*")
           .from(Tables.Users)
           .where("Id", responseUserId)
           .then((responseList) => {
-            expect(responseList).to.have.lengthOf.eq(0);
-          });
-      })
+            expect(responseList.length).to.eq(0);
+          }),
+      )
       .then(done)
       .catch(printTrace);
   });
@@ -322,15 +319,24 @@ describe(`/users/profile`, () => {
         expect(response).to.have.status(200);
         hasSuccessfulResponse(response.body);
         expect(response.body).to.haveOwnProperty("data");
+        // eslint-disable-next-line
+        const { id, firstName, lastName, email, phone, role } =
+          response.body.data;
+        // console.log(`data`, response.body.data);
 
-        const { id, firstName, lastName, email, phone } = response.body.data;
-        // console.log(response.body.data);
+        expect(id).not.to.be.undefined;
+        expect(firstName).not.to.be.undefined;
+        expect(lastName).not.to.be.undefined;
+        expect(email).not.to.be.undefined;
+        expect(phone).not.to.be.undefined;
+        expect(role).not.to.be.undefined;
 
-        expect(id).not.to.be.null;
-        expect(firstName).not.to.be.null;
-        expect(lastName).not.to.be.null;
-        expect(email).not.to.be.null;
-        expect(phone).not.to.be.null;
+        expect(firstName).to.eq(requestUser.firstName);
+
+        expect(lastName).to.eq(requestUser.lastName);
+        expect(email).to.eq(requestUser.email);
+
+        expect(role).to.be.eq(null);
       })
       .then(done)
       .catch(printTrace);
