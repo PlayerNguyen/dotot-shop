@@ -44,7 +44,9 @@ async function requestAuthenticate(req, res, next) {
         );
     }
     const token = splittedAuthorized[1];
-
+    if (token === null || token === undefined) {
+      throw new Error(`Token cannot be undefined`);
+    }
     // Validate a token
     const payload = jwt.verify(token, String(process.env.JWT_SECRET_OR_KEY));
     const { id } = payload;
