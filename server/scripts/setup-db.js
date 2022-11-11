@@ -2,7 +2,9 @@
 const chalk = require("chalk");
 const Tables = require("../driver/Table");
 const driver = require("./../driver/KnexDriver");
-const {Knex} = require('knex');
+
+// eslint-disable-next-line
+const { Knex } = require("knex");
 /**
  * @callback CreateTableCallback
  * @param {Knex.CreateTableBuilder} tableBuilder
@@ -97,7 +99,11 @@ async function setupDatabase() {
   });
 
   await createTableIfNotExists(Tables.Resources, (table) => {
-    table.
+    table.string("Id").notNullable().unique().primary();
+    table.string("Name").notNullable();
+    table.string("Path").notNullable();
+    table.string("BlurHash").notNullable();
+    table.string("Author").references(`${Tables.Users}.Id`);
   });
 }
 
