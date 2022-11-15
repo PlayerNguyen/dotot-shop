@@ -1,6 +1,7 @@
 import React from "react";
 import { FiMenu } from "react-icons/fi";
-import { Route, Routes } from "react-router-dom";
+import { AiOutlineSearch, AiOutlineShoppingCart } from "react-icons/ai";
+import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";
 
 export default function App() {
@@ -19,9 +20,12 @@ export default function App() {
           </div>
 
           <div className="flex-1 px-3">
-            <h1 className="text-xl font-bold">dotot.com</h1>
+            <Link to="/">
+              <h1 className="text-xl font-bold">Khmer Furniture</h1>
+            </Link>
           </div>
 
+          {/* Wide screen  */}
           <div className="hidden lg:block">
             <div className="menu menu-horizontal p-2 rounded-box">
               <li>
@@ -29,6 +33,27 @@ export default function App() {
               </li>
               <li>
                 <a>About</a>
+              </li>
+            </div>
+          </div>
+
+          {/* For small screen */}
+          <div className="lg:hidden">
+            <div className="menu menu-horizontal p-2 rounded-box">
+              {/* Shopping cart */}
+              <li>
+                <a className="text-3xl relative">
+                  <AiOutlineShoppingCart />
+                  <span className="absolute text-sm left-2 top-2 bg-red-400 px-2 rounded-full text-white">
+                    3
+                  </span>
+                </a>
+              </li>
+              {/* Search */}
+              <li>
+                <a className="text-3xl relative">
+                  <AiOutlineSearch />
+                </a>
               </li>
             </div>
           </div>

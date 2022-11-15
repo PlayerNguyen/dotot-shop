@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { FiHeart, FiShoppingCart } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import {
+  AiFillHeart,
+  AiOutlineHeart,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
 
 export default function ProductItemCard({
   name,
@@ -10,17 +13,23 @@ export default function ProductItemCard({
   image,
   salePrice,
 }) {
+  const [isLoved, setIsLoved] = useState(false);
+
+  const handleClickLoveButton = () => {
+    setIsLoved((loved) => !loved);
+  };
+
   return (
-    <Link
+    <div
       className={`
       productCard-wrapper block bg-zinc-100 rounded-xl
       cursor-pointer border border-zinc-400 hover:shadow-lg 
       transition-shadow ease-in-out duration-100`}
-      to={`/products/${id}`}
+      // to={`/products/${id}`}
     >
       {/* Header */}
       <div className="productCard-header">
-        <div className="productCard-thumbnail-wrapper">
+        <div className={`productCard-thumbnail-wrapper `}>
           <img
             className="bg-transparent w-full h-[180px] md:h-[150px] rounded-t-lg"
             src={image}
@@ -61,18 +70,23 @@ export default function ProductItemCard({
             className={`
           text-zinc-400 text-xl hover:bg-zinc-200 rounded-full p-2
           ease-in-out transition-colors hover:text-black`}
+            onClick={() => handleClickLoveButton()}
           >
-            <FiHeart />
+            {isLoved ? (
+              <AiFillHeart className={`text-pink-500`} />
+            ) : (
+              <AiOutlineHeart />
+            )}
           </span>
           <span
             className={`
           text-zinc-400 text-xl hover:bg-zinc-200 rounded-full p-2
           ease-in-out transition-colors hover:text-black`}
           >
-            <FiShoppingCart />
+            <AiOutlineShoppingCart />
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
