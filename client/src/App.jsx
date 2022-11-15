@@ -3,6 +3,7 @@ import { FiMenu } from "react-icons/fi";
 import { AiOutlineSearch, AiOutlineShoppingCart } from "react-icons/ai";
 import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";
+import Footer from "./components/Footer/Footer";
 
 export default function App() {
   return (
@@ -63,6 +64,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>
+
+        {/* Footer */}
+        <Footer />
       </div>
       {/* Drawer side */}
       <div className="drawer-side">
