@@ -1,5 +1,7 @@
 import React from "react";
 import { FiMenu } from "react-icons/fi";
+import { Route, Routes } from "react-router-dom";
+import Home from "./components/Home/Home";
 
 export default function App() {
   return (
@@ -26,12 +28,16 @@ export default function App() {
                 <a>Home</a>
               </li>
               <li>
-                <a>Home</a>
+                <a>About</a>
               </li>
             </div>
           </div>
         </div>
-        Content items
+
+        {/* Render home */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
       </div>
       {/* Drawer side */}
       <div className="drawer-side">
