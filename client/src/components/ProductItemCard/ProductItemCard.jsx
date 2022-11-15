@@ -24,6 +24,7 @@ export default function ProductItemCard({
           <img
             className="bg-transparent w-full h-[180px] md:h-[150px] rounded-t-lg"
             src={image}
+            alt={`${id}s product thumbnail`}
           />
         </div>
       </div>
