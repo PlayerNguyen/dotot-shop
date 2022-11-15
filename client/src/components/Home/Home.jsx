@@ -83,7 +83,7 @@ export default function Home() {
 
         <div className="product-items block">
           {products.map((_, _i) => (
-            <div className="w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block">
+            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block">
               <ProductItemCard
                 name={_.name}
                 price={_.price}
