@@ -30,7 +30,7 @@ export default function ProductItemCard({
       </div>
 
       {/* Item description */}
-      <div className="flex flex-row">
+      <div className="flex flex-col sm:flex-row">
         <div className="flex flex-col gap-1 mt-1 items-start px-3 py-4 flex-1">
           <div className="flex flex-row gap-2 items-center flex-1 w-full">
             <span className="bg-green-400 px-2 py-0.5 rounded-lg text-xs">
@@ -56,7 +56,7 @@ export default function ProductItemCard({
           </div>
         </div>
 
-        <div className="flex flex-col p-3 gap-2">
+        <div className="flex flex-row sm:flex-col sm:px-2 p-3 gap-2">
           <span
             className={`
           text-zinc-400 text-xl hover:bg-zinc-200 rounded-full p-2
