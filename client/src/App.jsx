@@ -23,6 +23,8 @@ export default function App() {
           <Route path="/">
             <Route index element={<Home />} />
             <Route path="/users" element={<Credentials />}>
+              {/* TODO: check whether user is logged in or not, to put current */}
+              <Route />
               <Route path="/users/sign-up" element={<SignUp />} />
               <Route path="/users/sign-in" element={<SignIn />} />
             </Route>

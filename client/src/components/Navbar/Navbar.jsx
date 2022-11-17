@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
@@ -8,6 +8,8 @@ import { FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  const [cartSize, setCartSize] = useState(0);
+
   return (
     <div className="navbar bg-base-100 lg:px-12">
       {/* Navbar start section */}
@@ -47,7 +49,9 @@ export default function Navbar() {
           <li>
             <Link to={"/checkout"} className="relative">
               <AiOutlineShoppingCart />
-              <span className="text-sm ">3</span>
+              {cartSize && cartSize > 0 ? (
+                <span className="text-sm ">{cartSize}</span>
+              ) : null}
             </Link>
           </li>
         </div>
@@ -55,21 +59,23 @@ export default function Navbar() {
 
       {/* For small screen */}
       <div className="lg:hidden">
-        <div className="menu menu-horizontal p-2 rounded-box">
+        <div className="menu menu-horizontal p-2 rounded-box text-xl">
           {/* Shopping cart */}
           <li>
-            <a className="text-3xl relative">
+            <a className="relative">
               <span>
                 <AiOutlineShoppingCart />
               </span>
-              <span className="absolute text-sm left-2 top-2 bg-red-400 px-2 rounded-full text-white">
-                3
-              </span>
+              {cartSize && cartSize > 0 ? (
+                <span className="absolute text-sm left-2 top-2 bg-red-400 px-2 rounded-full text-white">
+                  {cartSize}
+                </span>
+              ) : null}
             </a>
           </li>
           {/* Search */}
           <li>
-            <a className="text-3xl relative">
+            <a className="relative">
               <AiOutlineSearch />
             </a>
           </li>
