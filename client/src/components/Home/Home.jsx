@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ProductRequest from "../../requests/ProductRequest";
 import Hero from "../Hero/Hero";
 import ProductItemCard from "../ProductItemCard/ProductItemCard";
 
@@ -71,6 +72,18 @@ export default function Home() {
       image: `https://dummyimage.com/600x400/000/fff`,
     },
   ]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    ProductRequest.fetchAllProducts(controller).then((response) => {
+      console.log(response);
+    });
+
+    return () => {
+      // controller.abort();
+    };
+  }, []);
+
   return (
     <div className="home-wrapper ">
       {/* Hero of the page */}
@@ -83,7 +96,10 @@ export default function Home() {
 
         <div className="product-items block">
           {products.map((_, _i) => (
-            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block">
+            <div
+              className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block"
+              key={_i}
+            >
               <ProductItemCard
                 name={_.name}
                 price={_.price}
@@ -91,7 +107,6 @@ export default function Home() {
                 condition={_.condition}
                 image={_.image}
                 salePrice={_.salePrice}
-                key={_.id}
               />
             </div>
           ))}

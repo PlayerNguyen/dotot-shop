@@ -7,6 +7,7 @@ const {
   getProductFromId,
   removeProduct,
   updateProduct,
+  getAllProducts,
 } = require("./ProductController");
 const router = express.Router();
 
@@ -57,5 +58,5 @@ router.put(
   updateProduct,
 );
 
-// router.get(`/`, param());
+router.get(`/`, getAllProducts);
 module.exports = router;

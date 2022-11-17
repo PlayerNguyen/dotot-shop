@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "test-server": "cross-env DOTENV_CONFIG_PATH=./server/.env DOTENV_CONFIG_DEBUG=true NODE_ENV=test mocha -r dotenv/config \"./server/**/*.spec.js\" --exit",
-    "start-server": "cross-env-shell NODE_ENV=production PORT=3000 \"cd server && nodemon ./src/index.js\"",
-    "start-client": "cross-env-shell NODE_ENV=production \"cd client && npm run start\"",
+    "start-server": "cross-env-shell NODE_ENV=dev PORT=3000 \"cd server && nodemon ./src/index.js\"",
+    "start-client": "cross-env-shell NODE_ENV=dev \"cd client && npm run start\"",
     "test": "concurrently --raw \"npm:test-*\"",
     "start": "concurrently --raw \"npm:start-*\"",
     "build": "exit 0"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";
@@ -8,6 +8,7 @@ import Credentials from "./components/Credentials/Credentials";
 import NoMatch from "./components/NoMatch/NoMatch";
 import SignIn from "./components/Credentials/SignIn";
 import Navbar from "./components/Navbar/Navbar";
+import AxiosInstance from "./requests/AxiosInstance";
 
 export default function App() {
   return (
