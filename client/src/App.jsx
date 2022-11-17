@@ -11,11 +11,6 @@ import Navbar from "./components/Navbar/Navbar";
 import AxiosInstance from "./requests/AxiosInstance";
 
 export default function App() {
-  useEffect(() => {
-    AxiosInstance.get("/products").then((response) => {
-      console.log(response);
-    });
-  }, []);
   return (
     <div className="drawer bg-base-200">
       <input id="app-drawer" type="checkbox" className="drawer-toggle" />
