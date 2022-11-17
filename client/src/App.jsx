@@ -4,6 +4,10 @@ import { AiOutlineSearch, AiOutlineShoppingCart } from "react-icons/ai";
 import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Footer from "./components/Footer/Footer";
+import SignUp from "./components/Credentials/SignUp";
+import Credentials from "./components/Credentials/Credentials";
+import NoMatch from "./components/NoMatch/NoMatch";
+import SignIn from "./components/Credentials/SignIn";
 
 export default function App() {
   return (
@@ -62,7 +66,14 @@ export default function App() {
 
         {/* Render home */}
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="/users" element={<Credentials />}>
+              <Route path="/users/sign-up" element={<SignUp />} />
+              <Route path="/users/sign-in" element={<SignIn />} />
+            </Route>
+            <Route path="*" element={<NoMatch />} />
+          </Route>
         </Routes>
 
         {/* Footer */}
