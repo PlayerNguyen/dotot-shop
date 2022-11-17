@@ -7,6 +7,17 @@ const KnexDriver = require("../../driver/KnexDriver");
 const Tables = require("../../driver/Table");
 
 /**
+ * @typedef SessionUser
+ * @type {object}
+ * @property {string} id
+ * @property {string} email
+ * @property {string} firstName
+ * @property {string} lastName
+ * @property {string} phone
+ * @property {undefined | "admin" | "moderate"} role
+ */
+
+/**
  * Request authenticate middlewares
  *
  * @param {express.Request} req request object passed from the previous middleware
@@ -33,7 +44,9 @@ async function requestAuthenticate(req, res, next) {
         );
     }
     const token = splittedAuthorized[1];
-
+    if (token === null || token === undefined) {
+      throw new Error(`Token cannot be undefined`);
+    }
     // Validate a token
     const payload = jwt.verify(token, String(process.env.JWT_SECRET_OR_KEY));
     const { id } = payload;
@@ -82,7 +95,7 @@ async function requestAuthenticate(req, res, next) {
 /**
  *
  * @param {express.Request} request the express request from previous middleware
- * @return {Object}
+ * @return {SessionUser}
  */
 function getUserFromAuth(request) {
   return request.sessionUser;

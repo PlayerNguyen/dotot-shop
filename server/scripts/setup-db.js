@@ -3,11 +3,17 @@ const chalk = require("chalk");
 const Tables = require("../driver/Table");
 const driver = require("./../driver/KnexDriver");
 
+// eslint-disable-next-line
+const { Knex } = require("knex");
+/**
+ * @callback CreateTableCallback
+ * @param {Knex.CreateTableBuilder} tableBuilder
+ */
 /**
  * Check whether the table exists and create it
  *
  * @param {*} tableName a table name to create
- * @param {*} callback a callback response after generated
+ * @param {CreateTableCallback} callback a callback response after generated
  */
 async function createTableIfNotExists(tableName, callback) {
   try {
@@ -90,6 +96,14 @@ async function setupDatabase() {
   await createTableIfNotExists(Tables.UserRoles, (table) => {
     table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
     table.enu("Role", [`admin`, `moderate`]);
+  });
+
+  await createTableIfNotExists(Tables.Resources, (table) => {
+    table.string("Id").notNullable().unique().primary();
+    table.string("Name").notNullable();
+    table.string("Path").notNullable();
+    table.string("BlurHash").notNullable();
+    table.string("Author").references(`${Tables.Users}.Id`);
   });
 }
 

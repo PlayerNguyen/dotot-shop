@@ -22,6 +22,8 @@ app.use("/provinces", require("./routes/provinces/ProvincesRouter"));
 app.use("/users", require("./routes/users/UserRouter"));
 app.use("/auth", require("./routes/auth/AuthRouter"));
 app.use("/products", require("./routes/products/ProductRouter"));
+app.use("/resources", require("./routes/resources/ResourceRouter"));
+
 /**
  * Register error catcher level
  */

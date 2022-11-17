@@ -9,5 +9,6 @@ const Tables = {
   Categories: "Categories",
   UserProducts: "UserProducts",
   UserRoles: "UserRoles",
+  Resources: "Resources",
 };
 module.exports = Tables;

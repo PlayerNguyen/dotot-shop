@@ -1,5 +1,13 @@
 import React from "react";
-import { FiMenu } from "react-icons/fi";
+
+import { Link, Route, Routes } from "react-router-dom";
+import Home from "./components/Home/Home";
+import Footer from "./components/Footer/Footer";
+import SignUp from "./components/Credentials/SignUp";
+import Credentials from "./components/Credentials/Credentials";
+import NoMatch from "./components/NoMatch/NoMatch";
+import SignIn from "./components/Credentials/SignIn";
+import Navbar from "./components/Navbar/Navbar";
 
 export default function App() {
   return (
@@ -8,30 +16,24 @@ export default function App() {
 
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <div className="navbar bg-base-100 lg:px-12">
-          {/* Navbar start section */}
-          <div className="flex flex-row lg:hidden">
-            <label htmlFor="app-drawer" className="drawer-button btn btn-ghost">
-              <FiMenu className="text-xl" />
-            </label>
-          </div>
+        <Navbar />
 
-          <div className="flex-1 px-3">
-            <h1 className="text-xl font-bold">dotot.com</h1>
-          </div>
+        {/* Render home */}
+        <Routes>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="/users" element={<Credentials />}>
+              {/* TODO: check whether user is logged in or not, to put current */}
+              <Route />
+              <Route path="/users/sign-up" element={<SignUp />} />
+              <Route path="/users/sign-in" element={<SignIn />} />
+            </Route>
+            <Route path="*" element={<NoMatch />} />
+          </Route>
+        </Routes>
 
-          <div className="hidden lg:block">
-            <div className="menu menu-horizontal p-2 rounded-box">
-              <li>
-                <a>Home</a>
-              </li>
-              <li>
-                <a>Home</a>
-              </li>
-            </div>
-          </div>
-        </div>
-        Content items
+        {/* Footer */}
+        <Footer />
       </div>
       {/* Drawer side */}
       <div className="drawer-side">

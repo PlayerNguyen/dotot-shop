@@ -5,6 +5,7 @@ const { v4: uuid } = require("uuid");
 const KnexDriver = require("../../driver/KnexDriver");
 const Tables = require("../../driver/Table");
 const { isUUID } = require("validator");
+const jwt = require("jsonwebtoken");
 /**
  * Generate a custom user. Using for testing
  *
@@ -69,10 +70,39 @@ async function removeUserFromDatabase(id) {
 
   // remove user
   await KnexDriver.del().from(Tables.Users).where("Id", id);
+
+  console.log(`Deleted user ${id} out of database`);
+}
+
+/**
+ * Create a user and provides access token
+ *
+ * @param {boolean} admin whether to an admin
+ */
+async function createUserWithAccessToken(admin) {
+  try {
+    const responseUser = await createUserIntoDatabase(
+      admin === undefined ? true : admin,
+    );
+
+    // Create a json web token
+    const payload = {
+      id: responseUser.id,
+    };
+    const responseToken = jwt.sign(payload, process.env.JWT_SECRET_OR_KEY);
+
+    return {
+      token: responseToken,
+      user: responseUser,
+    };
+  } catch (err) {
+    throw err;
+  }
 }
 
 module.exports = {
   generateDummyUser,
   createUserIntoDatabase,
   removeUserFromDatabase,
+  createUserWithAccessToken,
 };
