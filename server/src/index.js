@@ -1,5 +1,6 @@
 "use strict";
 const app = require("./app");
+const chalk = require("chalk");
 
 /**
  * Listen function
@@ -10,6 +11,7 @@ const app = require("./app");
   );
 
   app.listen(PORT, () => {
-    console.log(`Listening to ${PORT}`);
+    console.log(chalk.bgGreen(`Listening to ${PORT}`));
+    console.log(`🛬🛬🛬🛬🛬🛬`);
   });
 })();
