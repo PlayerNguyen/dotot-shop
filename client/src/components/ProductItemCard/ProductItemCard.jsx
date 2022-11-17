@@ -65,26 +65,36 @@ export default function ProductItemCard({
           </div>
         </div>
 
-        <div className="flex flex-row sm:flex-col sm:px-2 p-3 gap-2">
-          <span
+        <div className="flex flex-row sm:flex-col sm:px-2 p-3 gap-2 items-center">
+          <div
             className={`
           text-zinc-400 text-xl hover:bg-zinc-200 rounded-full p-2
-          ease-in-out transition-colors hover:text-black`}
+          ease-in-out transition-colors hover:text-black flex-1 flex flex-row
+          items-center gap-4
+          `}
             onClick={() => handleClickLoveButton()}
           >
-            {isLoved ? (
-              <AiFillHeart className={`text-pink-500`} />
-            ) : (
-              <AiOutlineHeart />
-            )}
-          </span>
-          <span
+            <span>
+              {isLoved ? (
+                <AiFillHeart className={`text-pink-500`} />
+              ) : (
+                <AiOutlineHeart />
+              )}
+            </span>
+            <span className={isLoved ? `text-pink-500 sm:hidden` : `sm:hidden`}>
+              Like
+            </span>
+          </div>
+          <div
             className={`
           text-zinc-400 text-xl hover:bg-zinc-200 rounded-full p-2
-          ease-in-out transition-colors hover:text-black`}
+          ease-in-out transition-colors hover:text-black flex-1 flex flex-row items-center gap-4`}
           >
-            <AiOutlineShoppingCart />
-          </span>
+            <span>
+              <AiOutlineShoppingCart />
+            </span>
+            <span className="sm:hidden">Add to cart</span>
+          </div>
         </div>
       </div>
     </div>
