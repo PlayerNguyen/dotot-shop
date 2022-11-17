@@ -1,8 +1,6 @@
 "use strict";
 const app = require("./app");
 const chalk = require("chalk");
-const cors = require("cors");
-app.use(cors());
 
 /**
  * Listen function

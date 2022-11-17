@@ -5,7 +5,9 @@ const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
+const cors = require("cors");
 
+app.use(cors());
 app.use(bodyParser.text());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
