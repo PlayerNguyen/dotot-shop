@@ -279,7 +279,12 @@ async function updateProduct(req, res, next) {
  * @param {express.NextFunction} next the next function
  */
 async function getAllProducts(req, res, next) {
-  // const { limit, page, search } = req.params;
+  const { limit, page, search } = req.params;
+  const response = await KnexDriver.select("*")
+    .from(Tables.Products)
+    .limit(limit === undefined ? 10 : Number.parseInt(limit));
+
+  res.status(200).json(createSuccessResponse(response));
 }
 
 module.exports = {
