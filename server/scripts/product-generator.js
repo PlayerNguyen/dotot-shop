@@ -18,7 +18,7 @@ const chalk = require("chalk");
       Name: faker.commerce.productName(),
       Price: faker.commerce.price(),
       Description: faker.commerce.productDescription(),
-      CreatedAt: Date.now(),
+      CreatedAt: faker.date.past(2).getTime(),
     };
 
     // eslint-disable-next-line
