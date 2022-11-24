@@ -9,6 +9,8 @@ import NoMatch from "./components/NoMatch/NoMatch";
 import SignIn from "./components/Credentials/SignIn";
 import Navbar from "./components/Navbar/Navbar";
 import "react-toastify/dist/ReactToastify.css";
+import CredentialSelection from "./components/Credentials/CredentialSelection";
+import SignOut from "./components/Credentials/SignOut";
 
 export default function App() {
   return (
@@ -25,9 +27,10 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="/users" element={<Credentials />}>
               {/* TODO: check whether user is logged in or not, to put current */}
-              <Route />
+              <Route index element={<CredentialSelection />} />
               <Route path="/users/sign-up" element={<SignUp />} />
               <Route path="/users/sign-in" element={<SignIn />} />
+              <Route path="/users/sign-out" element={<SignOut />} />
             </Route>
             <Route path="*" element={<NoMatch />} />
           </Route>
