@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-
+import { ToastContainer } from "react-toastify";
 import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Footer from "./components/Footer/Footer";
@@ -8,7 +8,7 @@ import Credentials from "./components/Credentials/Credentials";
 import NoMatch from "./components/NoMatch/NoMatch";
 import SignIn from "./components/Credentials/SignIn";
 import Navbar from "./components/Navbar/Navbar";
-import AxiosInstance from "./requests/AxiosInstance";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
@@ -48,6 +48,8 @@ export default function App() {
           </li>
         </ul>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
