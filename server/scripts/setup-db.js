@@ -69,6 +69,8 @@ async function setupDatabase() {
     // Statistic
     table.integer("Views").defaultTo(0);
     table.integer("Likes").defaultTo(0);
+    // Order
+    table.bigInteger("CreatedAt").notNullable();
   });
 
   await createTableIfNotExists(Tables.Categories, (table) => {
