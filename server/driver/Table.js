@@ -6,6 +6,7 @@ const Tables = {
   Provinces: "Provinces",
   Products: "Products",
   ProductCategory: "ProductCategory",
+  SaleProducts: "SaleProducts",
   Categories: "Categories",
   UserProducts: "UserProducts",
   UserRoles: "UserRoles",

@@ -19,6 +19,9 @@ const chalk = require("chalk");
       Price: faker.commerce.price(),
       Description: faker.commerce.productDescription(),
       CreatedAt: faker.date.past(2).getTime(),
+      Condition: ["New 99%", "97%", "95%", "New"][
+        Math.floor(Math.random() * 4)
+      ],
     };
 
     // eslint-disable-next-line

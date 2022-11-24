@@ -71,6 +71,16 @@ async function setupDatabase() {
     table.integer("Likes").defaultTo(0);
     // Order
     table.bigInteger("CreatedAt").notNullable();
+    table.string("Condition").notNullable();
+  });
+
+  await createTableIfNotExists(Tables.SaleProducts, (table) => {
+    table
+      .string("ProductId")
+      .primary()
+      .unique()
+      .references(`${Tables.Products}.Id`);
+    table.float("SalePrice");
   });
 
   await createTableIfNotExists(Tables.Categories, (table) => {
