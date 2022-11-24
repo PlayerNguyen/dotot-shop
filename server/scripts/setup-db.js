@@ -70,7 +70,7 @@ async function setupDatabase() {
     table.integer("Views").defaultTo(0);
     table.integer("Likes").defaultTo(0);
     // Order
-    table.date("CreatedAt").notNullable();
+    table.bigInteger("CreatedAt").notNullable();
   });
 
   await createTableIfNotExists(Tables.Categories, (table) => {
