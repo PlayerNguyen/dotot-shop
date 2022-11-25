@@ -153,6 +153,12 @@ async function getProductFromId(req, res, next) {
       },
     };
 
+    // Increase product view
+    // eslint-disable-next-line
+    await KnexDriver(Tables.Products)
+      .update({ Views: product.Views + 1 })
+      .where({ Id: product.Id });
+    // Response to user
     res.json(createSuccessResponse(responseUser));
   } catch (e) {
     next(e);
