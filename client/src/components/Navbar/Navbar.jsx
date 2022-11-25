@@ -57,13 +57,13 @@ export default function Navbar() {
             </li>
           ) : (
             <li>
-              <div class="dropdown dropdown-end dropdown-hover block">
+              <div className="dropdown dropdown-end dropdown-hover block">
                 <label tabIndex={0}>
                   <AiOutlineUser />
                 </label>
                 <ul
                   tabIndex={0}
-                  class="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4 text-sm"
+                  className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4 text-sm"
                 >
                   <li className="block">
                     <a>

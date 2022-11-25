@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CredentialSelection from "./components/Credentials/CredentialSelection";
 import SignOut from "./components/Credentials/SignOut";
 import Product from "./components/Product/Product";
+import ProductView from "./components/Product/ProductView";
 
 export default function App() {
   return (
@@ -34,7 +35,7 @@ export default function App() {
               <Route path="/users/sign-out" element={<SignOut />} />
             </Route>
             <Route path="/products" element={<Product />}>
-              <Route path=":productId" element={<Product />} />
+              <Route path=":productId" element={<ProductView />} />
             </Route>
             <Route path="*" element={<NoMatch />} />
           </Route>

@@ -95,6 +95,10 @@ async function getProductFromId(req, res, next) {
       `${Tables.Users}.Id as userId`,
       `${Tables.Users}.FirstName`,
       `${Tables.Users}.LastName`,
+      `${Tables.Categories}.Id as categoryId`,
+      `${Tables.Categories}.Name as categoryName`,
+      `${Tables.Categories}.Description as categoryDescription`,
+      `${Tables.Categories}.Slug as categorySlug`,
     )
       .from(Tables.Products)
       .where(`${Tables.Products}.Id`, productId)
@@ -109,6 +113,18 @@ async function getProductFromId(req, res, next) {
         `${Tables.UserProducts}.UserId`,
         "=",
         `${Tables.Users}.Id`,
+      )
+      .join(
+        Tables.ProductCategory,
+        `${Tables.ProductCategory}.ProductId`,
+        "=",
+        `${Tables.Products}.Id`,
+      )
+      .join(
+        Tables.Categories,
+        `${Tables.Categories}.Id`,
+        "=",
+        `${Tables.ProductCategory}.CategoryId`,
       )
       .first();
 
@@ -128,6 +144,12 @@ async function getProductFromId(req, res, next) {
         id: product.userId,
         firstName: product.FirstName,
         lastName: product.LastName,
+      },
+      category: {
+        id: product.categoryId,
+        name: product.categoryName,
+        slug: product.categorySlug,
+        description: product.categoryDescription,
       },
     };
 
@@ -295,6 +317,7 @@ async function getAllProducts(req, res, next) {
     .from(`${Tables.Products} as p`)
     .limit(limit === undefined ? 10 : Number.parseInt(limit))
     .offset(page === undefined ? 0 : Number.parseInt(limit * page))
+    .orderBy(sortedBy ? sortedBy : "createdAt")
     .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
   res.status(200).json(createSuccessResponse(response));

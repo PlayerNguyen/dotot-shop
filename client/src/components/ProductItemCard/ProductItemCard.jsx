@@ -4,6 +4,7 @@ import {
   AiOutlineHeart,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductItemCard({
   name,
@@ -19,13 +20,15 @@ export default function ProductItemCard({
     setIsLoved((loved) => !loved);
   };
 
+  const navigate = useNavigate();
+
   return (
     <div
       className={`
       productCard-wrapper block bg-zinc-100 rounded-xl
       cursor-pointer border border-zinc-400 hover:shadow-lg 
       transition-shadow ease-in-out duration-100`}
-      // to={`/products/${id}`}
+      onClick={() => navigate(`/products/${id}`)}
     >
       {/* Header */}
       <div className="productCard-header">
