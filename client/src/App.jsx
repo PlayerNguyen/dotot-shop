@@ -9,6 +9,14 @@ import NoMatch from "./components/NoMatch/NoMatch";
 import SignIn from "./components/Credentials/SignIn";
 import Navbar from "./components/Navbar/Navbar";
 import "react-toastify/dist/ReactToastify.css";
+import CredentialSelection from "./components/Credentials/CredentialSelection";
+import SignOut from "./components/Credentials/SignOut";
+import Product from "./components/Product/Product";
+import ProductView from "./components/Product/ProductView";
+import Profile from "./components/Profile/Profile";
+import ProfileGeneral from "./components/Profile/ProfileGeneral";
+import RequestSignedIn from "./components/RequestSignedIn/RequestSignedIn";
+import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 
 export default function App() {
   return (
@@ -25,9 +33,18 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="/users" element={<Credentials />}>
               {/* TODO: check whether user is logged in or not, to put current */}
-              <Route />
+              <Route index element={<CredentialSelection />} />
               <Route path="/users/sign-up" element={<SignUp />} />
               <Route path="/users/sign-in" element={<SignIn />} />
+              <Route path="/users/sign-out" element={<SignOut />} />
+            </Route>
+            <Route path="/products" element={<Product />}>
+              <Route path=":productId" element={<ProductView />} />
+            </Route>
+            <Route element={<RequestSignedIn />}>
+              <Route path="/profile" element={<Profile />}>
+                <Route path="/profile/general" element={<ProfileGeneral />} />
+              </Route>
             </Route>
             <Route path="*" element={<NoMatch />} />
           </Route>
@@ -41,10 +58,21 @@ export default function App() {
         <label htmlFor="app-drawer" className="drawer-overlay"></label>
         <ul className="menu p-4 overflow-y-auto w-80 bg-base-100">
           <li>
-            <a>Sidebar Item 1</a>
+            <Link to="/" className="">
+              <i>
+                <AiFillHome />
+              </i>
+              <span>Home</span>
+            </Link>
           </li>
+
           <li>
-            <a>Sidebar Item 2</a>
+            <Link to="/profile">
+              <i>
+                <AiOutlineUser />
+              </i>
+              <span>Users</span>
+            </Link>
           </li>
         </ul>
       </div>

@@ -9,6 +9,11 @@ const Tables = require("../driver/Table");
 const API_URL = "https://provinces.open-api.vn/api/?depth=3";
 const SAMPLE_FILE_NAME = path.resolve(".", "..", "samples", "provinces.json");
 
+/**
+ * Fetch all provinces from api
+ * @param {*} overwrite whether overwrite a false file or not
+ * @return a resolve of fetch
+ */
 async function fetchProvinces(overwrite) {
   console.log(chalk.magenta(`Checking before fetch provinces.json file...`));
 

@@ -1,86 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
 import Hero from "../Hero/Hero";
 import ProductItemCard from "../ProductItemCard/ProductItemCard";
 
 export default function Home() {
-  const [products, setProducts] = useState([
-    {
-      name: "Modern Chair Desk",
-      price: "38.25",
-      id: "123",
-      condition: "99%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Giant Vertux Lamp",
-      price: "129.25",
-      id: "39x9",
-      condition: "99%",
-      salePrice: "110.25",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Old Workbench Desk",
-      price: "39.25",
-      id: "k9ud90-a98djd9-kaid0x",
-      condition: "97%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Modern Chair Desk",
-      price: "38.25",
-      id: "123",
-      condition: "99%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Giant Vertux Lamp",
-      price: "129.25",
-      id: "39x9",
-      condition: "99%",
-      salePrice: "110.25",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Old Workbench Desk",
-      price: "39.25",
-      id: "k9ud90-a98djd9-kaid0x",
-      condition: "97%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Modern Chair Desk",
-      price: "38.25",
-      id: "123",
-      condition: "99%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Giant Vertux Lamp",
-      price: "129.25",
-      id: "39x9",
-      condition: "99%",
-      salePrice: "110.25",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-    {
-      name: "Old Workbench Desk",
-      price: "39.25",
-      id: "k9ud90-a98djd9-kaid0x",
-      condition: "97%",
-      image: `https://dummyimage.com/600x400/000/fff`,
-    },
-  ]);
+  const [products, setProducts] = useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const controller = new AbortController();
-    ProductRequest.fetchAllProducts(controller).then((response) => {
-      console.log(response);
-    });
+    ProductRequest.fetchAllProducts(controller)
+      .then((response) => {
+        const { data } = ResponseInterceptor.filterSuccess(response);
+        setProducts(data);
+      })
+      .finally(() => setLoading(false));
 
     return () => {
-      // controller.abort();
+      controller.abort();
     };
   }, []);
 
@@ -101,12 +41,12 @@ export default function Home() {
               key={_i}
             >
               <ProductItemCard
-                name={_.name}
-                price={_.price}
-                id={_.id}
-                condition={_.condition}
+                name={_.Name}
+                price={_.Price}
+                id={_.Id}
+                condition={_.Condition}
                 image={_.image}
-                salePrice={_.salePrice}
+                salePrice={_.SalePrice}
               />
             </div>
           ))}

@@ -23,6 +23,7 @@ export default function SignIn() {
 
       localStorage.setItem(`token`, token);
       toast.success("Successfully sign in");
+      navigate("/");
     });
   };
 

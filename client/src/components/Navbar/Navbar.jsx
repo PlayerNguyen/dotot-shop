@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import {
+  AiFillDelete,
+  AiFillSetting,
   AiOutlineSearch,
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
+import { ImExit } from "react-icons/im";
 import { FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [cartSize, setCartSize] = useState(0);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useState(() => {
+    setSignedIn(localStorage.getItem("token") !== null);
+  }, [localStorage]);
 
   return (
     <div className="navbar bg-base-100 lg:px-12">
@@ -29,23 +37,51 @@ export default function Navbar() {
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
         {/* Search group */}
         <div>
-          <div className="flex flex-row text-xl items-center gap-4">
+          <div className=" input-group">
             <input
               className="input input-bordered input-sm"
               placeholder="Search for keywords"
             />
-            <span>
+            <button className="btn btn-square btn-sm">
               <AiOutlineSearch />
-            </span>
+            </button>
           </div>
         </div>
         {/* Link group */}
         <div className="menu menu-horizontal p-2 rounded-box text-md">
-          <li>
-            <Link to={"/users/"}>
-              <AiOutlineUser />
-            </Link>
-          </li>
+          {!signedIn ? (
+            <li>
+              <Link to={"/users/"}>
+                <AiOutlineUser />
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <div className="dropdown dropdown-end dropdown-hover block">
+                <label tabIndex={0}>
+                  <AiOutlineUser />
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4 text-sm"
+                >
+                  <li className="block">
+                    <Link to="/profile">
+                      <AiFillSetting />
+                      Profile
+                    </Link>
+                  </li>
+                  <li className="block">
+                    <Link to={`/users/sign-out`}>
+                      <ImExit />
+                      Sign out
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          )}
+
           <li>
             <Link to={"/checkout"} className="relative">
               <AiOutlineShoppingCart />

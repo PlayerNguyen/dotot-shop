@@ -12,6 +12,7 @@ const { v4: uuid } = require("uuid");
 const chalk = require("chalk");
 const { getUserFromAuth } = require("./../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("./../../middlewares/AuthMiddleware");
+const { offset } = require("../../../driver/KnexDriver");
 
 /**
  * Create a new product
@@ -94,6 +95,10 @@ async function getProductFromId(req, res, next) {
       `${Tables.Users}.Id as userId`,
       `${Tables.Users}.FirstName`,
       `${Tables.Users}.LastName`,
+      `${Tables.Categories}.Id as categoryId`,
+      `${Tables.Categories}.Name as categoryName`,
+      `${Tables.Categories}.Description as categoryDescription`,
+      `${Tables.Categories}.Slug as categorySlug`,
     )
       .from(Tables.Products)
       .where(`${Tables.Products}.Id`, productId)
@@ -108,6 +113,18 @@ async function getProductFromId(req, res, next) {
         `${Tables.UserProducts}.UserId`,
         "=",
         `${Tables.Users}.Id`,
+      )
+      .join(
+        Tables.ProductCategory,
+        `${Tables.ProductCategory}.ProductId`,
+        "=",
+        `${Tables.Products}.Id`,
+      )
+      .join(
+        Tables.Categories,
+        `${Tables.Categories}.Id`,
+        "=",
+        `${Tables.ProductCategory}.CategoryId`,
       )
       .first();
 
@@ -128,8 +145,20 @@ async function getProductFromId(req, res, next) {
         firstName: product.FirstName,
         lastName: product.LastName,
       },
+      category: {
+        id: product.categoryId,
+        name: product.categoryName,
+        slug: product.categorySlug,
+        description: product.categoryDescription,
+      },
     };
 
+    // Increase product view
+    // eslint-disable-next-line
+    await KnexDriver(Tables.Products)
+      .update({ Views: product.Views + 1 })
+      .where({ Id: product.Id });
+    // Response to user
     res.json(createSuccessResponse(responseUser));
   } catch (e) {
     next(e);
@@ -279,10 +308,23 @@ async function updateProduct(req, res, next) {
  * @param {express.NextFunction} next the next function
  */
 async function getAllProducts(req, res, next) {
-  const { limit, page, search } = req.params;
-  const response = await KnexDriver.select("*")
-    .from(Tables.Products)
-    .limit(limit === undefined ? 10 : Number.parseInt(limit));
+  const { limit, page, search, sortedBy } = req.params;
+  const response = await KnexDriver.select(
+    "p.Id",
+    "p.Name",
+    "p.Price",
+    "p.Likes",
+    "p.Description",
+    "p.Views",
+    "p.CreatedAt",
+    "p.Condition",
+    "sp.SalePrice",
+  )
+    .from(`${Tables.Products} as p`)
+    .limit(limit === undefined ? 10 : Number.parseInt(limit))
+    .offset(page === undefined ? 0 : Number.parseInt(limit * page))
+    .orderBy(sortedBy ? sortedBy : "createdAt")
+    .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
   res.status(200).json(createSuccessResponse(response));
 }

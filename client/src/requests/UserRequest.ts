@@ -17,5 +17,11 @@ function postSignInUser({ phoneOrEmail, password }) {
   });
 }
 
-const UserRequest = { postSignUpUser, postSignInUser };
+function getCurrentProfile(abort?: AbortController) {
+  return AxiosInstance.get(`/users/profile`, {
+    signal: abort ? abort.signal : undefined,
+  });
+}
+
+const UserRequest = { postSignUpUser, postSignInUser, getCurrentProfile };
 export default UserRequest;
