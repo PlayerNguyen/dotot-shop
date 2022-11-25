@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar/Navbar";
 import "react-toastify/dist/ReactToastify.css";
 import CredentialSelection from "./components/Credentials/CredentialSelection";
 import SignOut from "./components/Credentials/SignOut";
+import Product from "./components/Product/Product";
 
 export default function App() {
   return (
@@ -31,6 +32,9 @@ export default function App() {
               <Route path="/users/sign-up" element={<SignUp />} />
               <Route path="/users/sign-in" element={<SignIn />} />
               <Route path="/users/sign-out" element={<SignOut />} />
+            </Route>
+            <Route path="/products" element={<Product />}>
+              <Route path=":productId" element={<Product />} />
             </Route>
             <Route path="*" element={<NoMatch />} />
           </Route>

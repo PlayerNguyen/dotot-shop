@@ -12,6 +12,7 @@ const { v4: uuid } = require("uuid");
 const chalk = require("chalk");
 const { getUserFromAuth } = require("./../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("./../../middlewares/AuthMiddleware");
+const { offset } = require("../../../driver/KnexDriver");
 
 /**
  * Create a new product
@@ -279,10 +280,22 @@ async function updateProduct(req, res, next) {
  * @param {express.NextFunction} next the next function
  */
 async function getAllProducts(req, res, next) {
-  const { limit, page, search } = req.params;
-  const response = await KnexDriver.select("*")
-    .from(Tables.Products)
-    .limit(limit === undefined ? 10 : Number.parseInt(limit));
+  const { limit, page, search, sortedBy } = req.params;
+  const response = await KnexDriver.select(
+    "p.Id",
+    "p.Name",
+    "p.Price",
+    "p.Likes",
+    "p.Description",
+    "p.Views",
+    "p.CreatedAt",
+    "p.Condition",
+    "sp.SalePrice",
+  )
+    .from(`${Tables.Products} as p`)
+    .limit(limit === undefined ? 10 : Number.parseInt(limit))
+    .offset(page === undefined ? 0 : Number.parseInt(limit * page))
+    .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
   res.status(200).json(createSuccessResponse(response));
 }

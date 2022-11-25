@@ -31,8 +31,10 @@ export default function ProductItemCard({
       <div className="productCard-header">
         <div className={`productCard-thumbnail-wrapper `}>
           <img
-            className="bg-transparent w-full h-[180px] md:h-[150px] rounded-t-lg"
-            src={image}
+            className="bg-transparent w-full h-full md:h-[200px] rounded-t-lg"
+            src={
+              image ? image : `${process.env.PRODUCTION_BASE_URL}/default.png`
+            }
             alt={`${id}s product thumbnail`}
           />
         </div>
@@ -54,10 +56,10 @@ export default function ProductItemCard({
 
           <div className="w-full flex flex-row-reverse items-center gap-2">
             <div className="text-xs flex-1 flex flex-col">
-              <span className="line-through ">{salePrice && price}</span>
-              <span>
+              <span className="line-through text-md">{salePrice && price}</span>
+              {/* <span>
                 {salePrice && Number.parseInt((salePrice / price) * 100) + `%`}
-              </span>
+              </span> */}
             </div>
             <p className="font-bold text-black flex-1 text-2xl">
               ${salePrice ? salePrice : price}

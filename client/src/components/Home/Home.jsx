@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
 import Hero from "../Hero/Hero";
 import ProductItemCard from "../ProductItemCard/ProductItemCard";
@@ -76,11 +77,12 @@ export default function Home() {
   useEffect(() => {
     const controller = new AbortController();
     ProductRequest.fetchAllProducts(controller).then((response) => {
-      console.log(response);
+      const { data } = ResponseInterceptor.filterSuccess(response);
+      setProducts(data);
     });
 
     return () => {
-      // controller.abort();
+      controller.abort();
     };
   }, []);
 
@@ -101,12 +103,12 @@ export default function Home() {
               key={_i}
             >
               <ProductItemCard
-                name={_.name}
-                price={_.price}
-                id={_.id}
-                condition={_.condition}
+                name={_.Name}
+                price={_.Price}
+                id={_.Id}
+                condition={_.Condition}
                 image={_.image}
-                salePrice={_.salePrice}
+                salePrice={_.SalePrice}
               />
             </div>
           ))}

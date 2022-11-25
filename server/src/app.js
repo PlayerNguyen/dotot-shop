@@ -26,6 +26,9 @@ app.use("/auth", require("./routes/auth/AuthRouter"));
 app.use("/products", require("./routes/products/ProductRouter"));
 app.use("/resources", require("./routes/resources/ResourceRouter"));
 
+// Static serve
+app.use(express.static("assets"));
+
 /**
  * Register error catcher level
  */
