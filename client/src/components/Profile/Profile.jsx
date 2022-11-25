@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import { FaLocationArrow } from "react-icons/fa";
 import UserRequest from "../../requests/UserRequest";
+import FileUploadModal from "../FileUpload/FileUploadModal";
+import LazyImageLoader from "../LazyImageLoader/LazyImageLoader";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -28,8 +30,8 @@ export default function Profile() {
       to: "/profile/addresses",
     },
   ]);
-
   const [profile, setProfile] = useState(null);
+  const [uploadAvatarVisible, setUploadAvatarVisible] = useState(false);
 
   useEffect(() => {
     const paths = location.pathname.split("/").filter((e) => e !== "");
@@ -40,6 +42,7 @@ export default function Profile() {
     const abortController = new AbortController();
     UserRequest.getCurrentProfile(abortController).then((response) => {
       const { data } = ResponseInterceptor.filterSuccess(response);
+      console.log(data.avatar);
       setProfile(data);
     });
 
@@ -49,15 +52,26 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="profile-wrapper bg-base-300 sm:px-3">
-      <div className="profile-content bg-base-100 sm:mx-64 sm:px-12 py-6 px-6 flex flex-col gap-12">
+    <div className="profile-wrapper bg-base-300 sm:px-3 sm:py-6">
+      <div className="profile-content bg-base-100 sm:mx-64 sm:px-12 py-6 px-6 flex flex-col gap-6">
         {/* Information block */}
-        <div className="flex flex-row gap-12 items-center">
+        <div className="flex flex-row gap-12 items-center sm:mx-12">
           <div className="sm:w-1/6 w-2/6">
-            <img
-              src={`${process.env.PRODUCTION_BASE_URL}/default.png`}
+            {profile && (
+              <LazyImageLoader
+                src={`${process.env.PRODUCTION_BASE_URL}${
+                  profile && profile.avatar.url
+                }`}
+                blurHash={profile && profile.avatar.blurHash}
+                className="rounded-full"
+              />
+            )}
+            {/* <img
+              src={`${process.env.PRODUCTION_BASE_URL}${
+                profile && profile.avatar.url
+              }`}
               className={`rounded-full`}
-            />
+            /> */}
           </div>
 
           <div className="flex flex-col gap-3">
@@ -117,6 +131,9 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Upload modal */}
+      <FileUploadModal />
     </div>
   );
 }

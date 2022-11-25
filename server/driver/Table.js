@@ -11,5 +11,6 @@ const Tables = {
   UserProducts: "UserProducts",
   UserRoles: "UserRoles",
   Resources: "Resources",
+  UserAvatars: "UserAvatars",
 };
 module.exports = Tables;

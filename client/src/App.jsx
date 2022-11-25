@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Link, Route, Routes } from "react-router-dom";
 import Home from "./components/Home/Home";

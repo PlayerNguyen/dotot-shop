@@ -11,7 +11,13 @@ const {
   createSuccessResponse,
 } = require("../../utils/ResponseFactory");
 const { getUserFromAuth } = require("../../middlewares/AuthMiddleware");
-
+const {
+  convertToPng,
+  generateBlurHash,
+} = require("../../utils/ImageCompressUtil");
+const fs = require("fs");
+const { getStaticDirectory } = require("../../Static");
+const path = require("path");
 /**
  * Create a new user
  *
@@ -111,9 +117,83 @@ async function getUserProfile(req, res, next) {
   const user = getUserFromAuth(req);
   res.json(createSuccessResponse(user));
 }
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function updateUserAvatar(req, res, next) {
+  try {
+    const user = getUserFromAuth(req);
+    const file = req.file;
+    const { fromX, fromY, percentX, percentY } = req.body;
+
+    if (!(fromX && fromY && percentX && percentY)) {
+      return res.status(409).json(createErrorResponse("Invalid crop fields"));
+    }
+
+    // console.log(file, fromX, fromY, percentX, percentY);
+    const sharpPngObject = convertToPng(file.buffer);
+    const { width, height } = await sharpPngObject.metadata();
+
+    const pngBuffer = await sharpPngObject
+      .extract({
+        left: Number.parseFloat(fromX),
+        top: Number.parseFloat(fromY),
+        width: width * (Number.parseFloat(percentX) / 100),
+        height: height * (Number.parseFloat(percentY) / 100),
+      })
+      .toBuffer();
+
+    // Generate a blur hash
+    const _blurHash = await generateBlurHash(pngBuffer);
+
+    // Insert resource object
+    const resourceId = uuid();
+    const resourcePath = path.resolve(getStaticDirectory(), resourceId);
+    const resourceObject = {
+      Id: resourceId,
+      Name: file.originalname,
+      Path: resourcePath,
+      BlurHash: _blurHash,
+      Author: user.id,
+    };
+
+    // Write a file into system
+    fs.writeFileSync(resourcePath, pngBuffer);
+
+    // eslint-disable-next-line
+    await KnexDriver(Tables.Resources).insert(resourceObject);
+
+    // Using the current avatar
+    const selectFirstUserId = await KnexDriver.select("*")
+      .from(Tables.UserAvatars)
+      .where({ UserId: user.id })
+      .first();
+    if (!selectFirstUserId) {
+      // Create new relationship
+      await KnexDriver.insert({ ResourceId: resourceId, UserId: user.id }).into(
+        Tables.UserAvatars,
+      );
+    } else {
+      // Delete old avatar resource?
+
+      // Update the current relation
+      await KnexDriver.update({ ResourceId: resourceId })
+        .from(Tables.UserAvatars)
+        .where({ UserId: user.id });
+    }
+
+    res.json(createSuccessResponse());
+  } catch (err) {
+    next(err);
+  }
+}
 
 module.exports = {
   createUser,
   getUserById,
   getUserProfile,
+  updateUserAvatar,
 };

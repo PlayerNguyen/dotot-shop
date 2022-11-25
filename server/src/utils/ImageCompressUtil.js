@@ -14,8 +14,8 @@ function convertToPng(buffer) {
     sharp(buffer)
       // Load as png stream
       .png({
-        quality: 1,
-        compressionLevel: 9,
+        quality: 50,
+        compressionLevel: 8,
         effort: 1,
       })
   );

@@ -58,14 +58,30 @@ async function requestAuthenticate(req, res, next) {
       `${Tables.Users}.LastName`,
       `${Tables.Users}.Phone`,
       `${Tables.UserRoles}.Role`,
+
+      `${Tables.Resources}.Id as ResourceId`,
+      `${Tables.Resources}.Name as ResourceName`,
+      `${Tables.Resources}.BlurHash as ResourceBlurHash`,
     ])
       .from(Tables.Users)
-      .where("Id", id)
+      .where(`${Tables.Users}.Id`, id)
       .leftJoin(
         Tables.UserRoles,
         `${Tables.Users}.Id`,
         "=",
         `${Tables.UserRoles}.UserId`,
+      )
+      .join(
+        Tables.UserAvatars,
+        `${Tables.Users}.Id`,
+        "=",
+        `${Tables.UserAvatars}.UserId`,
+      )
+      .join(
+        Tables.Resources,
+        `${Tables.Resources}.Id`,
+        "=",
+        `${Tables.UserAvatars}.ResourceId`,
       )
       .first();
 
@@ -76,7 +92,16 @@ async function requestAuthenticate(req, res, next) {
         .json(createErrorResponse("Invalid user, unauthorized"));
     }
 
-    const { Email, FirstName, LastName, Phone, Role } = responseUser;
+    const {
+      Email,
+      FirstName,
+      LastName,
+      Phone,
+      Role,
+      ResourceId,
+      ResourceName,
+      ResourceBlurHash,
+    } = responseUser;
     req.sessionUser = {
       id,
       email: Email,
@@ -84,6 +109,12 @@ async function requestAuthenticate(req, res, next) {
       lastName: LastName,
       phone: Phone,
       role: Role,
+      avatar: {
+        id: ResourceId,
+        name: ResourceName,
+        blurHash: ResourceBlurHash,
+        url: `/resources/raw/${ResourceId}`,
+      },
     };
 
     next();

@@ -117,6 +117,11 @@ async function setupDatabase() {
     table.string("BlurHash").notNullable();
     table.string("Author").references(`${Tables.Users}.Id`);
   });
+
+  await createTableIfNotExists(Tables.UserAvatars, (table) => {
+    table.string("UserId").references(`${Tables.Users}.Id`);
+    table.string("ResourceId").references(`${Tables.Resources}.Id`);
+  });
 }
 
 (async () => {
