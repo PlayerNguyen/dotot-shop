@@ -37,14 +37,14 @@ export default function Navbar() {
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
         {/* Search group */}
         <div>
-          <div className="flex flex-row text-xl items-center gap-4">
+          <div className=" input-group">
             <input
               className="input input-bordered input-sm"
               placeholder="Search for keywords"
             />
-            <span>
+            <button className="btn btn-square btn-sm">
               <AiOutlineSearch />
-            </span>
+            </button>
           </div>
         </div>
         {/* Link group */}
@@ -66,10 +66,10 @@ export default function Navbar() {
                   className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4 text-sm"
                 >
                   <li className="block">
-                    <a>
+                    <Link to="/profile">
                       <AiFillSetting />
                       Profile
-                    </a>
+                    </Link>
                   </li>
                   <li className="block">
                     <Link to={`/users/sign-out`}>

@@ -1,4 +1,6 @@
 import axios from "axios";
+import { toast } from "react-toastify";
+import { ResponseInterceptor } from "../helpers/ResponseInterceptor";
 
 const AxiosInstance = axios.create({
   baseURL: process.env.PRODUCTION_BASE_URL || "",
@@ -18,5 +20,14 @@ AxiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+AxiosInstance.interceptors.response.use(undefined, function (error) {
+  if (error.response) {
+    const { message } = ResponseInterceptor.filterError(error);
+    toast.error(message);
+  }
+
+  return Promise.reject(error);
+});
 
 export default AxiosInstance;
