@@ -127,22 +127,22 @@ async function updateUserAvatar(req, res, next) {
   try {
     const user = getUserFromAuth(req);
     const file = req.file;
-    const { fromX, fromY, percentX, percentY } = req.body;
+    const { fromX, fromY, width, height } = req.body;
 
-    if (!(fromX && fromY && percentX && percentY)) {
+    if (!(fromX && fromY && width && height)) {
       return res.status(409).json(createErrorResponse("Invalid crop fields"));
     }
 
-    // console.log(file, fromX, fromY, percentX, percentY);
     const sharpPngObject = convertToPng(file.buffer);
-    const { width, height } = await sharpPngObject.metadata();
+    // const { imageWidth, imageHeight } = await sharpPngObject.metadata();
+    console.log(req.body);
 
     const pngBuffer = await sharpPngObject
       .extract({
         left: Number.parseFloat(fromX),
         top: Number.parseFloat(fromY),
-        width: width * (Number.parseFloat(percentX) / 100),
-        height: height * (Number.parseFloat(percentY) / 100),
+        width: Number.parseInt(width),
+        height: Number.parseInt(height),
       })
       .toBuffer();
 
@@ -185,7 +185,13 @@ async function updateUserAvatar(req, res, next) {
         .where({ UserId: user.id });
     }
 
-    res.json(createSuccessResponse());
+    res.json(
+      createSuccessResponse({
+        avatarId: resourceId,
+        avatarBlurHash: _blurHash,
+        avatarUrl: `/resources/raw/${resourceId}`,
+      }),
+    );
   } catch (err) {
     next(err);
   }
