@@ -1,21 +1,33 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Link, Route, Routes } from "react-router-dom";
-import Home from "./components/Home/Home";
-import Footer from "./components/Footer/Footer";
-import SignUp from "./components/Credentials/SignUp";
-import Credentials from "./components/Credentials/Credentials";
-import NoMatch from "./components/NoMatch/NoMatch";
-import SignIn from "./components/Credentials/SignIn";
-import Navbar from "./components/Navbar/Navbar";
+const Home = React.lazy(() => import("./components/Home/Home"));
+const Credentials = React.lazy(() =>
+  import("./components/Credentials/Credentials")
+);
 import "react-toastify/dist/ReactToastify.css";
-import CredentialSelection from "./components/Credentials/CredentialSelection";
-import SignOut from "./components/Credentials/SignOut";
-import Product from "./components/Product/Product";
-import ProductView from "./components/Product/ProductView";
-import Profile from "./components/Profile/Profile";
-import ProfileGeneral from "./components/Profile/ProfileGeneral";
-import RequestSignedIn from "./components/RequestSignedIn/RequestSignedIn";
+const SignUp = React.lazy(() => import("./components/Credentials/SignUp"));
+const SignIn = React.lazy(() => import("./components/Credentials/SignIn"));
+import Navbar from "./components/Navbar/Navbar";
+const SignOut = React.lazy(() => import("./components/Credentials/SignOut"));
+const CredentialSelection = React.lazy(() =>
+  import("./components/Credentials/CredentialSelection")
+);
+
+import NoMatch from "./components/NoMatch/NoMatch";
+import Footer from "./components/Footer/Footer";
+
+const Product = React.lazy(() => import("./components/Product/Product"));
+const ProductView = React.lazy(() =>
+  import("./components/Product/ProductView")
+);
+const Profile = React.lazy(() => import("./components/Profile/Profile"));
+const ProfileGeneral = React.lazy(() =>
+  import("./components/Profile/ProfileGeneral")
+);
+const RequestSignedIn = React.lazy(() =>
+  import("./components/RequestSignedIn/RequestSignedIn")
+);
 import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 
 export default function App() {
@@ -25,25 +37,96 @@ export default function App() {
 
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <Navbar />
+        <Suspense>
+          <Navbar />
+        </Suspense>
 
         {/* Render home */}
         <Routes>
           <Route path="/">
-            <Route index element={<Home />} />
-            <Route path="/users" element={<Credentials />}>
+            <Route
+              index
+              element={
+                <Suspense>
+                  <Home />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <Suspense>
+                  <Credentials />
+                </Suspense>
+              }
+            >
               {/* TODO: check whether user is logged in or not, to put current */}
-              <Route index element={<CredentialSelection />} />
-              <Route path="/users/sign-up" element={<SignUp />} />
-              <Route path="/users/sign-in" element={<SignIn />} />
+              <Route
+                index
+                element={
+                  <Suspense>
+                    <CredentialSelection />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/users/sign-up"
+                element={
+                  <Suspense>
+                    <SignUp />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/users/sign-in"
+                element={
+                  <Suspense>
+                    <SignIn />
+                  </Suspense>
+                }
+              />
               <Route path="/users/sign-out" element={<SignOut />} />
             </Route>
-            <Route path="/products" element={<Product />}>
-              <Route path=":productId" element={<ProductView />} />
+            <Route
+              path="/products"
+              element={
+                <Suspense>
+                  <Product />
+                </Suspense>
+              }
+            >
+              <Route
+                path=":productId"
+                element={
+                  <Suspense>
+                    <ProductView />
+                  </Suspense>
+                }
+              />
             </Route>
-            <Route element={<RequestSignedIn />}>
-              <Route path="/profile" element={<Profile />}>
-                <Route path="/profile/general" element={<ProfileGeneral />} />
+            <Route
+              element={
+                <Suspense>
+                  <RequestSignedIn />
+                </Suspense>
+              }
+            >
+              <Route
+                path="/profile"
+                element={
+                  <Suspense>
+                    <Profile />
+                  </Suspense>
+                }
+              >
+                <Route
+                  path="/profile/general"
+                  element={
+                    <Suspense>
+                      <ProfileGeneral />
+                    </Suspense>
+                  }
+                />
               </Route>
             </Route>
             <Route path="*" element={<NoMatch />} />

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
-import Hero from "../Hero/Hero";
-import ProductItemCard from "../ProductItemCard/ProductItemCard";
+const ProductItemCard = React.lazy(() =>
+  import("../ProductItemCard/ProductItemCard")
+);
+const Hero = React.lazy(() => import("../Hero/Hero"));
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -27,7 +29,9 @@ export default function Home() {
   return (
     <div className="home-wrapper ">
       {/* Hero of the page */}
-      <Hero />
+      <Suspense>
+        <Hero />
+      </Suspense>
       {/* Product showcase ~ New arrivals */}
       <div className="product-wrapper mx-4 px-6 pb-4 rounded-lg">
         <div className="font-bold text-5xl my-8 font-serif text-center">
@@ -40,14 +44,22 @@ export default function Home() {
               className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block"
               key={_i}
             >
-              <ProductItemCard
-                name={_.Name}
-                price={_.Price}
-                id={_.Id}
-                condition={_.Condition}
-                image={_.image}
-                salePrice={_.SalePrice}
-              />
+              <Suspense
+                fallback={
+                  <div className="">
+                    <div></div>
+                  </div>
+                }
+              >
+                <ProductItemCard
+                  name={_.Name}
+                  price={_.Price}
+                  id={_.Id}
+                  condition={_.Condition}
+                  image={_.image}
+                  salePrice={_.SalePrice}
+                />
+              </Suspense>
             </div>
           ))}
         </div>
