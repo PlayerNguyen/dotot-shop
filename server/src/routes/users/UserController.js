@@ -196,10 +196,50 @@ async function updateUserAvatar(req, res, next) {
     next(err);
   }
 }
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function updateUserPassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = getUserFromAuth(req);
+    const currentHashedPassword = await KnexDriver.select("password")
+      .from(Tables.Users)
+      .where({ Id: user.id });
+    // Confirm current password
+    if (!bcrypt.compareSync(currentPassword, currentHashedPassword)) {
+      return res.json(createErrorResponse("The current password is not match"));
+    }
+
+    // The new password is same with the current password
+    if (bcrypt.compareSync(newPassword, currentHashedPassword)) {
+      return res.json(
+        createErrorResponse(
+          "A new password cannot be the same as the current password",
+        ),
+      );
+    }
+
+    // Generate hash for new password
+    const salt = bcrypt.genSaltSync(process.env.BCRYPT_HASH_ROUNDS);
+    const hash = bcrypt.hashSync(newPassword, salt);
+    // Update current password
+    await KnexDriver.update({ password: hash })
+      .from(Tables.Users)
+      .where({ Id: user.id });
+    res.json(createSuccessResponse());
+  } catch (err) {
+    next(err);
+  }
+}
 
 module.exports = {
   createUser,
   getUserById,
   getUserProfile,
   updateUserAvatar,
+  updateUserPassword,
 };

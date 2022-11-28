@@ -35,5 +35,18 @@ function postChangeUserAvatar(formData: FormData) {
   });
 }
 
-const UserRequest = { postSignUpUser, postSignInUser, getCurrentProfile, postChangeUserAvatar };
+function postChangePassword(currentPassword: string, newPassword: string) {
+  return AxiosInstance.post(`/users/change-password`, {
+    currentPassword,
+    newPassword,
+  });
+}
+
+const UserRequest = {
+  postSignUpUser,
+  postSignInUser,
+  getCurrentProfile,
+  postChangeUserAvatar,
+  postChangePassword
+};
 export default UserRequest;

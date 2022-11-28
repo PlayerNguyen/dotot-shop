@@ -70,7 +70,7 @@ export default function Profile() {
 
   return (
     <div className="profile-wrapper bg-base-300 sm:px-3 sm:py-6">
-      <div className="profile-content bg-base-100 sm:mx-64 sm:px-12 py-6 px-6 flex flex-col gap-6">
+      <div className="profile-content bg-base-100 sm:mx-4 sm:rounded-xl sm:px-12 py-6 px-6 md:py-14 flex flex-col gap-6">
         {/* Information block */}
         <div className="flex flex-row gap-4 sm:gap-12 items-center sm:mx-12">
           <div
