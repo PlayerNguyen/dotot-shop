@@ -33,7 +33,7 @@ export default function Home() {
         <Hero />
       </Suspense>
       {/* Product showcase ~ New arrivals */}
-      <div className="product-wrapper mx-4 px-6 pb-4 rounded-lg">
+      <div className="product-wrapper mx-4 px-2 pb-4 rounded-lg">
         <div className="font-bold text-5xl my-8 font-serif text-center">
           New arrivals
         </div>

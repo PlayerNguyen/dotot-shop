@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 export default function ProfileGeneral() {
@@ -8,11 +8,13 @@ export default function ProfileGeneral() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [phone, setPhone] = useState(profile.phone);
+  const [phone, setPhone] = useState(null);
 
-  // useEffect(() => {
-
-  // })
+  useEffect(() => {
+    if (profile) {
+      setPhone(profile.phone);
+    }
+  }, [profile]);
 
   function handleChangePasswordSubmit(e) {
     e.preventDefault();
