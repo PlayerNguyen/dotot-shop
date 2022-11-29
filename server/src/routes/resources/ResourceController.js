@@ -4,7 +4,10 @@ const express = require("express");
 const sharp = require("sharp");
 const fs = require("fs");
 const path = require("path");
-const { createSuccessResponse } = require("../../utils/ResponseFactory");
+const {
+  createSuccessResponse,
+  createErrorResponse,
+} = require("../../utils/ResponseFactory");
 const { v4: uuid } = require("uuid");
 const { hasStaticDirectory, getStaticDirectory } = require("../../Static");
 const {
@@ -135,5 +138,51 @@ async function handleUploadImages(req, res, next) {
     next(err);
   }
 }
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getResourceMetadata(req, res, next) {
+  const { resourceId } = req.params;
+  const response = await KnexDriver.select("*")
+    .from(Tables.Resources)
+    .where({ Id: resourceId })
+    .first();
 
-module.exports = { handleUploadImages };
+  if (!response) {
+    return res
+      .status(404)
+      .json(createErrorResponse(`The resource is not found`));
+  }
+  const { Id, Name, BlurHash, Author } = response;
+  res.json(createSuccessResponse({ Id, Name, BlurHash, Author }));
+}
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getResourceRaw(req, res, next) {
+  const { resourceId } = req.params;
+  const response = await KnexDriver.select("*")
+    .from(Tables.Resources)
+    .where({ Id: resourceId })
+    .first();
+
+  if (!response) {
+    return res
+      .status(404)
+      .json(createErrorResponse(`The resource is not found`));
+  }
+
+  const { Path } = response;
+  const buffer = fs.readFileSync(Path);
+  res.setHeader("content-type", "image/png");
+  res.status(200).send(buffer);
+}
+
+module.exports = { handleUploadImages, getResourceMetadata, getResourceRaw };

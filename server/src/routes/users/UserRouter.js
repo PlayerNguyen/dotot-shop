@@ -1,10 +1,17 @@
 "use strict";
 const express = require("express");
-const { createUser, getUserById, getUserProfile } = require("./UserController");
+const {
+  createUser,
+  getUserById,
+  getUserProfile,
+  updateUserAvatar,
+  updateUserPassword,
+} = require("./UserController");
 // eslint-disable-next-line
 const router = express.Router();
 const { check } = require("express-validator");
 const AuthMiddleware = require("../../middlewares/AuthMiddleware");
+const memoryUploadMiddleware = require("../../utils/MulterHelper");
 
 router.post(
   `/register`,
@@ -22,7 +29,17 @@ router.post(
   createUser,
 );
 
+router.post(
+  "/avatar",
+  AuthMiddleware.requestAuthenticate,
+  memoryUploadMiddleware.single("avatar"),
+  updateUserAvatar,
+);
+
 router.get("/user/:userId", getUserById);
+
 router.get("/profile", AuthMiddleware.requestAuthenticate, getUserProfile);
+
+router.put('/change-password', AuthMiddleware.requestAuthenticate, updateUserPassword);
 
 module.exports = router;

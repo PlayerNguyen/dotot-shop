@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { AiFillSetting, AiOutlineShoppingCart } from "react-icons/ai";
 import { GiTwoCoins } from "react-icons/gi";
 import { Outlet, useLocation } from "react-router-dom";
@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import { FaLocationArrow } from "react-icons/fa";
 import UserRequest from "../../requests/UserRequest";
+// import FileUploadModal from ;
+const FileUploadModal = React.lazy(() =>
+  import("../FileUpload/FileUploadModal")
+);
+const LazyImageLoader = React.lazy(() =>
+  import("../LazyImageLoader/LazyImageLoader")
+);
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -28,8 +35,13 @@ export default function Profile() {
       to: "/profile/addresses",
     },
   ]);
-
   const [profile, setProfile] = useState(null);
+  const [uploadAvatarVisible, setUploadAvatarVisible] = useState(false);
+  const [avatarInformation, setAvatarInformation] = useState({
+    avatarId: null,
+    avatarUrl: null,
+    avatarBlurHash: null,
+  });
 
   useEffect(() => {
     const paths = location.pathname.split("/").filter((e) => e !== "");
@@ -41,6 +53,14 @@ export default function Profile() {
     UserRequest.getCurrentProfile(abortController).then((response) => {
       const { data } = ResponseInterceptor.filterSuccess(response);
       setProfile(data);
+
+      // Split avatar
+      const { blurHash, url, id } = data.avatar;
+      setAvatarInformation({
+        avatarBlurHash: blurHash,
+        avatarUrl: url,
+        avatarId: id,
+      });
     });
 
     return () => {
@@ -49,15 +69,41 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="profile-wrapper bg-base-300 sm:px-3">
-      <div className="profile-content bg-base-100 sm:mx-64 sm:px-12 py-6 px-6 flex flex-col gap-12">
+    <div className="profile-wrapper bg-base-300 sm:px-3 sm:py-6">
+      <div className="profile-content bg-base-100 sm:mx-4 sm:rounded-xl sm:px-12 py-6 px-6 md:py-14 flex flex-col gap-6">
         {/* Information block */}
-        <div className="flex flex-row gap-12 items-center">
-          <div className="sm:w-1/6 w-2/6">
-            <img
-              src={`${process.env.PRODUCTION_BASE_URL}/default.png`}
+        <div className="flex flex-row gap-4 sm:gap-12 items-center sm:mx-12">
+          <div
+            className="sm:w-1/6 w-2/6"
+            onClick={() => setUploadAvatarVisible(true)}
+          >
+            {profile && (
+              <Suspense
+                fallback={
+                  <div className="h-[140px] w-[140px] bg-base-200 animate-pulse rounded-full">
+                    <div></div>
+                  </div>
+                }
+              >
+                <LazyImageLoader
+                  src={`${process.env.PRODUCTION_BASE_URL}${
+                    avatarInformation &&
+                    avatarInformation.avatarUrl &&
+                    avatarInformation.avatarUrl
+                  }`}
+                  blurHash={
+                    avatarInformation && avatarInformation.avatarBlurHash
+                  }
+                  className="rounded-full"
+                />
+              </Suspense>
+            )}
+            {/* <img
+              src={`${process.env.PRODUCTION_BASE_URL}${
+                profile && profile.avatar.url
+              }`}
               className={`rounded-full`}
-            />
+            /> */}
           </div>
 
           <div className="flex flex-col gap-3">
@@ -117,6 +163,23 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Upload modal */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <FileUploadModal
+          visible={uploadAvatarVisible}
+          onCloseClick={() => {
+            setUploadAvatarVisible(false);
+          }}
+          onComplete={(response) => {
+            setUploadAvatarVisible(false);
+
+            const { avatarBlurHash, avatarId, avatarUrl } = response;
+            setAvatarInformation({ avatarBlurHash, avatarId, avatarUrl });
+          }}
+          onCancel={() => setUploadAvatarVisible(false)}
+        />
+      </Suspense>
     </div>
   );
 }

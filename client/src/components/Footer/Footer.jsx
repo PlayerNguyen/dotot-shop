@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { AiFillFacebook, AiFillPhone } from "react-icons/ai";
 
 export default function Footer() {

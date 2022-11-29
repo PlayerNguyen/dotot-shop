@@ -23,5 +23,30 @@ function getCurrentProfile(abort?: AbortController) {
   });
 }
 
-const UserRequest = { postSignUpUser, postSignInUser, getCurrentProfile };
+function postChangeUserAvatar(formData: FormData) {
+  if (!formData) {
+    throw new Error("Form data cannot be undefined");
+  }
+
+  return AxiosInstance(`/users/avatar`, {
+    method: "post",
+    headers: { "Content-Type": "multipart/form-data" },
+    data: formData,
+  });
+}
+
+function postChangePassword(currentPassword: string, newPassword: string) {
+  return AxiosInstance.post(`/users/change-password`, {
+    currentPassword,
+    newPassword,
+  });
+}
+
+const UserRequest = {
+  postSignUpUser,
+  postSignInUser,
+  getCurrentProfile,
+  postChangeUserAvatar,
+  postChangePassword
+};
 export default UserRequest;
