@@ -39,29 +39,30 @@ export default function Home() {
         </div>
 
         <div className="product-items block">
-          {products.map((_, _i) => (
-            <div
-              className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block"
-              key={_i}
-            >
-              <Suspense
-                fallback={
-                  <div className="">
-                    <div></div>
-                  </div>
-                }
+          {products &&
+            products.map((_, _i) => (
+              <div
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 px-4 py-4 inline-block"
+                key={_i}
               >
-                <ProductItemCard
-                  name={_.Name}
-                  price={_.Price}
-                  id={_.Id}
-                  condition={_.Condition}
-                  image={_.image}
-                  salePrice={_.SalePrice}
-                />
-              </Suspense>
-            </div>
-          ))}
+                <Suspense
+                  fallback={
+                    <div className="">
+                      <div></div>
+                    </div>
+                  }
+                >
+                  <ProductItemCard
+                    name={_.Name}
+                    price={_.Price}
+                    id={_.Id}
+                    condition={_.Condition}
+                    image={_.image}
+                    salePrice={_.SalePrice}
+                  />
+                </Suspense>
+              </div>
+            ))}
         </div>
       </div>
     </div>
