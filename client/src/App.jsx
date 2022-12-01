@@ -28,7 +28,9 @@ const ProfileGeneral = React.lazy(() =>
 const RequestSignedIn = React.lazy(() =>
   import("./components/RequestSignedIn/RequestSignedIn")
 );
+
 import { AiFillHome, AiOutlineUser } from "react-icons/ai";
+const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 
 export default function App() {
   return (
@@ -129,6 +131,14 @@ export default function App() {
                 />
               </Route>
             </Route>
+            <Route
+              path="/checkout"
+              element={
+                <Suspense>
+                  <Checkout />
+                </Suspense>
+              }
+            ></Route>
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
