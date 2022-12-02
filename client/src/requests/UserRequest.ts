@@ -42,11 +42,16 @@ function postChangePassword(currentPassword: string, newPassword: string) {
   });
 }
 
+function getUserAddressList() {
+  return AxiosInstance.get(`/users/addresses`);
+}
+
 const UserRequest = {
   postSignUpUser,
   postSignInUser,
   getCurrentProfile,
   postChangeUserAvatar,
-  postChangePassword
+  postChangePassword,
+  getUserAddressList,
 };
 export default UserRequest;

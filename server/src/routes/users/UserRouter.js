@@ -6,6 +6,7 @@ const {
   getUserProfile,
   updateUserAvatar,
   updateUserPassword,
+  getUserAddresses,
 } = require("./UserController");
 // eslint-disable-next-line
 const router = express.Router();
@@ -40,6 +41,11 @@ router.get("/user/:userId", getUserById);
 
 router.get("/profile", AuthMiddleware.requestAuthenticate, getUserProfile);
 
-router.put('/change-password', AuthMiddleware.requestAuthenticate, updateUserPassword);
+router.put(
+  "/change-password",
+  AuthMiddleware.requestAuthenticate,
+  updateUserPassword,
+);
 
+router.get("/addresses/", AuthMiddleware.requestAuthenticate, getUserAddresses);
 module.exports = router;

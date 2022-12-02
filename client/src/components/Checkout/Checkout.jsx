@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import CheckoutItem from "./CheckoutItem";
+import { AiFillPlusCircle } from "react-icons/ai";
+import AddressManagerDialog from "../AddressManagerDialog/AddressManagerDialog";
 
 export default function Checkout() {
   const [items, setItems] = useState(["", "", ""]);
-  const [purchaseLoading, setPurchaseLoading] = useState(false)
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+  const [paymentType, setPaymentType] = useState(1);
 
   return (
     <div className="checkOut-wrapper">
@@ -22,6 +25,66 @@ export default function Checkout() {
             items.map((item, _index) => {
               return <CheckoutItem />;
             })}
+        </div>
+        {/* Payment type */}
+        <div className="payment-type-selection">
+          <div className="text-xl font-bold">Payment type</div>
+          <div className="w-full sm:w-1/2 mx-auto">
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <input
+                  type="radio"
+                  name="radio-10"
+                  className="radio checked:bg-primary"
+                  checked={paymentType === 1}
+                  onChange={(e) => {
+                    setPaymentType(1);
+                  }}
+                />
+                <span className="label-text">Cash on Delivery</span>
+              </label>
+            </div>
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <input
+                  type="radio"
+                  name="radio-10"
+                  className="radio checked:bg-primary"
+                  onChange={() => {
+                    setPaymentType(2);
+                  }}
+                  checked={paymentType === 2}
+                />
+                <span className="label-text">Payment via MoMo Service</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        {/* Address */}
+        <div className="address">
+          <div className="text-xl font-bold">Address</div>
+          <div className="w-full sm:w-1/2 mx-auto">
+            <div className="form-control bg-zinc-50 px-4 rounded-xl">
+              <label className="label cursor-pointer">
+                <input
+                  type="radio"
+                  name="radio-10"
+                  className="radio checked:bg-primary"
+                />
+                <div>
+                  <b>Address no 1</b>
+                  <div>address</div>
+                  <span>+84 12345678</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Add more address */}
+          <button className="btn btn-ghost w-full">
+            <AiFillPlusCircle className="mr-6" />
+            <span>Add address</span>
+          </button>
         </div>
         <hr />
         {/* Footer */}
@@ -58,6 +121,7 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      <AddressManagerDialog visible={true} />
     </div>
   );
 }

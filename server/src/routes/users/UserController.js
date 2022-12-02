@@ -236,10 +236,29 @@ async function updateUserPassword(req, res, next) {
   }
 }
 
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getUserAddresses(req, res, next) {
+  try {
+    const userSession = getUserFromAuth(req);
+    const addressesList = await KnexDriver.select("*")
+      .from(Tables.UserAddresses)
+      .where({ UserId: userSession.id });
+
+    res.json(createSuccessResponse(addressesList));
+  } catch (err) {
+    next(err);
+  }
+}
 module.exports = {
   createUser,
   getUserById,
   getUserProfile,
   updateUserAvatar,
   updateUserPassword,
+  getUserAddresses,
 };
