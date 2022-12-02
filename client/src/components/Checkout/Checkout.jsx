@@ -4,6 +4,8 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import AddressManagerDialog from "../AddressManagerDialog/AddressManagerDialog";
 import UserRequest from "../../requests/UserRequest";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
+import { useSelector, useDispatch } from "react-redux";
+import { removeCartItem } from "../../slices/CartSlice";
 
 export default function Checkout() {
   const [items, setItems] = useState(["", "", ""]);
@@ -13,6 +15,14 @@ export default function Checkout() {
   const [addressVisible, setAddressVisible] = useState(false);
   const [addressList, setAddressList] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState();
+  const dispatch = useDispatch();
+
+  const cartItems = useSelector((state) => state.cart.items);
+  useEffect(() => {
+    if (cartItems) {
+      setItems(cartItems);
+    }
+  }, [cartItems]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -43,6 +53,10 @@ export default function Checkout() {
     setSelectedAddress(index);
   };
 
+  const handleRemoveCartItem = (itemId) => {
+    dispatch(removeCartItem(itemId));
+  };
+
   return (
     <div className="checkOut-wrapper">
       {/* Checkout container */}
@@ -58,7 +72,9 @@ export default function Checkout() {
           {/* List of items */}
           {items &&
             items.map((item, _index) => {
-              return <CheckoutItem />;
+              return (
+                <CheckoutItem itemId={item} onRemove={handleRemoveCartItem} />
+              );
             })}
         </div>
         {/* Payment type */}
