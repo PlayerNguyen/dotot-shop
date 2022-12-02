@@ -1,12 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CheckoutItem from "./CheckoutItem";
 import { AiFillPlusCircle } from "react-icons/ai";
 import AddressManagerDialog from "../AddressManagerDialog/AddressManagerDialog";
+import UserRequest from "../../requests/UserRequest";
+import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 
 export default function Checkout() {
   const [items, setItems] = useState(["", "", ""]);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [paymentType, setPaymentType] = useState(1);
+
+  const [addressVisible, setAddressVisible] = useState(false);
+  const [addressList, setAddressList] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState();
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    UserRequest.getUserAddressList().then((response) => {
+      const { data } = ResponseInterceptor.filterSuccess(response);
+      setAddressList(data);
+      setSelectedAddress(0);
+    });
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  const handleAddressUpdate = (addresses) => {
+    setAddressList(addresses);
+  };
+
+  const handleCloseAddressManager = () => {
+    setAddressVisible(false);
+  };
+
+  const handleOpenAddressManager = () => {
+    setAddressVisible(true);
+  };
+
+  const handleChangeAddress = (index) => {
+    setSelectedAddress(index);
+  };
 
   return (
     <div className="checkOut-wrapper">
@@ -34,7 +69,7 @@ export default function Checkout() {
               <label className="label cursor-pointer">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="payment-cod"
                   className="radio checked:bg-primary"
                   checked={paymentType === 1}
                   onChange={(e) => {
@@ -48,7 +83,7 @@ export default function Checkout() {
               <label className="label cursor-pointer">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="payment-momo"
                   className="radio checked:bg-primary"
                   onChange={() => {
                     setPaymentType(2);
@@ -64,24 +99,52 @@ export default function Checkout() {
         <div className="address">
           <div className="text-xl font-bold">Address</div>
           <div className="w-full sm:w-1/2 mx-auto">
-            <div className="form-control bg-zinc-50 px-4 rounded-xl">
-              <label className="label cursor-pointer">
-                <input
-                  type="radio"
-                  name="radio-10"
-                  className="radio checked:bg-primary"
-                />
-                <div>
-                  <b>Address no 1</b>
-                  <div>address</div>
-                  <span>+84 12345678</span>
-                </div>
-              </label>
-            </div>
+            {addressList &&
+              addressList.map((address, _index) => {
+                {
+                  /* console.log(address); */
+                }
+                const {
+                  Id,
+                  ContactPhone,
+                  ProvinceName,
+                  DistrictName,
+                  WardName,
+                  StreetName,
+                } = address;
+                return (
+                  <div
+                    className="form-control bg-zinc-50 px-4 rounded-xl mb-2 text-sm"
+                    key={Id}
+                  >
+                    <label className="label cursor-pointer">
+                      <input
+                        type="radio"
+                        name={`address-${Id}`}
+                        className="radio checked:bg-primary mr-4"
+                        checked={selectedAddress === _index}
+                        onChange={() => {
+                          handleChangeAddress(_index);
+                        }}
+                      />
+                      <div className="w-full">
+                        <b>{StreetName}</b>
+                        <div>
+                          {WardName}, {DistrictName}, {ProvinceName}
+                        </div>
+                        <span>{ContactPhone}</span>
+                      </div>
+                    </label>
+                  </div>
+                );
+              })}
           </div>
 
           {/* Add more address */}
-          <button className="btn btn-ghost w-full">
+          <button
+            className="btn btn-ghost w-full"
+            onClick={handleOpenAddressManager}
+          >
             <AiFillPlusCircle className="mr-6" />
             <span>Add address</span>
           </button>
@@ -121,7 +184,11 @@ export default function Checkout() {
           </div>
         </div>
       </div>
-      <AddressManagerDialog visible={true} />
+      <AddressManagerDialog
+        visible={addressVisible}
+        onUpdate={handleAddressUpdate}
+        onClose={handleCloseAddressManager}
+      />
     </div>
   );
 }

@@ -7,6 +7,8 @@ const {
   updateUserAvatar,
   updateUserPassword,
   getUserAddresses,
+  createUserAddress,
+  deleteUserAddress,
 } = require("./UserController");
 // eslint-disable-next-line
 const router = express.Router();
@@ -48,4 +50,24 @@ router.put(
 );
 
 router.get("/addresses/", AuthMiddleware.requestAuthenticate, getUserAddresses);
+
+router.post(
+  "/address",
+  AuthMiddleware.requestAuthenticate,
+  check("contactPhone", "Phone must not be empty")
+    .isMobilePhone()
+    .withMessage("Invalid phone format"),
+  check("streetName", "Email must not be empty"),
+  check("provinceName", `provinceName must not be empty`),
+  check("districtName", "districtName must not be empty"),
+  check("wardName", "wardName must not be empty"),
+  createUserAddress,
+);
+
+router.delete(
+  "/address/:addressId",
+  AuthMiddleware.requestAuthenticate,
+  deleteUserAddress,
+);
+
 module.exports = router;
