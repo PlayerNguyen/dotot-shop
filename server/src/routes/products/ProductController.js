@@ -308,7 +308,7 @@ async function updateProduct(req, res, next) {
  * @param {express.NextFunction} next the next function
  */
 async function getAllProducts(req, res, next) {
-  const { limit, page, search, sortedBy } = req.params;
+  const { limit, page, search, sortedBy } = req.query;
   const response = await KnexDriver.select(
     "p.Id",
     "p.Name",
