@@ -5,11 +5,18 @@ import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import { AiFillShopping, AiOutlineShoppingCart } from "react-icons/ai";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addCartItem,
+  clearCartItem,
+  removeCartItem,
+} from "../../slices/CartSlice";
 export default function ProductView() {
   let { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setLoading(true);
@@ -23,6 +30,14 @@ export default function ProductView() {
       })
       .finally(() => setLoading(false));
   }, [productId]);
+
+  const handleAddToCart = () => {
+    if (cartItems.includes(productId)) {
+      dispatch(removeCartItem(productId));
+    } else {
+      dispatch(addCartItem(productId));
+    }
+  };
 
   return (
     <div className="productView-wrapper">
@@ -72,9 +87,16 @@ export default function ProductView() {
           {/* Actions */}
           <div className="flex flex-row gap-4">
             <div>
-              <button className="btn btn-outline flex flex-row gap-4 btn-sm">
+              <button
+                className="btn btn-outline flex flex-row gap-4 btn-sm"
+                onClick={handleAddToCart}
+              >
                 <AiOutlineShoppingCart />
-                <span>Add to cart</span>
+                <span>
+                  {cartItems && !cartItems.includes(productId)
+                    ? `Add to cart`
+                    : `Remove`}
+                </span>
               </button>
             </div>
             <div>
