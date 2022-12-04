@@ -141,7 +141,7 @@ export default function App() {
                 </Suspense>
               }
             ></Route>
-            <Route path="/sell" element={<Sell />} />
+            <Route path="*" element={<NoMatch />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

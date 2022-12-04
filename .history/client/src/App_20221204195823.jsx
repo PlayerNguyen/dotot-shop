@@ -32,8 +32,6 @@ const RequestSignedIn = React.lazy(() =>
 import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 
-import Sell from "./components/Sell/Sell";
-
 export default function App() {
   return (
     <div className="drawer bg-base-200">
@@ -141,7 +139,6 @@ export default function App() {
                 </Suspense>
               }
             ></Route>
-            <Route path="/sell" element={<Sell />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

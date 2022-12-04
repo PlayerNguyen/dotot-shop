@@ -34,10 +34,6 @@ export default function Navbar() {
 
       {/* Wide screen  */}
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
-      <Link to="/sell">
-          <h1 className="text-xl font-bold">Sell </h1>
-          <span></span>
-        </Link>
         {/* Search group */}
         <div>
           <div className=" input-group">
