@@ -3,6 +3,6 @@ import Signup from "./Signup";
 
 export default function Sell() {
   return(
-    <div> Hello </div>
+    <Signup/> 
   );
 }
