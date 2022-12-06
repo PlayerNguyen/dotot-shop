@@ -1,5 +1,5 @@
 import React from 'react'
-// import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography, Grid, TextField, Button } from '@material-ui/core'
 
 
@@ -13,15 +13,15 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
   
     return (
       <Container  component="main" maxWidth="xs">
-        <div> 
+        <div>
         <div> Selling with Khmer furniture is free and easy. We look for furniture that meets our standards for quality and durability.
           After your pickup, we’ll email you an instant offer </div>
           <br/> 
           <div> Accept it, and you can cash out immediately without waiting for your items to sell.
            Decline or ignore your offer and you’ll earn a revenue share post-sale instead.</div>
            <br/> 
-          <Typography  component="h1" variant="h5" className='content-center '> 
-           Fill in form about Product Information 
+          <Typography  component="h1" variant="h5" className='content-center bold'> 
+           Item info
           </Typography>
           <form>
             <Grid container spacing={2}>
@@ -64,17 +64,6 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
                     // type="password"
                   />
                 </Grid>
-                  {/* Additional Notes */}
-              <Grid item xs={12}>
-                <TextField 
-                  placeholder="Additional Notes (Optional)"
-                  label="Additional Notes (Optional)"
-                  onChange={handleChange('levelOfEducation')}
-                  defaultValue={values.levelOfEducation}
-                  autoComplete="Level of Education"
-                  fullWidth
-                />
-              </Grid>
             </Grid>
             <br />
             <Button 

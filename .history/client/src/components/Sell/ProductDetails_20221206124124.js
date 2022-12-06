@@ -20,7 +20,7 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
           <div> Accept it, and you can cash out immediately without waiting for your items to sell.
            Decline or ignore your offer and you’ll earn a revenue share post-sale instead.</div>
            <br/> 
-          <Typography  component="h1" variant="h5" className='content-center '> 
+          <Typography  component="h1" variant="h5" className='h-10'> 
            Fill in form about Product Information 
           </Typography>
           <form>

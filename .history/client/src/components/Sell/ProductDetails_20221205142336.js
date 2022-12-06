@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Typography, Grid, TextField, Button } from '@material-ui/core'
 
-const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
+const ProductDetails = ({ prevStep, nextStep, handleChange, values }) => {
   
     const Continue = e => {
       e.preventDefault();
@@ -53,7 +53,17 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                 />
               </Grid>
   
-           
+              {/* level of education */}
+              <Grid item xs={12}>
+                <TextField 
+                  placeholder="Additional Notes (Optional)"
+                  label="Additional Notes (Optional)"
+                  onChange={handleChange('levelOfEducation')}
+                  defaultValue={values.levelOfEducation}
+                  autoComplete="Level of Education"
+                  fullWidth
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <Button 
                   onClick={ Previous }
@@ -83,4 +93,4 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
     )
   }
 
-export default UserDetails
+export default ProductDetails

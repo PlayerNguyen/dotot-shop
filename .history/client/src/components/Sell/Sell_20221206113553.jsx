@@ -9,8 +9,8 @@ export default class Sell extends Component{
   state = {
     step: 1,
     category: '',
-    productName: '', 
-    brandName: '',
+    username: '', 
+    password: '',
     firstName: '',
     lastName: '',
     country: '',
@@ -36,8 +36,8 @@ export default class Sell extends Component{
 
   render() {
     const { step } = this.state;
-    const { category, productName, brandName, firstName, lastName, country, levelOfEducation } = this.state;
-    const values = { category, productName, brandName, firstName, lastName, country, levelOfEducation }
+    const { category, username, password, firstName, lastName, country, levelOfEducation } = this.state;
+    const values = { category, username, password, firstName, lastName, country, levelOfEducation }
     
     switch(step) {
       case 1: 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import ProductDetails from './ProductDetails';
 import UserDetails from './UserDetails';
+import ProductDetails from './ProductDetails';
 import Confirmation from './Confirmation';
 import Success from './Success';
 
@@ -8,9 +8,9 @@ export default class Sell extends Component{
 
   state = {
     step: 1,
-    category: '',
-    productName: '', 
-    brandName: '',
+    email: '',
+    username: '', 
+    password: '',
     firstName: '',
     lastName: '',
     country: '',
@@ -36,13 +36,13 @@ export default class Sell extends Component{
 
   render() {
     const { step } = this.state;
-    const { category, productName, brandName, firstName, lastName, country, levelOfEducation } = this.state;
-    const values = { category, productName, brandName, firstName, lastName, country, levelOfEducation }
+    const { email, username, password, firstName, lastName, country, levelOfEducation } = this.state;
+    const values = { email, username, password, firstName, lastName, country, levelOfEducation }
     
     switch(step) {
       case 1: 
         return (
-          <ProductDetails 
+          <ProductDetails
             nextStep={ this.nextStep }
             handleChange={ this.handleChange }
             values={ values }
@@ -50,7 +50,7 @@ export default class Sell extends Component{
         )
       case 2: 
         return (
-          <UserDetails
+          <ProductDetails 
             prevStep={ this.prevStep }
             nextStep={ this.nextStep }
             handleChange={ this.handleChange }

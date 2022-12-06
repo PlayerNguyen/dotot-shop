@@ -53,7 +53,17 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                 />
               </Grid>
   
-           
+              {/* Additional Notes */}
+              <Grid item xs={12}>
+                <TextField 
+                  placeholder="Additional Notes (Optional)"
+                  label="Additional Notes (Optional)"
+                  onChange={handleChange('levelOfEducation')}
+                  defaultValue={values.levelOfEducation}
+                  autoComplete="Level of Education"
+                  fullWidth
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <Button 
                   onClick={ Previous }
@@ -71,7 +81,7 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="primary"
+                  color= "33CC4D"
                 >
                   Next
                 </Button>

@@ -25,7 +25,7 @@ const Confirmation = ({ prevStep, nextStep, values }) => {
               <ListItemText primary="Product Name" secondary={productName}/>
             </ListItem>
             <ListItem>
-              <ListItemText primary="Brand Name" secondary={brandName}/>
+              <ListItemText primary="Brand Name" secondary={category}/>
             </ListItem>
             <ListItem>
               <ListItemText primary="First Name" secondary={firstName}/>
