@@ -35,7 +35,7 @@ export default function Navbar() {
       {/* Wide screen  */}
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
       <Link to="/sell">
-          <h1 className="text-xl font-bold ">Sell </h1>
+          <h1 className="text-xl font-bold fortnite-btn-inner p-3 pt-5 w-11/12 text-5xl truncate">Sell </h1>
           <span></span>
         </Link>
         {/* Search group */}

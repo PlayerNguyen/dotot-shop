@@ -16,8 +16,7 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
         <div>  
           <Typography  component="h1" variant="h5" className='content-center '> 
            Fill in form about Product Information 
-          </Typography> 
-          <br/> 
+          </Typography>
           <div> Selling with Khmer furniture is free and easy. We look for furniture that meets our standards for quality and durability.
           After your pickup, we’ll email you an instant offer </div>
           <br/> 

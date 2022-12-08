@@ -35,7 +35,7 @@ export default function Navbar() {
       {/* Wide screen  */}
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
       <Link to="/sell">
-          <h1 className="text-xl font-bold ">Sell </h1>
+          <h1 className="focus:outline-none text-white bg-lightgreen-700 hover:bg-lightgreen-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-lightgreen-600 dark:hover:bg-ligthtgreen-700 dark:focus:ring-lightgreen-800 ">Sell </h1>
           <span></span>
         </Link>
         {/* Search group */}
