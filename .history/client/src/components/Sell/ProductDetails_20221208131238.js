@@ -93,7 +93,7 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
             </Grid>
             <br />
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div> Pictures of your item ? </div>
+                <div> label="Pictures of your item ? " </div>
                 <input type="file" {...register("file")} />
             </form>
             <br />

@@ -91,13 +91,10 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
                 />
               </Grid>
             </Grid>
-            <br />
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div> Pictures of your item ? </div>
                 <input type="file" {...register("file")} />
             </form>
             <br />
-            
             <Button 
               onClick={ Continue }
               type="submit"

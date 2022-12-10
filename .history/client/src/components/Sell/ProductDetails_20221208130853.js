@@ -1,7 +1,6 @@
 import React from 'react'
 // import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography, Grid, TextField, Button } from '@material-ui/core'
-import { useForm } from "react-hook-form";
 
 
 const ProductDetails = ({ nextStep, handleChange, values }) => {
@@ -92,12 +91,6 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
               </Grid>
             </Grid>
             <br />
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div> Pictures of your item ? </div>
-                <input type="file" {...register("file")} />
-            </form>
-            <br />
-            
             <Button 
               onClick={ Continue }
               type="submit"
