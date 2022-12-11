@@ -84,9 +84,9 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
                 <TextField 
                   placeholder="Additional Notes (Optional)"
                   label="Additional Notes (Optional)"
-                  onChange={handleChange('additionNotes')}
+                  onChange={handleChange('levelOfEducation')}
                   defaultValue={values.additionNotes}
-                  autoComplete="additionNotes"
+                  autoComplete="Level of Education"
                   fullWidth
                 />
               </Grid>

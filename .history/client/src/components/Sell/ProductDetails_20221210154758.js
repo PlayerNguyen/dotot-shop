@@ -86,7 +86,7 @@ const ProductDetails = ({ nextStep, handleChange, values }) => {
                   label="Additional Notes (Optional)"
                   onChange={handleChange('additionNotes')}
                   defaultValue={values.additionNotes}
-                  autoComplete="additionNotes"
+                  autoComplete="Level of Education"
                   fullWidth
                 />
               </Grid>

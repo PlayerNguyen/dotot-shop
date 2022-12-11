@@ -28,9 +28,6 @@ const Confirmation = ({ prevStep, nextStep, values }) => {
               <ListItemText primary="Brand Name" secondary={brandName}/>
             </ListItem>
             <ListItem>
-              <ListItemText primary="Notes " secondary={additionNotes}/>
-            </ListItem>
-            <ListItem>
               <ListItemText primary="First Name" secondary={firstName}/>
             </ListItem>
             <ListItem>
@@ -39,7 +36,9 @@ const Confirmation = ({ prevStep, nextStep, values }) => {
             <ListItem>
               <ListItemText primary="Country of Residence" secondary={country}/>
             </ListItem>
-
+            <ListItem>
+              <ListItemText primary="Notes " secondary={additionNotes}/>
+            </ListItem>
           </List>
   
           <br />
