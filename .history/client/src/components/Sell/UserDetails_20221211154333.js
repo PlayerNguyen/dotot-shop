@@ -112,11 +112,8 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
               <span> </span>
             </Grid>
           </form>
-          
         </div>
-        <span> </span>
       </Container>
-      
     )
   }
 

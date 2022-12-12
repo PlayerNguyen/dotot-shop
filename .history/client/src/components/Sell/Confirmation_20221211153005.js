@@ -40,7 +40,7 @@ const Confirmation = ({ prevStep, nextStep, values }) => {
               <ListItemText primary="Email " secondary={email}/>
             </ListItem>
             <ListItem>
-              <ListItemText primary="Address" secondary={country}/>
+              <ListItemText primary="Country of Residence" secondary={country}/>
             </ListItem>
 
           </List>

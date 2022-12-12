@@ -109,14 +109,10 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                   Next
                 </Button>
               </Grid>
-              <span> </span>
             </Grid>
           </form>
-          
         </div>
-        <span> </span>
       </Container>
-      
     )
   }
 

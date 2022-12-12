@@ -63,6 +63,9 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                   fullWidth
                 />
               </Grid>
+  
+
+
                {/* Card number */}
               <Grid item xs={12}>
                 <TextField 
@@ -86,7 +89,7 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                   // label="Last Name"
                 />
               </Grid>
-              <span> </span>
+           
               <Grid item xs={12} sm={6}>
                 <Button 
                   onClick={ Previous }
@@ -109,14 +112,10 @@ const UserDetails = ({ prevStep, nextStep, handleChange, values }) => {
                   Next
                 </Button>
               </Grid>
-              <span> </span>
             </Grid>
           </form>
-          
         </div>
-        <span> </span>
       </Container>
-      
     )
   }
 
