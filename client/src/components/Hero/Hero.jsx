@@ -1,8 +1,10 @@
 import React from "react";
 import { AiOutlineShopping, AiOutlineShoppingCart } from "react-icons/ai";
 import { BsCashCoin } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <div className="hero-wrapper">
       <div className="hero min-h-[50vh] min-w-[100vw] bg-zinc-50 flex flex-row items-start">
@@ -24,7 +26,10 @@ export default function Hero() {
           </div>
           <div className="py-4 flex flex-row gap-3 w-full">
             {/* Buy button */}
-            <button className="rounded-xl hover:bg-gray-300 ease-in-out transition-all bg-gray-200 flex flex-col gap-4 px-12 py-5 items-center">
+            <button
+              className="rounded-xl hover:bg-gray-300 ease-in-out transition-all bg-gray-200 flex flex-col gap-4 px-12 py-5 items-center"
+              onClick={() => navigate("/browse-products")}
+            >
               <span className="text-6xl">
                 <AiOutlineShoppingCart />
               </span>

@@ -15,8 +15,27 @@ function fetchProduct(id: string, abortController?: AbortController) {
   });
 }
 
+function fetchProductParams(
+  page: number,
+  limit: number,
+  search?: string,
+  abortController?: AbortController
+) {
+  const _ = new URLSearchParams();
+  _.append("limit", String(limit));
+  _.append("page", String(page));
+  if (search !== undefined) {
+    _.append("search", search);
+  }
+
+  return AxiosInstance.get(`/products/?${_.toString()}`, {
+    signal: abortController ? abortController.signal : undefined,
+  });
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
+  fetchProductParams,
 };
 export default ProductRequest;
