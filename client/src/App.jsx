@@ -37,6 +37,11 @@ const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
 );
 
+const AdminProduct = React.lazy(() =>
+  import("./components/Admin/AdminProduct")
+);
+const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout"));
+
 export default function App() {
   const items = useSelector((state) => state.cart.items);
 
@@ -134,6 +139,23 @@ export default function App() {
                 </Suspense>
               }
             >
+              <Route
+                path="/admin"
+                element={
+                  <Suspense>
+                    <AdminLayout />
+                  </Suspense>
+                }
+              >
+                <Route
+                  path="/admin/products"
+                  element={
+                    <Suspense>
+                      <AdminProduct />
+                    </Suspense>
+                  }
+                />
+              </Route>
               <Route
                 path="/profile"
                 element={
