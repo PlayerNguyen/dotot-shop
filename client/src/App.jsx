@@ -33,8 +33,9 @@ import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 import { useSelector } from "react-redux";
 import useUnload from "./hooks/useUnload";
-
-import Sell from "./components/Sell/Sell";
+const BrowseProducts = React.lazy(() =>
+  import("./components/BrowseProducts/BrowseProducts")
+);
 
 export default function App() {
   const items = useSelector((state) => state.cart.items);
@@ -72,6 +73,7 @@ export default function App() {
                 </Suspense>
               }
             />
+            <Route path="/browse-products" element={<BrowseProducts />}></Route>
             <Route
               path="/users"
               element={
@@ -124,6 +126,7 @@ export default function App() {
                 }
               />
             </Route>
+
             <Route
               element={
                 <Suspense>
@@ -157,7 +160,6 @@ export default function App() {
                 </Suspense>
               }
             ></Route>
-            <Route path="/sell" element={<Sell />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
