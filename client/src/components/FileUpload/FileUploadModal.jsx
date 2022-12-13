@@ -11,6 +11,7 @@ export default function FileUploadModal({
   onCloseClick,
   onCancel,
   onComplete,
+  title,
 }) {
   const inputRef = useRef(null);
   const [imageSource, setImageSource] = useState(null);
@@ -125,12 +126,12 @@ export default function FileUploadModal({
 
   return visible ? (
     <div className="fixed left-0 top-0 w-full h-full bg-black bg-opacity-70">
-      <div className="block sm:w-2/3 mx-auto sm:mt-[10vh]">
+      <div className="block sm:w-2/3 md:w-1/3 mx-auto sm:mt-[10vh]">
         <div className="mx-auto w-full bg-white sm:block sm:rounded-xl sm:top-[20vh] p-6  overflow-y-scroll">
           {/* Header */}
           <div className="flex flex-row items-center">
             {/* Title */}
-            <div className="flex-1 font-bold text-2xl">Modal title</div>
+            <div className="flex-1 font-bold text-2xl">{title && title}</div>
             {/* Close button */}
             <button className="btn btn-ghost text-2xl" onClick={onCloseClick}>
               <AiOutlineCloseCircle />

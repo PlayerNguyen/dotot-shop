@@ -178,6 +178,7 @@ export default function Profile() {
             setAvatarInformation({ avatarBlurHash, avatarId, avatarUrl });
           }}
           onCancel={() => setUploadAvatarVisible(false)}
+          title={"Upload avatar"}
         />
       </Suspense>
     </div>

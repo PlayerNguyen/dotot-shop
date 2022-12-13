@@ -33,6 +33,10 @@ import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 import { useSelector } from "react-redux";
 import useUnload from "./hooks/useUnload";
+const BrowseProducts = React.lazy(() =>
+  import("./components/BrowseProducts/BrowseProducts")
+);
+
 const AdminProduct = React.lazy(() =>
   import("./components/Admin/AdminProduct")
 );
@@ -74,6 +78,7 @@ export default function App() {
                 </Suspense>
               }
             />
+            <Route path="/browse-products" element={<BrowseProducts />}></Route>
             <Route
               path="/users"
               element={
@@ -126,6 +131,7 @@ export default function App() {
                 }
               />
             </Route>
+
             <Route
               element={
                 <Suspense>

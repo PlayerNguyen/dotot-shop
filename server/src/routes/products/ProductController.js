@@ -12,7 +12,6 @@ const { v4: uuid } = require("uuid");
 const chalk = require("chalk");
 const { getUserFromAuth } = require("./../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("./../../middlewares/AuthMiddleware");
-const { offset } = require("../../../driver/KnexDriver");
 
 /**
  * Create a new product
@@ -324,6 +323,11 @@ async function getAllProducts(req, res, next) {
     .limit(limit === undefined ? 10 : Number.parseInt(limit))
     .offset(page === undefined ? 0 : Number.parseInt(limit * page))
     .orderBy(sortedBy ? sortedBy : "createdAt")
+    .whereRaw(
+      search
+        ? `p.Name LIKE '%${search}%' OR p.Description LIKE '%${search}%'`
+        : ``,
+    )
     .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
   res.status(200).json(createSuccessResponse(response));
