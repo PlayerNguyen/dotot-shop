@@ -1,4 +1,6 @@
 import React from "react";
+import { AiOutlineShopping, AiOutlineShoppingCart } from "react-icons/ai";
+import { BsCashCoin } from "react-icons/bs";
 
 export default function Hero() {
   return (
@@ -15,10 +17,26 @@ export default function Hero() {
             <small>Lets delight your decision</small>
           </div>
         </div>
-        <div className="hidden md:flex m-16 ">
+        <div className="hidden md:flex flex-col gap-6 m-16">
           <div className="font-serif font-semibold italic flex md:flex-col ">
             <span className="text-5xl">Khmer Furniture</span>
             <small>Lets delight your decision</small>
+          </div>
+          <div className="py-4 flex flex-row gap-3 w-full">
+            {/* Buy button */}
+            <button className="rounded-xl hover:bg-gray-300 ease-in-out transition-all bg-gray-200 flex flex-col gap-4 px-12 py-5 items-center">
+              <span className="text-6xl">
+                <AiOutlineShoppingCart />
+              </span>
+              <span className="uppercase font-bold">I want to buy</span>
+            </button>
+            {/* Sell button */}
+            <button className="rounded-xl hover:bg-gray-300 ease-in-out transition-all bg-gray-200 flex flex-col gap-4 px-12 py-5 items-center">
+              <span className="text-6xl">
+                <BsCashCoin />
+              </span>
+              <span className="uppercase font-bold">I want to SELL</span>
+            </button>
           </div>
         </div>
       </div>
