@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Link, Route, Routes } from "react-router-dom";
 const Home = React.lazy(() => import("./components/Home/Home"));
@@ -31,26 +31,10 @@ const RequestSignedIn = React.lazy(() =>
 
 import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
-import { useSelector } from "react-redux";
-import useUnload from "./hooks/useUnload";
 
 import Sell from "./components/Sell/Sell";
 
 export default function App() {
-  const items = useSelector((state) => state.cart.items);
-
-  useUnload((event) => {
-    event.preventDefault();
-    // event.returnValue = "";
-    // console.log(items);
-    localStorage.setItem(
-      process.env.CART_ITEM_KEY_NAME
-        ? process.env.CART_ITEM_KEY_NAME
-        : "cartItems",
-      JSON.stringify(items)
-    );
-  });
-
   return (
     <div className="drawer bg-base-200">
       <input id="app-drawer" type="checkbox" className="drawer-toggle" />
@@ -157,7 +141,7 @@ export default function App() {
                 </Suspense>
               }
             ></Route>
-            <Route path="/sell" element={<Sell />} />
+            <Route path="*" element={<NoMatch />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

@@ -35,7 +35,7 @@ export default function Navbar() {
       {/* Wide screen  */}
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
       <Link to="/sell">
-          <h1 className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Sell </h1>
+          <h1 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Sell </h1>
           <span></span>
         </Link>
         {/* Search group */}
