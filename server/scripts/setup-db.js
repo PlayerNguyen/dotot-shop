@@ -122,6 +122,16 @@ async function setupDatabase() {
     table.string("UserId").references(`${Tables.Users}.Id`);
     table.string("ResourceId").references(`${Tables.Resources}.Id`);
   });
+
+  await createTableIfNotExists(Tables.UserAddresses, (table) => {
+    table.string("Id").notNullable().unique();
+    table.string("UserId").notNullable().references(`${Tables.Users}.Id`);
+    table.string("StreetName").notNullable();
+    table.string("ProvinceName").notNullable();
+    table.string("DistrictName").notNullable();
+    table.string("WardName").notNullable();
+    table.string("ContactPhone").notNullable();
+  });
 }
 
 (async () => {

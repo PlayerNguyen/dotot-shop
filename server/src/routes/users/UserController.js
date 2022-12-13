@@ -236,10 +236,118 @@ async function updateUserPassword(req, res, next) {
   }
 }
 
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function getUserAddresses(req, res, next) {
+  try {
+    const userSession = getUserFromAuth(req);
+    const addressesList = await KnexDriver.select("*")
+      .from(Tables.UserAddresses)
+      .where({ UserId: userSession.id });
+
+    res.json(createSuccessResponse(addressesList));
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function createUserAddress(req, res, next) {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res
+        .status(400)
+        .json(
+          createErrorResponse(`Missing or invalid fields`, undefined, errors),
+        );
+    } else {
+      const user = getUserFromAuth(req);
+      // eslint-disable-next-line
+      console.log(req.body);
+      const { contactPhone, streetName, provinceName, districtName, wardName } =
+        req.body;
+
+      const obj = {
+        ContactPhone: contactPhone,
+        StreetName: streetName,
+        ProvinceName: provinceName,
+        DistrictName: districtName,
+        WardName: wardName,
+        UserId: user.id,
+        Id: uuid(),
+      };
+      await KnexDriver.insert(obj).into(Tables.UserAddresses);
+
+      res.json(createSuccessResponse(obj));
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+async function deleteUserAddress(req, res, next) {
+  try {
+    const { addressId } = req.params;
+    const user = getUserFromAuth(req);
+    if (!addressId) {
+      return res
+        .status(400)
+        .json(createErrorResponse("Cannot found addressId"));
+    }
+
+    // Check the addressId
+    const currentAddress = await KnexDriver.select("*")
+      .from(Tables.UserAddresses)
+      .where({ Id: addressId })
+      .first();
+
+    if (!currentAddress) {
+      return res
+        .status(400)
+        .json(
+          createErrorResponse(`Cannot found the address with id ${addressId}`),
+        );
+    }
+
+    // If user has no permissions to remove this address
+    if (!user.role && user.id !== currentAddress.UserId) {
+      return res.status(409).json(createErrorResponse("Unauthorized"));
+    }
+
+    // handle remove
+    await KnexDriver.delete()
+      .from(Tables.UserAddresses)
+      .where({ Id: addressId });
+    res.json(createSuccessResponse({}));
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createUser,
   getUserById,
   getUserProfile,
   updateUserAvatar,
   updateUserPassword,
+  getUserAddresses,
+  createUserAddress,
+  deleteUserAddress,
 };

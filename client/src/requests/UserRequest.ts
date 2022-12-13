@@ -42,11 +42,38 @@ function postChangePassword(currentPassword: string, newPassword: string) {
   });
 }
 
+function getUserAddressList(abortSignal?: AbortSignal) {
+  return AxiosInstance.get(`/users/addresses`, { signal: abortSignal });
+}
+
+function postCreateUserAddress({
+  contactPhone,
+  streetName,
+  provinceName,
+  districtName,
+  wardName,
+}) {
+  return AxiosInstance.post(`/users/address`, {
+    contactPhone,
+    streetName,
+    provinceName,
+    districtName,
+    wardName,
+  });
+}
+
+function deleteRemoveAddress(Id) {
+  return AxiosInstance.delete(`/users/address/${Id}`);
+}
+
 const UserRequest = {
   postSignUpUser,
   postSignInUser,
   getCurrentProfile,
   postChangeUserAvatar,
-  postChangePassword
+  postChangePassword,
+  getUserAddressList,
+  postCreateUserAddress,
+  deleteRemoveAddress,
 };
 export default UserRequest;

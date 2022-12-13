@@ -1,10 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsTrash } from "react-icons/bs";
+import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
+import ProductRequest from "../../requests/ProductRequest";
+import { removeCartItem } from "../../slices/CartSlice";
 
-export default function CheckoutItem({ itemId }) {
+export default function CheckoutItem({ itemId, onRemove }) {
   const [image, setImage] = useState(null);
+  const [productData, setProductData] = useState();
+  // const dispatch = useDispatch();
 
-  const handleRemoveItem = () => {};
+  // Fetch item info
+  useEffect(() => {
+    if (itemId) {
+      ProductRequest.fetchProduct(itemId).then((response) => {
+        const { data } = ResponseInterceptor.filterSuccess(response);
+        setProductData(data);
+      });
+    }
+  }, [itemId]);
+
+  const handleRemoveItem = () => {
+    onRemove(itemId);
+  };
 
   return (
     <div className="checkOutItem-wrapper m-h-[180px]">
@@ -24,8 +41,12 @@ export default function CheckoutItem({ itemId }) {
         {/* Right */}
         <div className="flex-1">
           {/* Info group */}
-          <div className="text-xl font-bold">Item name</div>
-          <div className="text-xl text-primary font-bold">$ Item price</div>
+          <div className="text-xl font-bold">
+            {productData && productData.name}
+          </div>
+          <div className="text-xl text-primary font-bold">
+            $ {productData && productData.price}
+          </div>
         </div>
 
         {/* Info action */}

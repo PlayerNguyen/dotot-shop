@@ -5,11 +5,15 @@ import App from "./App";
 import "./index.css";
 const appElement = document.getElementById("app");
 let root = client.createRoot(appElement);
+import { Provider } from "react-redux";
+import { store } from "./stores/globalStore";
 
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>
 );
