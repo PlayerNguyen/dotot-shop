@@ -8,6 +8,7 @@ const {
   addCategory,
   removeCategory,
   updateCategory,
+  getCategoryById,
 } = require("./CategoryController");
 const {
   createProduct,
@@ -91,6 +92,12 @@ router.delete(`/categories/:categoryId`, requestAuthenticate, removeCategory);
  * Body: { name: string, description: string }
  */
 router.put(`/categories/:categoryId`, requestAuthenticate, updateCategory);
+
+/**
+ * Get the specific category
+ * Params: :categoryId
+ */
+router.get(`/categories/category/:categoryId`, getCategoryById);
 
 router.get(`/`, getAllProducts);
 module.exports = router;

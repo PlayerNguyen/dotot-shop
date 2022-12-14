@@ -23,6 +23,24 @@ async function getAllCategories(req, res, next) {
 }
 
 /**
+ * Get category by param :categoryId
+ *
+ * @param {express.Request} req the request parameter
+ * @param {express.Response} res  the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function getCategoryById(req, res, next) {
+  const { categoryId } = req.params;
+
+  const response = await KnexDriver.select("*")
+    .from(Tables.Categories)
+    .where({ Id: categoryId })
+    .first();
+
+  res.json(createSuccessResponse(response));
+}
+
+/**
  * Add new category
  *
  * @param {express.Request} req the request parameter
@@ -132,6 +150,7 @@ async function updateCategory(req, res, next) {
 
 module.exports = {
   getAllCategories,
+  getCategoryById,
   addCategory,
   removeCategory,
   updateCategory,
