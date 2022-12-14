@@ -11,6 +11,7 @@ import {
 } from "react-icons/cg";
 import useDelayInput from "../../hooks/useDelayInput";
 import useSetState from "../../hooks/useSetState";
+import AdminProductEditModal from "./AdminProductEditModal";
 
 function ProductCardItem({ product, selected, onSelect }) {
   const handleOnSelect = () => {
@@ -295,6 +296,7 @@ export default function AdminProduct() {
           totalPage={totalPage}
         />
       </div>
+      <AdminProductEditModal />
     </div>
   );
 }
