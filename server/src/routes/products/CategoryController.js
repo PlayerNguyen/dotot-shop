@@ -8,7 +8,7 @@ const {
   createSuccessResponse,
   createErrorResponse,
 } = require("../../utils/ResponseFactory");
-
+const slugify = require("slugify");
 /**
  * Get all available categories
  *
@@ -17,7 +17,9 @@ const {
  * @param {express.NextFunction} next the next function
  */
 async function getAllCategories(req, res, next) {
-  const response = await KnexDriver.select("*").from(Tables.Categories);
+  const response = await KnexDriver.select("*")
+    .from(Tables.Categories)
+    .orderBy("Id", "desc");
 
   res.json(createSuccessResponse(response));
 }
@@ -56,11 +58,18 @@ async function addCategory(req, res, next) {
   }
 
   const { name, description } = req.body;
-  await KnexDriver.insert({ Name: name, Description: description }).into(
-    Tables.Categories,
-  );
+  const insertionObject = {
+    Name: name,
+    Description: description,
+    Slug: slugify(name),
+  };
+  const returningResult = await KnexDriver.insert(insertionObject)
+    .into(Tables.Categories)
+    .returning("Id");
 
-  res.json(createSuccessResponse(`Success create category`));
+  res.json(
+    createSuccessResponse({ Id: returningResult[0], ...insertionObject }),
+  );
 }
 
 /**
