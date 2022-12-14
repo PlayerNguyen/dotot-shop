@@ -36,7 +36,10 @@ export default function Hero() {
               <span className="uppercase font-bold">I want to buy</span>
             </button>
             {/* Sell button */}
-            <button className="rounded-xl hover:bg-base-200 ease-in-out hover:shadow-md border-base-content border transition-all bg-base-100 flex flex-col gap-4 px-12 py-5 items-center">
+            <button
+              className="rounded-xl hover:bg-base-200 ease-in-out hover:shadow-md border-base-content border transition-all bg-base-100 flex flex-col gap-4 px-12 py-5 items-center"
+              onClick={() => navigate("/sell")}
+            >
               <span className="text-6xl">
                 <BsCashCoin />
               </span>
