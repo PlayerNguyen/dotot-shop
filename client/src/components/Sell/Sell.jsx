@@ -93,7 +93,7 @@ import React, { useState } from "react";
 export default function Sell() {
   const [selectedCategory, setSelectedCategory] = useState(false);
   return (
-    <div className="sell-wrapper bg-white p-8">
+    <div className="sell-wrapper bg-white p-8 w-full sm:w-4/5 md:w-2/3 lg:w-2/5 mx-auto">
       <div className="sell-container text-base">
         <div className="form-control">
           <label>
