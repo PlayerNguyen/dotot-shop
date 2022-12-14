@@ -8,6 +8,7 @@ const {
   removeProduct,
   updateProduct,
   getAllProducts,
+  getProductImages,
 } = require("./ProductController");
 const router = express.Router();
 
@@ -57,6 +58,8 @@ router.put(
     .withMessage("The product id must be in a format of uuid v4"),
   updateProduct,
 );
+
+router.get(`/product-image/:productId`, getProductImages);
 
 router.get(`/`, getAllProducts);
 module.exports = router;

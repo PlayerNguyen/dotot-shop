@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
+import useDelayInput from "../../hooks/useDelayInput";
 import ProductRequest from "../../requests/ProductRequest";
 
 function ProductItem({ product }) {
@@ -29,24 +30,29 @@ export default function BrowseProducts() {
   const [limit, setLimit] = useState(30);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    console.log(page);
-    // const abortController = new AbortController();
+  const fetchProducts = () => {
     ProductRequest.fetchProductParams(page, limit, search)
       .then((response) => {
         const { data } = ResponseInterceptor.filterSuccess(response);
-        setProducts(data);
+        setProducts(data.products);
       })
       .catch((response) => {
         // console.log(response);
         const { message } = ResponseInterceptor.filterError(response);
         toast.error(message);
       });
+  };
 
-    // return () => {
-    //   abortController.abort();
-    // };
-  }, [search, page]);
+  useEffect(() => {
+    // const abortController = new AbortController();
+
+    return () => {
+      setProducts(null);
+      // abortController.abort();
+    };
+  }, []);
+
+  useDelayInput(() => fetchProducts(), 700, [search]);
 
   const handleChangeSearch = (event) => {
     setSearch(event.target.value);
@@ -71,10 +77,8 @@ export default function BrowseProducts() {
         {/* Product list */}
         <div className="flex flex-col gap-4">
           {products &&
+            products.length > 0 &&
             products.map((product) => {
-              {
-                /* console.log(product); */
-              }
               return <ProductItem key={product.Id} product={product} />;
             })}
         </div>

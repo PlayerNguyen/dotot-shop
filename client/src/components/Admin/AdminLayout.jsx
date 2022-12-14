@@ -18,13 +18,14 @@ export default function AdminLayout() {
 
   return (
     <div className="adminLayout-wrapper">
-      <div className=" bg-white w-full sm:w-2/3 mx-auto sm:my-3 sm:px-3 sm:py-4 sm:rounded-md flex flex-col">
-        <div className="flex flex-row overflow-x-scroll w-full mx-3 my-3">
+      <div className=" bg-white w-full sm:w-2/3 md:w-1/3 mx-auto sm:my-3 sm:px-3 sm:py-4 sm:rounded-md flex flex-col">
+        <div className="flex flex-row overflow-x-scroll w-full px-3 my-3">
           {adminMenuItems &&
-            adminMenuItems.map((item) => {
+            adminMenuItems.map((item, _i) => {
               return (
                 <Link
                   to={item.url}
+                  key={_i}
                   className={`btn btn-ghost btn-sm flex flex-row gap-2 ${
                     pathname === item.url ? "btn-active" : ""
                   }`}
