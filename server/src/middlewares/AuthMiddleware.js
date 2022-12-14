@@ -71,13 +71,13 @@ async function requestAuthenticate(req, res, next) {
         "=",
         `${Tables.UserRoles}.UserId`,
       )
-      .join(
+      .leftJoin(
         Tables.UserAvatars,
         `${Tables.Users}.Id`,
         "=",
         `${Tables.UserAvatars}.UserId`,
       )
-      .join(
+      .leftJoin(
         Tables.Resources,
         `${Tables.Resources}.Id`,
         "=",
@@ -102,6 +102,17 @@ async function requestAuthenticate(req, res, next) {
       ResourceName,
       ResourceBlurHash,
     } = responseUser;
+
+    // eslint-disable-next-line
+    const avatar =
+      ResourceId === null
+        ? null
+        : {
+            id: ResourceId,
+            name: ResourceName,
+            blurHash: ResourceBlurHash,
+            url: `/resources/raw/${ResourceId}`,
+          };
     req.sessionUser = {
       id,
       email: Email,
@@ -109,12 +120,7 @@ async function requestAuthenticate(req, res, next) {
       lastName: LastName,
       phone: Phone,
       role: Role,
-      avatar: {
-        id: ResourceId,
-        name: ResourceName,
-        blurHash: ResourceBlurHash,
-        url: `/resources/raw/${ResourceId}`,
-      },
+      avatar,
     };
 
     next();
