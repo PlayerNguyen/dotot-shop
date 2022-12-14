@@ -70,6 +70,12 @@ router.put(
 router.get(`/product-image/:productId`, getProductImages);
 
 /**
+ * Get the specific category
+ * Params: :categoryId
+ */
+router.get(`/categories/category/:categoryId`, getCategoryById);
+
+/**
  * List all available categories
  */
 router.get(`/categories/`, getAllCategories);
@@ -92,12 +98,6 @@ router.delete(`/categories/:categoryId`, requestAuthenticate, removeCategory);
  * Body: { name: string, description: string }
  */
 router.put(`/categories/:categoryId`, requestAuthenticate, updateCategory);
-
-/**
- * Get the specific category
- * Params: :categoryId
- */
-router.get(`/categories/category/:categoryId`, getCategoryById);
 
 router.get(`/`, getAllProducts);
 module.exports = router;
