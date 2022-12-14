@@ -203,7 +203,7 @@ export default function AddressManagerDialog({ visible, onUpdate, onClose }) {
     visible && (
       <div className="addressManagerDialog-wrapper bg-black bg-opacity-70 fixed top-0 left-0 w-[100vw] h-[100vh]">
         {/*  Content  */}
-        <div className="bg-white mx-auto w-full sm:w-4/5 lg:w-1/4 md:w-2/4 sm:mt-12 sm:rounded-xl px-6 py-4">
+        <div className="bg-base-300 mx-auto w-full sm:w-4/5 lg:w-1/4 md:w-2/4 sm:mt-12 sm:rounded-xl px-6 py-4">
           {/* Header */}
           <div className="flex flex-row items-center">
             <div className="font-bold text-2xl flex-1">Address</div>
@@ -238,7 +238,7 @@ export default function AddressManagerDialog({ visible, onUpdate, onClose }) {
                     >
                       <div className="flex-1">
                         <div className="text-sm">{StreetName}</div>
-                        <div className="text-base-300 text-sm">
+                        <div className="text-content text-sm">
                           <div>
                             {WardName}, {ProvinceName}, {DistrictName}
                           </div>
@@ -326,6 +326,9 @@ export default function AddressManagerDialog({ visible, onUpdate, onClose }) {
                           })}
                       </optgroup>
                     </select>
+                  </div>
+
+                  <div className="form-control flex flex-row w-full gap-2 mt-2">
                     {/* District */}
                     <select
                       className="select select-sm select-bordered flex-1"

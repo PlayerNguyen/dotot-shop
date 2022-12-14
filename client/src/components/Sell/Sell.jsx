@@ -106,7 +106,7 @@ export default function Sell() {
   }, []);
 
   return (
-    <div className="sell-wrapper bg-white p-8 w-full sm:w-4/5 md:w-2/3 lg:w-2/5 mx-auto">
+    <div className="sell-wrapper bg-base-100 p-8 w-full sm:w-4/5 md:w-2/3 lg:w-2/5 mx-auto">
       <div className="sell-container text-base">
         <div className="mb-12">
           <b>Dear our valued customer,</b>
@@ -202,11 +202,11 @@ export default function Sell() {
         <div className="form-control ">
           <label className="label">
             <span className="label-text">Sales</span>
-          </label>
-          <div className="flex flex-row items-center gap-4">
             <input type="checkbox" className="toggle toggle-primary" />
-            <div className="flex flex-row gap-4 items-center">
-              <span>New cost after sell</span>
+          </label>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+              <span className="text-base-300">New cost after sell</span>
               <label className="input-group">
                 <span>
                   <FaMoneyBillAlt />

@@ -18,7 +18,7 @@ export default function Navbar() {
   }, [localStorage]);
 
   return (
-    <div className="navbar bg-base-100 lg:px-12">
+    <div className="navbar bg-base-300 lg:px-12">
       {/* Navbar start section */}
       <div className="flex flex-row lg:hidden">
         <label htmlFor="app-drawer" className="drawer-button btn btn-ghost">
@@ -34,12 +34,14 @@ export default function Navbar() {
 
       {/* Wide screen  */}
       <div className="hidden lg:flex flex-row gap-1 text-2xl">
-      <Link to="/sell">
-          <h1 className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Sell </h1>
+        {/* <Link to="/sell">
+          <h1 className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">
+            Sell{" "}
+          </h1>
           <span></span>
-        </Link>
+        </Link> */}
         {/* Search group */}
-        <div>
+        {/* <div>
           <div className=" input-group">
             <input
               className="input input-bordered input-sm"
@@ -49,20 +51,19 @@ export default function Navbar() {
               <AiOutlineSearch />
             </button>
           </div>
-        </div>
+        </div> */}
         {/* Link group */}
         <div className="menu menu-horizontal p-2 rounded-box text-md">
-          {!signedIn ? (
-            <li>
+          <div className="flex items-stretch gap-3">
+            {!signedIn ? (
               <Link to={"/users/"}>
                 <AiOutlineUser />
               </Link>
-            </li>
-          ) : (
-            <li>
-              <div className="dropdown dropdown-end dropdown-hover block">
-                <label tabIndex={0}>
+            ) : (
+              <div className="dropdown dropdown-end ">
+                <label tabIndex={0} className="btn btn-ghost text-xl">
                   <AiOutlineUser />
+                  {/* here */}
                 </label>
                 <ul
                   tabIndex={0}
@@ -82,17 +83,17 @@ export default function Navbar() {
                   </li>
                 </ul>
               </div>
-            </li>
-          )}
+            )}
 
-          <li>
-            <Link to={"/checkout"} className="relative">
-              <AiOutlineShoppingCart />
-              {cartSize && cartSize > 0 ? (
-                <span className="text-sm ">{cartSize}</span>
-              ) : null}
-            </Link>
-          </li>
+            <li>
+              <Link to={"/checkout"} className="relative">
+                <AiOutlineShoppingCart />
+                {cartSize && cartSize > 0 ? (
+                  <span className="text-sm ">{cartSize}</span>
+                ) : null}
+              </Link>
+            </li>
+          </div>
         </div>
       </div>
 

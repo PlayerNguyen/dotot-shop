@@ -106,12 +106,12 @@ export default function Profile() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="text-3xl text-black font-bold">
+            <div className="text-3xl text-base-content font-bold">
               {profile && profile.firstName + " " + profile.lastName}
             </div>
             <div>
               <div>
-                <div className="badge badge-success gap-2">
+                <div className="badge badge-primary gap-2">
                   <GiTwoCoins />
                   300
                 </div>
