@@ -17,7 +17,7 @@ export default function AdminLayout() {
 
   return (
     <div className="adminLayout-wrapper">
-      <div className=" bg-white w-full sm:w-2/3 md:w-3/5 lg:w-2/5 mx-auto sm:my-3 sm:px-3 sm:py-4 sm:rounded-md flex flex-col">
+      <div className=" bg-base-100 w-full sm:w-2/3 md:w-3/5 lg:w-2/5 mx-auto sm:my-3 sm:px-3 sm:py-4 sm:rounded-md flex flex-col">
         <div className="flex flex-row overflow-x-scroll w-full px-3">
           {adminMenuItems &&
             adminMenuItems.map((item, _i) => {

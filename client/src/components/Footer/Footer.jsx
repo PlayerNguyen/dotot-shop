@@ -3,13 +3,13 @@ import { AiFillFacebook, AiFillPhone } from "react-icons/ai";
 
 export default function Footer() {
   return (
-    <div className="footer-wrapper bg-zinc-800 text-zinc-100 md:px-12">
+    <div className="footer-wrapper bg-neutral-focus text-neutral-content md:px-12">
       <footer className="footer p-12 min-h-[20vh] flex flex-col gap-4 sm:flex-row  sm:gap-10">
         <div className="flex flex-col gap-1 flex-1">
           {/* <div className="font-bold text-2xl">General</div> */}
           <div className={`font-bold text-2xl`}>Contact</div>
 
-          <div>
+        <div>
             <div className="flex flex-row gap-2">
               <span>
                 <AiFillPhone />
