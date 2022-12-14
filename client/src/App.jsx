@@ -171,6 +171,24 @@ function AppRoutes() {
           }
         ></Route>
 
+        <Route
+          path="/admin"
+          element={
+            <Suspense>
+              <AdminLayout />
+            </Suspense>
+          }
+        >
+          <Route
+            path="/admin/products"
+            element={
+              <Suspense>
+                <AdminProduct />
+              </Suspense>
+            }
+          />
+        </Route>
+
         {/* 404 not found */}
         <Route path="*" element={<NoMatch />} />
       </Route>
@@ -205,7 +223,7 @@ export default function App() {
 
         {/* Render home */}
         <AppRoutes />
-        
+
         {/* Footer */}
         <Footer />
       </div>
