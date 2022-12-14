@@ -21,17 +21,17 @@ export default function LazyImageLoader({ src, blurHash, className }) {
       })
       .finally(() => setLoading(false));
 
-    return () => {
-      abortController.abort();
-    };
+    // return () => {
+    //   abortController.abort();
+    // };
   }, [src]);
 
   return loading ? (
     <Blurhash
-      hash={blurHash}
+      hash={blurHash ? blurHash : "00NAr3"}
       // width={"100%"}
       // height={"100%"}
-      className={className}
+      className={`${className} rounded-full`}
     />
   ) : (
     <img src={`data:image/png;base64, ${data && data}`} className={className} />
