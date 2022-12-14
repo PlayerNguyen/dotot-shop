@@ -37,7 +37,10 @@ const Sell = React.lazy(() => import("./components/Sell/Sell"));
 const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
 );
-
+const AdminProduct = React.lazy(() =>
+  import("./components/Admin/AdminProduct")
+);
+const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout"));
 /**
  *
  * @returns a routes components
@@ -201,9 +204,8 @@ export default function App() {
         </Suspense>
 
         {/* Render home */}
-
         <AppRoutes />
-
+        
         {/* Footer */}
         <Footer />
       </div>

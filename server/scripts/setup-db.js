@@ -132,6 +132,16 @@ async function setupDatabase() {
     table.string("WardName").notNullable();
     table.string("ContactPhone").notNullable();
   });
+
+  await createTableIfNotExists(Tables.ProductStatus, (table) => {
+    table.string("ProductId").references(`${Tables.Products}.Id`);
+    table.enum("Status", ["PENDING", "APPROVED", "SOLD"]);
+  });
+
+  await createTableIfNotExists(Tables.ProductImage, (table) => {
+    table.string("ProductId").references(`${Tables.Products}.Id`);
+    table.string("ResourceId").references(`${Tables.Resources}.Id`);
+  });
 }
 
 (async () => {

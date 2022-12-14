@@ -33,9 +33,14 @@ function fetchProductParams(
   });
 }
 
+function deleteProduct(id: string) {
+  return AxiosInstance.delete(`/products/product/${id.toString()}`);
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
   fetchProductParams,
+  deleteProduct,
 };
 export default ProductRequest;

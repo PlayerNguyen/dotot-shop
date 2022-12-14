@@ -132,6 +132,19 @@ async function getProductFromId(req, res, next) {
       return next();
     }
 
+    // Get resources whether exists
+    const resourceList = await KnexDriver.select(
+      "r.Id as Id",
+      "r.BlurHash as BlurHash",
+    )
+      .from(Tables.ProductImage)
+      .where(`ProductId`, "=", productId)
+      .join(
+        `${Tables.Resources} AS r`,
+        `r.Id`,
+        "=",
+        `${Tables.ProductImage}.ResourceId`,
+      );
     const responseUser = {
       name: product.Name,
       description: product.Description,
@@ -150,6 +163,7 @@ async function getProductFromId(req, res, next) {
         slug: product.categorySlug,
         description: product.categoryDescription,
       },
+      images: resourceList,
     };
 
     // Increase product view
@@ -300,7 +314,7 @@ async function updateProduct(req, res, next) {
   }
 }
 /**
- * Get all products with limit
+ * Get all products with parameters
  *
  * @param {express.Request} req the request parameter
  * @param {express.Response} res  the response parameter
@@ -308,6 +322,9 @@ async function updateProduct(req, res, next) {
  */
 async function getAllProducts(req, res, next) {
   const { limit, page, search, sortedBy } = req.query;
+  const productSize = await KnexDriver.count("id as size")
+    .from(Tables.Products)
+    .first();
   const response = await KnexDriver.select(
     "p.Id",
     "p.Name",
@@ -328,9 +345,40 @@ async function getAllProducts(req, res, next) {
         ? `p.Name LIKE '%${search}%' OR p.Description LIKE '%${search}%'`
         : ``,
     )
-    .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
+    .leftJoin(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
-  res.status(200).json(createSuccessResponse(response));
+  res.status(200).json(
+    createSuccessResponse({
+      products: response,
+      totalSize: productSize.size,
+    }),
+  );
+}
+
+/**
+ * Get product image list
+ *
+ * @param {express.Request} req the request parameter
+ * @param {express.Response} res  the response parameter
+ * @param {express.NextFunction} next the next function
+ */
+async function getProductImages(req, res, next) {
+  const { productId } = req.params;
+  const _ = await KnexDriver.select("")
+    .from(`${Tables.ProductImage} as pi`)
+    .where(`pi.ProductId`, `=`, productId)
+    .join(`${Tables.Resources} as r`, `r.Id`, `=`, `pi.ResourceId`);
+  console.log();
+  const responseArray = _.map((item) => {
+    return {
+      ResourceId: item.ResourceId,
+      ProductId: item.ProductId,
+      BlurHash: item.BlurHash,
+      Url: `${process.env.HOST_NAME}resources/raw/${item.ResourceId}`,
+    };
+  });
+
+  res.json(createSuccessResponse(responseArray));
 }
 
 module.exports = {
@@ -339,4 +387,5 @@ module.exports = {
   removeProduct,
   getAllProducts,
   updateProduct,
+  getProductImages,
 };

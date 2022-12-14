@@ -10,7 +10,9 @@
     "start": "concurrently --raw \"npm:start-*\"",
     "build": "exit 0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "mocha": "^10.2.0"
+  },
   "devDependencies": {
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",

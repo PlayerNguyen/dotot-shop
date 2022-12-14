@@ -17,7 +17,7 @@ export default function Home() {
     ProductRequest.fetchAllProducts(controller)
       .then((response) => {
         const { data } = ResponseInterceptor.filterSuccess(response);
-        setProducts(data);
+        setProducts(data.products);
       })
       .finally(() => setLoading(false));
 
