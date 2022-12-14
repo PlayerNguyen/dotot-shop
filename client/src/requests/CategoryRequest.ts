@@ -1,14 +1,14 @@
 import AxiosInstance from "./AxiosInstance";
 
 async function createCategory(name: string, description: string) {
-  if (!(name && description)) {
+  if (!name) {
     throw new Error(`Parameters name and description cannot be null`);
   }
   return AxiosInstance.post(`/products/categories/`, { name, description });
 }
 
 async function updateCategory(id: string, name: string, description: string) {
-  if (!(id && name && description)) {
+  if (!(id && name)) {
     throw new Error(`Parameters id, name, and description cannot be null`);
   }
   return AxiosInstance.put(`/products/categories/${id}`, { name, description });
