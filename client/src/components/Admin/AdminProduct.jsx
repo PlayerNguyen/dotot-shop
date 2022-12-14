@@ -1,9 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
 import { AiOutlineEdit } from "react-icons/ai";
-import { CgTrash,  } from "react-icons/cg";
+import {
+  CgTrash,
+  CgChevronLeft,
+  CgChevronDoubleLeft,
+  CgChevronRight,
+  CgChevronDoubleRight,
+} from "react-icons/cg";
 import useDelayInput from "../../hooks/useDelayInput";
 import useSetState from "../../hooks/useSetState";
 
@@ -56,14 +61,14 @@ function ProductPagination({
           onClick={handleMoveFirstPage}
           disabled={page === 0}
         >
-          «
+          <CgChevronDoubleLeft />
         </button>
         <button
           className="btn btn-sm"
           onClick={handleDecreasePage}
           disabled={page === 0}
         >
-          «
+          <CgChevronLeft />
         </button>
         <button className="btn btn-sm">{page === 0 ? 1 : page + 1}</button>
         <button
@@ -71,14 +76,14 @@ function ProductPagination({
           onClick={handleIncreasePage}
           disabled={page === totalPage}
         >
-          »
+          <CgChevronRight />
         </button>
         <button
           className="btn btn-sm"
           onClick={handleMoveLastPage}
           disabled={page === 0}
         >
-          «
+          <CgChevronDoubleRight />
         </button>
       </div>
     </div>
