@@ -33,9 +33,147 @@ import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 import { useSelector } from "react-redux";
 import useUnload from "./hooks/useUnload";
+const Sell = React.lazy(() => import("./components/Sell/Sell"));
 const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
 );
+
+/**
+ *
+ * @returns a routes components
+ */
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/">
+        {/* Home */}
+        <Route
+          index
+          element={
+            <Suspense>
+              <Home />
+            </Suspense>
+          }
+        />
+        {/* Browse products */}
+        <Route
+          path="/browse-products"
+          element={
+            <Suspense>
+              <BrowseProducts />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* Sell */}
+        <Route
+          path="/sell"
+          element={
+            <Suspense>
+              <Sell />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* Users for register / sign in  */}
+        <Route
+          path="/users"
+          element={
+            <Suspense>
+              <Credentials />
+            </Suspense>
+          }
+        >
+          {/* TODO: check whether user is logged in or not, to put current */}
+          <Route
+            index
+            element={
+              <Suspense>
+                <CredentialSelection />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/users/sign-up"
+            element={
+              <Suspense>
+                <SignUp />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/users/sign-in"
+            element={
+              <Suspense>
+                <SignIn />
+              </Suspense>
+            }
+          />
+          <Route path="/users/sign-out" element={<SignOut />} />
+        </Route>
+        <Route
+          path="/products"
+          element={
+            <Suspense>
+              <Product />
+            </Suspense>
+          }
+        >
+          <Route
+            path=":productId"
+            element={
+              <Suspense>
+                <ProductView />
+              </Suspense>
+            }
+          />
+        </Route>
+
+        {/* Require signed in */}
+        <Route
+          element={
+            <Suspense>
+              <RequestSignedIn />
+            </Suspense>
+          }
+        >
+          {/* Profile overview */}
+          <Route
+            path="/profile"
+            element={
+              <Suspense>
+                <Profile />
+              </Suspense>
+            }
+          >
+            {/* General information of profile */}
+            <Route
+              path="/profile/general"
+              element={
+                <Suspense>
+                  <ProfileGeneral />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Route>
+
+        {/* Check out system */}
+        <Route
+          path="/checkout"
+          element={
+            <Suspense>
+              <Checkout />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* 404 not found */}
+        <Route path="*" element={<NoMatch />} />
+      </Route>
+    </Routes>
+  );
+}
 
 export default function App() {
   const items = useSelector((state) => state.cart.items);
@@ -63,106 +201,8 @@ export default function App() {
         </Suspense>
 
         {/* Render home */}
-        <Routes>
-          <Route path="/">
-            <Route
-              index
-              element={
-                <Suspense>
-                  <Home />
-                </Suspense>
-              }
-            />
-            <Route path="/browse-products" element={<BrowseProducts />}></Route>
-            <Route
-              path="/users"
-              element={
-                <Suspense>
-                  <Credentials />
-                </Suspense>
-              }
-            >
-              {/* TODO: check whether user is logged in or not, to put current */}
-              <Route
-                index
-                element={
-                  <Suspense>
-                    <CredentialSelection />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/users/sign-up"
-                element={
-                  <Suspense>
-                    <SignUp />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/users/sign-in"
-                element={
-                  <Suspense>
-                    <SignIn />
-                  </Suspense>
-                }
-              />
-              <Route path="/users/sign-out" element={<SignOut />} />
-            </Route>
-            <Route
-              path="/products"
-              element={
-                <Suspense>
-                  <Product />
-                </Suspense>
-              }
-            >
-              <Route
-                path=":productId"
-                element={
-                  <Suspense>
-                    <ProductView />
-                  </Suspense>
-                }
-              />
-            </Route>
 
-            <Route
-              element={
-                <Suspense>
-                  <RequestSignedIn />
-                </Suspense>
-              }
-            >
-              <Route
-                path="/profile"
-                element={
-                  <Suspense>
-                    <Profile />
-                  </Suspense>
-                }
-              >
-                <Route
-                  path="/profile/general"
-                  element={
-                    <Suspense>
-                      <ProfileGeneral />
-                    </Suspense>
-                  }
-                />
-              </Route>
-            </Route>
-            <Route
-              path="/checkout"
-              element={
-                <Suspense>
-                  <Checkout />
-                </Suspense>
-              }
-            ></Route>
-            <Route path="*" element={<NoMatch />} />
-          </Route>
-        </Routes>
+        <AppRoutes />
 
         {/* Footer */}
         <Footer />
