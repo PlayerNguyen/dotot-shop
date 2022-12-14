@@ -308,6 +308,9 @@ async function updateProduct(req, res, next) {
  */
 async function getAllProducts(req, res, next) {
   const { limit, page, search, sortedBy } = req.query;
+  const productSize = await KnexDriver.count("id as size")
+    .from(Tables.Products)
+    .first();
   const response = await KnexDriver.select(
     "p.Id",
     "p.Name",
@@ -328,9 +331,14 @@ async function getAllProducts(req, res, next) {
         ? `p.Name LIKE '%${search}%' OR p.Description LIKE '%${search}%'`
         : ``,
     )
-    .join(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
+    .leftJoin(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
 
-  res.status(200).json(createSuccessResponse(response));
+  res.status(200).json(
+    createSuccessResponse({
+      products: response,
+      totalSize: productSize.size,
+    }),
+  );
 }
 
 module.exports = {
