@@ -40,6 +40,9 @@ const BrowseProducts = React.lazy(() =>
 const AdminProduct = React.lazy(() =>
   import("./components/Admin/AdminProduct")
 );
+const AdminCategory = React.lazy(() =>
+  import("./components/Admin/AdminCategory")
+);
 const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout"));
 /**
  *
@@ -184,6 +187,14 @@ function AppRoutes() {
             element={
               <Suspense>
                 <AdminProduct />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <Suspense>
+                <AdminCategory />
               </Suspense>
             }
           />
