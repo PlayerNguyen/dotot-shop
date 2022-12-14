@@ -1,7 +1,14 @@
 "use strict";
 const express = require("express");
 const { check, param } = require("express-validator");
+const { requestAuthenticate } = require("../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("../../middlewares/AuthMiddleware");
+const {
+  getAllCategories,
+  addCategory,
+  removeCategory,
+  updateCategory,
+} = require("./CategoryController");
 const {
   createProduct,
   getProductFromId,
@@ -60,6 +67,30 @@ router.put(
 );
 
 router.get(`/product-image/:productId`, getProductImages);
+
+/**
+ * List all available categories
+ */
+router.get(`/categories/`, getAllCategories);
+
+/**
+ * Add new category
+ * Body: { name: string, description: string }
+ */
+router.post(`/categories`, requestAuthenticate, addCategory);
+
+/**
+ * Delete the :categoryId category
+ * Params: :categoryId
+ */
+router.delete(`/categories/:categoryId`, requestAuthenticate, removeCategory);
+
+/**
+ * Update the :categoryId category
+ * Params: :categoryId
+ * Body: { name: string, description: string }
+ */
+router.put(`/categories/:categoryId`, requestAuthenticate, updateCategory);
 
 router.get(`/`, getAllProducts);
 module.exports = router;
