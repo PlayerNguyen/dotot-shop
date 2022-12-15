@@ -120,7 +120,7 @@ async function createProduct(req, res, next) {
           Id: resourceId,
           Name: requestFile.originalname,
           Path: path.resolve(getStaticDirectory(), resourceId),
-          BlurHash: " ",
+          BlurHash: await generateBlurHash(req.files[i].buffer),
           Author: authorUser.id,
         };
         await KnexDriver.insert(generateObject).into(Tables.Resources);
@@ -135,10 +135,24 @@ async function createProduct(req, res, next) {
         if (!fs.existsSync(getStaticDirectory())) {
           fs.mkdirSync(getStaticDirectory());
         }
+
         fs.writeFileSync(generatedResources[i].Path, req.files[i].buffer);
       }
     }
-    // TODO: insert a status of product
+
+    // Require a discount
+    if (req.body.salePrice) {
+      await KnexDriver.insert({
+        ProductId: generatedUniqueProductId,
+        SalePrice: req.body.salePrice,
+      }).into(Tables.SaleProducts);
+    }
+
+    // Insert product status
+    await KnexDriver.insert({
+      ProductId: generatedUniqueProductId,
+      Status: "PENDING",
+    }).into(Tables.ProductStatus);
 
     res.json(createSuccessResponse({ id: generatedUniqueProductId }));
 
@@ -260,7 +274,7 @@ async function getProductFromId(req, res, next) {
     }
 
     // Get resources whether exists
-    const resourceList = await KnexDriver.select(
+    let resourceList = await KnexDriver.select(
       "r.Id as Id",
       "r.BlurHash as BlurHash",
     )
@@ -272,6 +286,14 @@ async function getProductFromId(req, res, next) {
         "=",
         `${Tables.ProductImage}.ResourceId`,
       );
+    resourceList = resourceList.map((resource) => {
+      const { Id, BlurHash } = resource;
+      return {
+        Id,
+        BlurHash,
+        Url: `${process.env.HOST_NAME}resources/raw/${Id}`,
+      };
+    });
     const responseUser = {
       name: product.Name,
       description: product.Description,
