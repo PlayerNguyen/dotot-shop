@@ -37,10 +37,15 @@ function deleteProduct(id: string) {
   return AxiosInstance.delete(`/products/product/${id.toString()}`);
 }
 
+function createProduct(data: FormData) {
+  return AxiosInstance.post(`/products/product`, data);
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
   fetchProductParams,
   deleteProduct,
+  createProduct
 };
 export default ProductRequest;
