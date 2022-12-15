@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
@@ -11,6 +11,44 @@ import {
   clearCartItem,
   removeCartItem,
 } from "../../slices/CartSlice";
+
+import LazyImageLoader from "../LazyImageLoader/LazyImageLoader";
+
+function ProductCarousel({ images }) {
+  const [currentSelectIndex, setCurrentSelectIndex] = useState(0);
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <div className="flex-1 border">
+          <LazyImageLoader
+            src={images[currentSelectIndex].Url}
+            blurHash={images[currentSelectIndex].blurHash}
+            className={"w-full"}
+          />
+        </div>
+      </div>
+      <div className="w-full flex flex-row gap-4">
+        {images &&
+          images.length > 1 &&
+          images.map((img, idx) => {
+            return (
+              <div
+                className={`flex-1 ${
+                  idx === currentSelectIndex && `border`
+                } cursor-pointer`}
+                key={img.Id}
+                onClick={() => setCurrentSelectIndex(idx)}
+                tabIndex={0}
+              >
+                <LazyImageLoader src={img.Url} blurHash={img.blurHash} />
+              </div>
+            );
+          })}
+      </div>
+    </div>
+  );
+}
+
 export default function ProductView() {
   let { productId } = useParams();
   const [product, setProduct] = useState(null);
@@ -20,10 +58,16 @@ export default function ProductView() {
 
   useEffect(() => {
     setLoading(true);
+
     ProductRequest.fetchProduct(productId)
       .then((response) => {
         setProduct(ResponseInterceptor.filterSuccess(response).data);
+        console.log(ResponseInterceptor.filterSuccess(response).data);
       })
+      // .then(() => ProductRequest.getProductImages(productId))
+      // .then((response) => {
+      //   console.log(response);
+      // })
       .catch((response) => {
         const { message } = ResponseInterceptor.filterError(response);
         toast.error(message);
@@ -39,14 +83,27 @@ export default function ProductView() {
     }
   };
 
+  const handlePurchase = () => {
+    if (!cartItems.includes(productId)) {
+      dispatch(addCartItem(productId));
+    }
+    navigate("/checkout");
+  };
+
+  const navigate = useNavigate();
+
   return (
     <div className="productView-wrapper">
       <div className="productView-container flex md:flex-row gap-8 flex-col">
         <div className="productView-image md:w-1/4">
-          <img
-            src={`${process.env.PRODUCTION_BASE_URL}/default.png`}
-            className="w-full"
-          />
+          {!product ? (
+            <img
+              src={`${process.env.PRODUCTION_BASE_URL}/default.png`}
+              className="w-full"
+            />
+          ) : (
+            product.images && <ProductCarousel images={product.images} />
+          )}
         </div>
 
         <div className="flex-1 flex-col flex gap-4">
@@ -81,7 +138,13 @@ export default function ProductView() {
 
           {/* Price */}
           <div className="text-3xl font-bold text-primary">
-            $ {product && product.price}
+            ${" "}
+            {product &&
+              (product.salePrice === null ? product.price : product.salePrice)}
+            {/* If sale  */}
+            <span className="text-base-content !text-sm mr-3 line-through">
+              {product && product.salePrice && product.price}
+            </span>
           </div>
 
           {/* Actions */}
@@ -93,14 +156,19 @@ export default function ProductView() {
               >
                 <AiOutlineShoppingCart />
                 <span>
-                  {cartItems && !cartItems.includes(productId)
-                    ? `Add to cart`
-                    : `Remove`}
+                  {cartItems
+                    ? !cartItems.includes(productId)
+                      ? `Add to cart`
+                      : `Remove`
+                    : `Add to cart`}
                 </span>
               </button>
             </div>
             <div>
-              <button className="btn btn-outline flex flex-row gap-4 btn-sm">
+              <button
+                className="btn btn-outline flex flex-row gap-4 btn-sm"
+                onClick={handlePurchase}
+              >
                 <AiFillShopping />
                 <span>Buy</span>
               </button>

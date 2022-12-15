@@ -34,7 +34,7 @@ async function createProduct(req, res, next) {
     return next();
   }
   const authorUser = getUserFromAuth(req);
-  const { price, name, description, condition } = req.body;
+  const { price, name, description, condition, category } = req.body;
   const generatedUniqueProductId = uuid();
 
   try {
@@ -67,6 +67,12 @@ async function createProduct(req, res, next) {
       UserId: userId,
       ProductId: generatedUniqueProductId,
     }).into(Tables.UserProducts);
+
+    // Insert category
+    await KnexDriver.insert({
+      CategoryId: category,
+      ProductId: generatedUniqueProductId,
+    }).into(Tables.ProductCategory);
 
     // Handle the image resources
     const { cropMap } = req.body;
@@ -239,6 +245,7 @@ async function getProductFromId(req, res, next) {
       `${Tables.Categories}.Name as categoryName`,
       `${Tables.Categories}.Description as categoryDescription`,
       `${Tables.Categories}.Slug as categorySlug`,
+      `sp.SalePrice as SalePrice`,
     )
       .from(Tables.Products)
       .where(`${Tables.Products}.Id`, productId)
@@ -266,6 +273,12 @@ async function getProductFromId(req, res, next) {
         "=",
         `${Tables.ProductCategory}.CategoryId`,
       )
+      .leftJoin(
+        `${Tables.SaleProducts} as sp`,
+        `sp.ProductId`,
+        `${Tables.Products}.Id`,
+      )
+
       .first();
 
     if (!product) {
@@ -313,6 +326,7 @@ async function getProductFromId(req, res, next) {
         description: product.categoryDescription,
       },
       images: resourceList,
+      salePrice: product.SalePrice,
     };
 
     // Increase product view

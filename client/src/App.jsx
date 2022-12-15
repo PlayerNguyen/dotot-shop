@@ -33,6 +33,7 @@ import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
 import { useSelector } from "react-redux";
 import useUnload from "./hooks/useUnload";
+import AuthenticateRequest from "./components/Wrapper/AuthenticateRequest";
 const Sell = React.lazy(() => import("./components/Sell/Sell"));
 const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
@@ -76,7 +77,9 @@ function AppRoutes() {
           path="/sell"
           element={
             <Suspense>
-              <Sell />
+              <AuthenticateRequest>
+                <Sell />
+              </AuthenticateRequest>
             </Suspense>
           }
         ></Route>
@@ -169,7 +172,9 @@ function AppRoutes() {
           path="/checkout"
           element={
             <Suspense>
-              <Checkout />
+              <AuthenticateRequest>
+                <Checkout />
+              </AuthenticateRequest>
             </Suspense>
           }
         ></Route>
@@ -221,6 +226,12 @@ export default function App() {
       JSON.stringify(items)
     );
   });
+
+  useEffect(() => {
+    if (localStorage.getItem(process.env.CART_ITEM_KEY_NAME) === null) {
+      localStorage.setItem(process.env.CART_ITEM_KEY_NAME, JSON.stringify([]));
+    }
+  }, []);
 
   return (
     <div className="drawer bg-base-200">

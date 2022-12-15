@@ -27,11 +27,13 @@ export default function LazyImageLoader({ src, blurHash, className }) {
   }, [src]);
 
   return loading ? (
-    <Blurhash
-      hash={blurHash ? blurHash : "00NAr3"}
-      // width={"100%"}
-      // height={"100%"}
-      className={`${className} rounded-full`}
+    // <Blurhash
+    //   hash={blurHash ? blurHash : "00NAr3"}
+    //   className={`${className} rounded-full`}
+    // />
+    <img
+      className="animate-pulse"
+      src={`${process.env.PRODUCTION_BASE_URL}/default.png`}
     />
   ) : (
     <img src={`data:image/png;base64, ${data && data}`} className={className} />

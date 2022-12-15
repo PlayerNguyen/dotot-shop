@@ -45,7 +45,7 @@ export default function ProductItemCard({
     >
       <div className="flex flex-row w-full sm:flex-col">
         {/* Header */}
-        <div className="productCard-header w-1/2 sm:w-full sm:h-full">
+        <div className="productCard-header w-1/3 sm:w-full sm:h-full">
           <div
             className={`productCard-thumbnail-wrapper w-full h-full bg-cover bg-center rounded-l-xl sm:rounded-t-xl sm:rounded-bl-none sm:h-[210px]`}
             style={{
@@ -59,7 +59,7 @@ export default function ProductItemCard({
         </div>
 
         {/* Item description */}
-        <div className="flex flex-row sm:flex-row flex-1">
+        <div className="flex flex-row sm:flex-row w-2/3 sm:w-full">
           {/* Description group */}
           <div className="flex flex-col sm:gap-1 mt-1 items-start px-3 py-4 flex-1">
             <div className="flex flex-row gap-2 items-center flex-1 w-full">
