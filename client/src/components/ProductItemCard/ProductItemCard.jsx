@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiFillHeart,
   AiOutlineHeart,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
+import ProductRequest from "../../requests/ProductRequest";
 
 export default function ProductItemCard({
   name,
@@ -15,6 +17,7 @@ export default function ProductItemCard({
   salePrice,
 }) {
   const [isLoved, setIsLoved] = useState(false);
+  const [imageList, setImageList] = useState([]);
 
   const handleClickLoveButton = () => {
     if (localStorage.getItem("token") === null) {
@@ -24,11 +27,19 @@ export default function ProductItemCard({
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    ProductRequest.getProductImages(id).then((response) => {
+      const { data } = ResponseInterceptor.filterSuccess(response);
+      console.log(data);
+      setImageList([...data]);
+    });
+  }, []);
+
   return (
     <div
       className={`
-      productCard-wrapper sm:block bg-zinc-100 rounded-xl
-      cursor-pointer border border-zinc-400 hover:shadow-lg 
+      productCard-wrapper sm:block bg-base-100 rounded-xl
+      cursor-pointer border border-base-content hover:shadow-lg 
       transition-shadow ease-in-out duration-100 flex`}
       onClick={() => navigate(`/products/${id}`)}
     >
@@ -39,7 +50,9 @@ export default function ProductItemCard({
             className={`productCard-thumbnail-wrapper w-full h-full bg-cover bg-center rounded-l-xl sm:rounded-t-xl sm:rounded-bl-none sm:h-[210px]`}
             style={{
               backgroundImage: `url('${
-                image ? image : `${process.env.PRODUCTION_BASE_URL}/default.png`
+                imageList.length === 0
+                  ? `${process.env.PRODUCTION_BASE_URL}/default.png`
+                  : `${imageList[0].Url}`
               }')`,
             }}
           ></div>
@@ -50,13 +63,11 @@ export default function ProductItemCard({
           {/* Description group */}
           <div className="flex flex-col sm:gap-1 mt-1 items-start px-3 py-4 flex-1">
             <div className="flex flex-row gap-2 items-center flex-1 w-full">
-              <span className="bg-green-400 px-2 py-0.5 rounded-lg text-[7pt]">
-                {condition}
-              </span>
+              <span className=" badge badge-primary">{condition}</span>
             </div>
 
             <div>
-              <span className="text-zinc-600 text-sm">{name}</span>
+              <span className="text-base-content text-sm">{name}</span>
             </div>
             <div className="w-full"></div>
 
@@ -69,7 +80,7 @@ export default function ProductItemCard({
                 {salePrice && Number.parseInt((salePrice / price) * 100) + `%`}
               </span> */}
               </div>
-              <p className="font-bold text-black flex-1 text-2xl">
+              <p className="font-bold text-base-content flex-1 text-2xl">
                 ${salePrice ? salePrice : price}
               </p>
             </div>

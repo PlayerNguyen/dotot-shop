@@ -41,11 +41,16 @@ function createProduct(data: FormData) {
   return AxiosInstance.post(`/products/product`, data);
 }
 
+function getProductImages(productId: string) {
+  return AxiosInstance.get(`/products/product-image/${productId}`);
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
   fetchProductParams,
   deleteProduct,
-  createProduct
+  createProduct,
+  getProductImages,
 };
 export default ProductRequest;
