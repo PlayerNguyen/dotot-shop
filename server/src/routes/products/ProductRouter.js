@@ -3,6 +3,8 @@ const express = require("express");
 const { check, param } = require("express-validator");
 const { requestAuthenticate } = require("../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("../../middlewares/AuthMiddleware");
+const memoryUploadMiddleware = require("../../utils/MulterHelper");
+
 const {
   getAllCategories,
   addCategory,
@@ -26,6 +28,7 @@ const router = express.Router();
 router.post(
   `/product/`,
   AuthMiddleware.requestAuthenticate,
+  memoryUploadMiddleware.array("images", 12),
   check("name", "The name value cannot be undefined or empty")
     .isLength({ min: 5 })
     .withMessage("The name length must be greater than 5 characters"),
@@ -34,6 +37,11 @@ router.post(
       gt: 0.0,
     })
     .withMessage("The price must be a float and greater than 0.0"),
+  check("condition", "The condition value cannot be undefined or empty")
+    .isFloat({
+      gt: 90,
+    })
+    .withMessage("The condition must be a float and greater than 90"),
   createProduct,
 );
 
