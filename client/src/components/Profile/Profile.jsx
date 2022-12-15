@@ -37,11 +37,7 @@ export default function Profile() {
   ]);
   const [profile, setProfile] = useState(null);
   const [uploadAvatarVisible, setUploadAvatarVisible] = useState(false);
-  const [avatarInformation, setAvatarInformation] = useState({
-    avatarId: null,
-    avatarUrl: null,
-    avatarBlurHash: null,
-  });
+  const [avatarInformation, setAvatarInformation] = useState(null);
 
   useEffect(() => {
     const paths = location.pathname.split("/").filter((e) => e !== "");
@@ -54,17 +50,19 @@ export default function Profile() {
       const { data } = ResponseInterceptor.filterSuccess(response);
       setProfile(data);
 
-      // Split avatar
-      const { blurHash, url, id } = data.avatar;
-      setAvatarInformation({
-        avatarBlurHash: blurHash,
-        avatarUrl: url,
-        avatarId: id,
-      });
+      if (data.avatar !== null) {
+        const { blurHash, url, id } = data.avatar;
+        // console.log(data.avatar);
+        setAvatarInformation({
+          avatarBlurHash: blurHash,
+          avatarUrl: url,
+          avatarId: id,
+        });
+      }
     });
 
     return () => {
-      abortController.abort();
+      // abortController.abort();
     };
   }, []);
 
@@ -86,14 +84,15 @@ export default function Profile() {
                 }
               >
                 <LazyImageLoader
-                  src={`${process.env.PRODUCTION_BASE_URL}${
-                    avatarInformation &&
-                    avatarInformation.avatarUrl &&
-                    avatarInformation.avatarUrl
-                  }`}
-                  blurHash={
-                    avatarInformation && avatarInformation.avatarBlurHash
-                  }
+                  // src={`${process.env.PRODUCTION_BASE_URL}${
+                  //   avatarInformation && avatarInformation.avatarUrl
+                  //     ? avatarInformation.avatarUrl
+                  //     : "default.png"
+                  // }`}
+                  // blurHash={
+                  //   avatarInformation && avatarInformation.avatarBlurHash
+                  // }
+                  src={`http://localhost:3000/default.png`}
                   className="rounded-full"
                 />
               </Suspense>
@@ -107,12 +106,12 @@ export default function Profile() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="text-3xl text-black font-bold">
+            <div className="text-3xl text-base-content font-bold">
               {profile && profile.firstName + " " + profile.lastName}
             </div>
             <div>
               <div>
-                <div className="badge badge-success gap-2">
+                <div className="badge badge-primary gap-2">
                   <GiTwoCoins />
                   300
                 </div>

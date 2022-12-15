@@ -12,6 +12,11 @@ const { v4: uuid } = require("uuid");
 const chalk = require("chalk");
 const { getUserFromAuth } = require("./../../middlewares/AuthMiddleware");
 const AuthMiddleware = require("./../../middlewares/AuthMiddleware");
+const { generateBlurHash } = require("../../utils/ImageCompressUtil");
+const sharp = require("sharp");
+const fs = require("fs");
+const { getStaticDirectory } = require("../../Static");
+const path = require("path");
 
 /**
  * Create a new product
@@ -28,23 +33,25 @@ async function createProduct(req, res, next) {
 
     return next();
   }
-
-  const { price, name, description } = req.body;
-  const generatedUniqueId = uuid();
+  const authorUser = getUserFromAuth(req);
+  const { price, name, description, condition } = req.body;
+  const generatedUniqueProductId = uuid();
 
   try {
     // Insert the product
     const insertResponse = await KnexDriver.insert({
-      Id: generatedUniqueId,
+      Id: generatedUniqueProductId,
       Price: price,
       Name: name,
-      Description: description,
+      Description: description === undefined ? "" : description,
+      CreatedAt: Date.now(),
+      Condition: condition,
     }).into(Tables.Products);
 
     console.log(
       chalk.gray(
         `creating ${insertResponse} product with metadata ${JSON.stringify({
-          Id: generatedUniqueId,
+          Id: generatedUniqueProductId,
           Price: price,
           Name: name,
           Description: description,
@@ -58,12 +65,146 @@ async function createProduct(req, res, next) {
 
     await KnexDriver.insert({
       UserId: userId,
-      ProductId: generatedUniqueId,
+      ProductId: generatedUniqueProductId,
     }).into(Tables.UserProducts);
 
-    // console.log(`result `, insertionCenterHooks);
+    // Handle the image resources
+    const { cropMap } = req.body;
+    const generatedResources = [];
 
-    res.json(createSuccessResponse({ id: generatedUniqueId }));
+    let deserializedCropMap = [];
+    if (req.files !== undefined && req.files.length > 0) {
+      // Must have a crop map field
+      if (!cropMap) {
+        return res
+          .status(500)
+          .json(createErrorResponse("cropMap parameter is not found"));
+      }
+
+      // Crop map must be an array
+      deserializedCropMap = JSON.parse(cropMap);
+      if (!Array.isArray(deserializedCropMap)) {
+        return res
+          .status(500)
+          .json(
+            createErrorResponse("cropMap must be a json serialized array text"),
+          );
+      }
+
+      // Crop map must equal the length of the files
+      if (req.files.length !== deserializedCropMap.length) {
+        return res
+          .status(500)
+          .json(
+            createErrorResponse(
+              "cropMap length must be the same as `images` field",
+            ),
+          );
+      }
+
+      // Any of them not an image
+      if (req.files.some((e) => !e.mimetype.includes("image/"))) {
+        return res
+          .status(500)
+          .json(createErrorResponse("some file are not an image"));
+      }
+
+      // Allocate the store location and insert resources first
+      for (let i = 0; i < req.files.length; i++) {
+        /**
+         * @type {Express.Multer.File}
+         */
+        const requestFile = req.files[i];
+        const resourceId = uuid();
+        const generateObject = {
+          Id: resourceId,
+          Name: requestFile.originalname,
+          Path: path.resolve(getStaticDirectory(), resourceId),
+          BlurHash: await generateBlurHash(req.files[i].buffer),
+          Author: authorUser.id,
+        };
+        await KnexDriver.insert(generateObject).into(Tables.Resources);
+        await KnexDriver.insert({
+          ResourceId: resourceId,
+          ProductId: generatedUniqueProductId,
+        }).into(Tables.ProductImage);
+
+        generatedResources.push(generateObject);
+
+        // Write a draft file before process an image
+        if (!fs.existsSync(getStaticDirectory())) {
+          fs.mkdirSync(getStaticDirectory());
+        }
+
+        fs.writeFileSync(generatedResources[i].Path, req.files[i].buffer);
+      }
+    }
+
+    // Require a discount
+    if (req.body.salePrice) {
+      await KnexDriver.insert({
+        ProductId: generatedUniqueProductId,
+        SalePrice: req.body.salePrice,
+      }).into(Tables.SaleProducts);
+    }
+
+    // Insert product status
+    await KnexDriver.insert({
+      ProductId: generatedUniqueProductId,
+      Status: "PENDING",
+    }).into(Tables.ProductStatus);
+
+    res.json(createSuccessResponse({ id: generatedUniqueProductId }));
+
+    // Process all uploaded resources as image
+    for (let i = 0; i < generatedResources.length; i++) {
+      /**
+       * @type {Express.Multer.File}
+       */
+      const file = req.files[i];
+      const cropProperty = deserializedCropMap[i];
+
+      // Normalize the crop scale from percent to real 2d coordinate system
+      const fileBufferMetadata = await sharp(file.buffer).metadata();
+      const { width: fileWidth, height: fileHeight } = fileBufferMetadata;
+      const {
+        x: percentX,
+        y: percentY,
+        width: percentWidth,
+        height: percentHeight,
+      } = cropProperty;
+      const cropNormalize = {
+        x: (percentX / 100) * fileWidth,
+        y: (percentY / 100) * fileHeight,
+        width: (percentWidth / 100) * fileWidth,
+        height: (percentHeight / 100) * fileHeight,
+      };
+
+      // Extract crop region as buffer and convert it to png format
+      const croppedPngBuffer = await sharp(file.buffer)
+        .extract({
+          width: Math.round(cropNormalize.width),
+          height: Math.round(cropNormalize.height),
+          left: Math.round(cropNormalize.x),
+          top: Math.round(cropNormalize.y),
+        })
+        // .png()
+        .png({ quality: 1, compressionLevel: 9, effect: 1 })
+        .toBuffer();
+      // Extract blur hash
+      const blurHashBuffer = await generateBlurHash(croppedPngBuffer);
+
+      // Write cropped buffer into static serve folder
+      if (!fs.existsSync(getStaticDirectory())) {
+        fs.mkdirSync(getStaticDirectory());
+      }
+      fs.writeFileSync(generatedResources[i].Path, croppedPngBuffer);
+
+      // Update blur hash for the current metadata
+      await KnexDriver.update({ BlurHash: blurHashBuffer.toString() })
+        .into(Tables.Resources)
+        .where({ Id: generatedResources[i].Id });
+    }
   } catch (err) {
     next(err);
   }
@@ -107,19 +248,19 @@ async function getProductFromId(req, res, next) {
         "=",
         `${Tables.UserProducts}.ProductId`,
       )
-      .join(
+      .leftJoin(
         Tables.Users,
         `${Tables.UserProducts}.UserId`,
         "=",
         `${Tables.Users}.Id`,
       )
-      .join(
+      .leftJoin(
         Tables.ProductCategory,
         `${Tables.ProductCategory}.ProductId`,
         "=",
         `${Tables.Products}.Id`,
       )
-      .join(
+      .leftJoin(
         Tables.Categories,
         `${Tables.Categories}.Id`,
         "=",
@@ -133,7 +274,7 @@ async function getProductFromId(req, res, next) {
     }
 
     // Get resources whether exists
-    const resourceList = await KnexDriver.select(
+    let resourceList = await KnexDriver.select(
       "r.Id as Id",
       "r.BlurHash as BlurHash",
     )
@@ -145,6 +286,14 @@ async function getProductFromId(req, res, next) {
         "=",
         `${Tables.ProductImage}.ResourceId`,
       );
+    resourceList = resourceList.map((resource) => {
+      const { Id, BlurHash } = resource;
+      return {
+        Id,
+        BlurHash,
+        Url: `${process.env.HOST_NAME}resources/raw/${Id}`,
+      };
+    });
     const responseUser = {
       name: product.Name,
       description: product.Description,

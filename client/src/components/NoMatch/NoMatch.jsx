@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function NoMatch() {
   const navigate = useNavigate();
   return (
-    <div className="noMatch-wrapper bg-white">
+    <div className="noMatch-wrapper bg-base">
       <div className="flex flex-col sm:my-24 md:my-48 my-6 mx-3 gap-6 items-center">
         <div className="text-6xl flex flex-row gap-4">
           <FaChair />

@@ -40,6 +40,9 @@ const BrowseProducts = React.lazy(() =>
 const AdminProduct = React.lazy(() =>
   import("./components/Admin/AdminProduct")
 );
+const AdminCategory = React.lazy(() =>
+  import("./components/Admin/AdminCategory")
+);
 const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout"));
 /**
  *
@@ -171,6 +174,32 @@ function AppRoutes() {
           }
         ></Route>
 
+        <Route
+          path="/admin"
+          element={
+            <Suspense>
+              <AdminLayout />
+            </Suspense>
+          }
+        >
+          <Route
+            path="/admin/products"
+            element={
+              <Suspense>
+                <AdminProduct />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <Suspense>
+                <AdminCategory />
+              </Suspense>
+            }
+          />
+        </Route>
+
         {/* 404 not found */}
         <Route path="*" element={<NoMatch />} />
       </Route>
@@ -205,7 +234,7 @@ export default function App() {
 
         {/* Render home */}
         <AppRoutes />
-        
+
         {/* Footer */}
         <Footer />
       </div>
