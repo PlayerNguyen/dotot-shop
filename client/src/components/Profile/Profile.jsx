@@ -84,15 +84,15 @@ export default function Profile() {
                 }
               >
                 <LazyImageLoader
-                  // src={`${process.env.PRODUCTION_BASE_URL}${
-                  //   avatarInformation && avatarInformation.avatarUrl
-                  //     ? avatarInformation.avatarUrl
-                  //     : "default.png"
-                  // }`}
-                  // blurHash={
-                  //   avatarInformation && avatarInformation.avatarBlurHash
-                  // }
-                  src={`http://localhost:3000/default.png`}
+                  src={`${process.env.PRODUCTION_BASE_URL}${
+                    avatarInformation && avatarInformation.avatarUrl
+                      ? avatarInformation.avatarUrl
+                      : "default.png"
+                  }`}
+                  blurHash={
+                    avatarInformation && avatarInformation.avatarBlurHash
+                  }
+                  // src={`http://localhost:3000/default.png`}
                   className="rounded-full"
                 />
               </Suspense>
