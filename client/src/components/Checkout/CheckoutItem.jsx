@@ -2,63 +2,150 @@ import React, { useEffect, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
-import { removeCartItem } from "../../slices/CartSlice";
+import LazyImageLoader from "../LazyImageLoader/LazyImageLoader";
 
-export default function CheckoutItem({ itemId, onRemove }) {
+// export default function CheckoutItem({ itemId, onRemove }) {
+//   const [image, setImage] = useState(null);
+//   const [productData, setProductData] = useState();
+
+//   // Fetch item info
+//   useEffect(() => {
+//     if (itemId) {
+//       ProductRequest.fetchProduct(itemId).then((response) => {
+//         const { data } = ResponseInterceptor.filterSuccess(response);
+//         setProductData(data);
+
+//         if (data.images.length > 0) {
+//           setImage(data.images[0].Url);
+//         }
+//       });
+//     }
+//   }, [itemId]);
+
+//   const handleRemoveItem = () => {
+//     onRemove(itemId);
+//   };
+
+//   return (
+//     <div className="checkOutItem-wrapper m-h-[180px]">
+//       {/* Info action */}
+//       <div className="flex flex-row-reverse">
+//         {/* remove the item */}
+//         <div>
+//           <button
+//             className="btn btn-ghost rounded-full"
+//             onClick={handleRemoveItem}
+//           >
+//             <BsTrash />
+//           </button>
+//         </div>
+//       </div>
+//       <div className="checkOutItem flex flex-row gap-4">
+//         {/* Left */}
+//         <div className="w-1/3">
+//           <LazyImageLoader
+//             src={`${
+//               image ? image : `${process.env.PRODUCTION_BASE_URL}/default.png`
+//             }`}
+//           />
+//         </div>
+
+//         {/* Right */}
+//         <div className="flex-1 w-2/3">
+//           {/* Info group */}
+//           <div className="text-xl font-bold">
+//             {productData ? productData.name : `[The product is deleted]`}
+//           </div>
+//           <div className="text-xl font-bold flex flex-row gap-1 text-base-content">
+//             <span>$</span>
+//             <span>
+//               {productData
+//                 ? productData.salePrice === null
+//                   ? productData.price
+//                   : productData.salePrice
+//                 : `[The product is deleted]`}
+//             </span>
+//             <span className="line-through text-sm">
+//               {productData &&
+//                 productData.salePrice !== null &&
+//                 productData.price}
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+export default function CheckoutItem({ item, onRemove }) {
   const [image, setImage] = useState(null);
-  const [productData, setProductData] = useState();
-  // const dispatch = useDispatch();
+  // const [productData, setProductData] = useState();
 
   // Fetch item info
-  useEffect(() => {
-    if (itemId) {
-      ProductRequest.fetchProduct(itemId).then((response) => {
-        const { data } = ResponseInterceptor.filterSuccess(response);
-        setProductData(data);
-      });
-    }
-  }, [itemId]);
+  // useEffect(() => {
+  //   if (itemId) {
+  //     ProductRequest.fetchProduct(itemId).then((response) => {
+  //       const { data } = ResponseInterceptor.filterSuccess(response);
+  //       setProductData(data);
 
+  //       if (data.images.length > 0) {
+  //         setImage(data.images[0].Url);
+  //       }
+  //     });
+  //   }
+  // }, [itemId]);
+  useEffect(() => {
+    if (item) {
+      console.log(`item `, item);
+      // setImage(item.images[0]);
+    }
+  }, [item]);
   const handleRemoveItem = () => {
-    onRemove(itemId);
+    onRemove(item.id);
   };
 
   return (
     <div className="checkOutItem-wrapper m-h-[180px]">
+      {/* Info action */}
+      <div className="flex flex-row-reverse">
+        {/* remove the item */}
+        <div>
+          <button
+            className="btn btn-ghost rounded-full"
+            onClick={handleRemoveItem}
+          >
+            <BsTrash />
+          </button>
+        </div>
+      </div>
       <div className="checkOutItem flex flex-row gap-4">
         {/* Left */}
-        <div className="w-1/3 ">
-          <div
-            className={`productCard-thumbnail-wrapper w-full bg-cover bg-center h-[140px] sm:h-[180px]`}
-            style={{
-              backgroundImage: `url('${
-                image ? image : `${process.env.PRODUCTION_BASE_URL}/default.png`
-              }')`,
-            }}
-          ></div>
+        <div className="w-1/3">
+          <LazyImageLoader
+            src={`${
+              image ? image : `${process.env.PRODUCTION_BASE_URL}/default.png`
+            }`}
+          />
         </div>
 
         {/* Right */}
-        <div className="flex-1">
+        <div className="flex-1 w-2/3">
           {/* Info group */}
           <div className="text-xl font-bold">
-            {productData ? productData.name : `[The product is deleted]`}
+            {item ? item.name : `[The product is deleted]`}
           </div>
-          <div className="text-xl text-primary font-bold">
-            $ {productData ? productData.price : `[The product is deleted]`}
-          </div>
-        </div>
-
-        {/* Info action */}
-        <div>
-          {/* remove the item */}
-          <div>
-            <button
-              className="btn btn-ghost rounded-full"
-              onClick={handleRemoveItem}
-            >
-              <BsTrash />
-            </button>
+          <div className="text-xl font-bold flex flex-row gap-1 text-base-content">
+            <span>$</span>
+            <span>
+              {item
+                ? item.salePrice === null
+                  ? item.price
+                  : item.salePrice
+                : `[The product is deleted]`}
+            </span>
+            <span className="line-through text-sm">
+              {item && item.salePrice !== null && item.price}
+            </span>
           </div>
         </div>
       </div>

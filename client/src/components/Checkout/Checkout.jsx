@@ -7,6 +7,10 @@ import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import { useSelector, useDispatch } from "react-redux";
 import { removeCartItem } from "../../slices/CartSlice";
 import useRequestAuthenticate from "../../hooks/useRequestAuthenticate";
+import { TbShoppingCartOff } from "react-icons/tb";
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import ProductRequest from "../../requests/ProductRequest";
 
 function CheckoutWrapper({ children }) {
   useRequestAuthenticate("/users/?redirect_from=cart");
@@ -15,7 +19,7 @@ function CheckoutWrapper({ children }) {
 }
 
 function CheckoutRender() {
-  const [items, setItems] = useState(["", "", ""]);
+  const [items, setItems] = useState([]);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [paymentType, setPaymentType] = useState(1);
 
@@ -30,6 +34,26 @@ function CheckoutRender() {
     if (cartItems) {
       setItems(cartItems);
     }
+  }, [cartItems]);
+
+  // Get data information
+  useEffect(() => {
+    if (cartItems) {
+      console.log(cartItems);
+      // Fetch product information
+      Promise.all(
+        [...cartItems].map((itemId) =>
+          ProductRequest.fetchProduct(itemId).then((response) => {
+            const { data } = ResponseInterceptor.filterSuccess(response);
+            return data;
+          })
+        )
+      ).then((results) => setItems([...results]));
+    }
+
+    return () => {
+      setItems([]);
+    };
   }, [cartItems]);
 
   useEffect(() => {
@@ -80,135 +104,179 @@ function CheckoutRender() {
         {/* Body */}
         <div className="checkOut-body flex flex-col gap-4">
           {/* List of items */}
-          {items &&
+          {items && items.length > 0 ? (
             items.map((item, _index) => {
-              return (
-                <CheckoutItem itemId={item} onRemove={handleRemoveCartItem} />
-              );
-            })}
-        </div>
-        {/* Payment type */}
-        <div className="payment-type-selection">
-          <div className="text-xl font-bold">Payment type</div>
-          <div className="w-full sm:w-1/2 mx-auto">
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <input
-                  type="radio"
-                  name="payment-cod"
-                  className="radio checked:bg-primary"
-                  checked={paymentType === 1}
-                  onChange={(e) => {
-                    setPaymentType(1);
-                  }}
-                />
-                <span className="label-text">Cash on Delivery</span>
-              </label>
-            </div>
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <input
-                  type="radio"
-                  name="payment-momo"
-                  className="radio checked:bg-primary"
-                  onChange={() => {
-                    setPaymentType(2);
-                  }}
-                  checked={paymentType === 2}
-                />
-                <span className="label-text">Payment via MoMo Service</span>
-              </label>
-            </div>
-          </div>
-        </div>
-        {/* Address */}
-        <div className="address">
-          <div className="text-xl font-bold">Address</div>
-          <div className="w-full sm:w-1/2 mx-auto">
-            {addressList &&
-              addressList.map((address, _index) => {
-                {
-                  /* console.log(address); */
-                }
-                const {
-                  Id,
-                  ContactPhone,
-                  ProvinceName,
-                  DistrictName,
-                  WardName,
-                  StreetName,
-                } = address;
-                return (
-                  <div
-                    className="form-control bg-zinc-50 px-4 rounded-xl mb-2 text-sm"
-                    key={Id}
+              return <CheckoutItem item={item} />;
+            })
+          ) : (
+            <div className="my-6 sm:my-8 md:my-10 lg:my-14">
+              <div className="flex flex-col justify-center items-center text-2xl text-primary-content">
+                <span>
+                  <TbShoppingCartOff />
+                </span>
+                <span>
+                  Your cart is super quite now.{" "}
+                  <Link
+                    to="/browse-products/"
+                    className="link text-base-content"
                   >
-                    <label className="label cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`address-${Id}`}
-                        className="radio checked:bg-primary mr-4"
-                        checked={selectedAddress === _index}
-                        onChange={() => {
-                          handleChangeAddress(_index);
-                        }}
-                      />
-                      <div className="w-full">
-                        <b>{StreetName}</b>
-                        <div>
-                          {WardName}, {DistrictName}, {ProvinceName}
-                        </div>
-                        <span>{ContactPhone}</span>
-                      </div>
-                    </label>
-                  </div>
-                );
-              })}
-          </div>
-
-          {/* Add more address */}
-          <button
-            className="btn btn-ghost w-full"
-            onClick={handleOpenAddressManager}
-          >
-            <AiFillPlusCircle className="mr-6" />
-            <span>Add address</span>
-          </button>
-        </div>
-        <hr />
-        {/* Footer */}
-        <div className="flex flex-col gap-4">
-          {/* Listing all items */}
-          <div className="flex flex-row">
-            <div className="flex-1">Total</div>
-            {/* List outer */}
-            <div>
-              {/* List  */}
-              <ul>
-                {["a", "b", "c", "d"].map((item, _index) => {
-                  return (
-                    <li>
-                      <span className="mr-3 text-base-300">Product {item}</span>
-                      <span>costA</span>
-                    </li>
-                  );
-                })}
-                <li>
-                  <span></span>
-                  <span>
-                    {/* Total of all cost */}
-                    <div className="font-bold">Total cost</div>
-                  </span>
-                </li>
-              </ul>
+                    Go for shopping
+                  </Link>
+                </span>
+              </div>
             </div>
-          </div>
-
-          {/* Action footer */}
-          <div className="flex flex-row-reverse">
-            <button className="btn btn-primary">Purchase</button>
-          </div>
+          )}
         </div>
+
+        {items.length > 0 && (
+          <>
+            {/* Payment type */}
+            <div className="payment-type-selection">
+              <div className="text-xl font-bold">Payment type</div>
+              <div className="w-full sm:w-1/2 mx-auto">
+                <div className="form-control">
+                  <label className="label cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment-cod"
+                      className="radio checked:bg-primary"
+                      checked={paymentType === 1}
+                      onChange={(e) => {
+                        setPaymentType(1);
+                      }}
+                    />
+                    <span className="label-text">Cash on Delivery</span>
+                  </label>
+                </div>
+                <div className="form-control">
+                  <label className="label cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment-momo"
+                      className="radio checked:bg-primary"
+                      onChange={() => {
+                        setPaymentType(2);
+                      }}
+                      checked={paymentType === 2}
+                    />
+                    <span className="label-text">Payment via MoMo Service</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="divider"></div>
+            {/* Address */}
+            <div className="address">
+              <div className="text-xl font-bold">Address</div>
+              <div className="w-full sm:w-1/2 mx-auto">
+                {addressList &&
+                  addressList.map((address, _index) => {
+                    {
+                      /* console.log(address); */
+                    }
+                    const {
+                      Id,
+                      ContactPhone,
+                      ProvinceName,
+                      DistrictName,
+                      WardName,
+                      StreetName,
+                    } = address;
+                    return (
+                      <div
+                        className="form-control bg-zinc-50 px-4 rounded-xl mb-2 text-sm"
+                        key={Id}
+                      >
+                        <label className="label cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`address-${Id}`}
+                            className="radio checked:bg-primary mr-4"
+                            checked={selectedAddress === _index}
+                            onChange={() => {
+                              handleChangeAddress(_index);
+                            }}
+                          />
+                          <div className="w-full">
+                            <b>{StreetName}</b>
+                            <div>
+                              {WardName}, {DistrictName}, {ProvinceName}
+                            </div>
+                            <span>{ContactPhone}</span>
+                          </div>
+                        </label>
+                      </div>
+                    );
+                  })}
+              </div>
+
+              {/* Add more address */}
+              <button
+                className="btn btn-ghost w-full"
+                onClick={handleOpenAddressManager}
+              >
+                <AiFillPlusCircle className="mr-6" />
+                <span>Add address</span>
+              </button>
+            </div>
+            <div className="divider"></div>
+            {/* Footer */}
+            <div className="flex flex-col gap-4">
+              {/* Listing all items */}
+              <div className="flex flex-row">
+                <div className="flex-1">Total</div>
+                {/* List outer */}
+                <div>
+                  {/* List  */}
+                  <ul className=" text-success">
+                    {[...items].map((item, _index) => {
+                      return (
+                        <li>
+                          <span className="mr-3">Product {item.name}</span>
+                          <span>
+                            {item && item.salePrice !== null
+                              ? item.salePrice
+                              : item.price}
+                          </span>
+                        </li>
+                      );
+                    })}
+                    <div className="divider"></div>
+                    <li className="flex flex-row gap-4">
+                      <span>
+                        {/* Total of all cost */}
+                        <div className="font-bold">Total cost</div>
+                      </span>
+                      <span>
+                        {items.reduce(
+                          (prev, current) =>
+                            prev +
+                            (current.salePrice !== null
+                              ? current.salePrice
+                              : current.price),
+                          0
+                        )}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Action footer */}
+              <div className="flex flex-row-reverse">
+                <button
+                  className="btn btn-primary flex flex-row gap-4"
+                  disabled={items.length === 0 || false}
+                >
+                  <span>
+                    <FaMoneyBillAlt />
+                  </span>
+                  <span>Purchase</span>
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <AddressManagerDialog
         visible={addressVisible}
