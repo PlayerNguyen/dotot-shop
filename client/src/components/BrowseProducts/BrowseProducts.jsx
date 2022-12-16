@@ -63,7 +63,9 @@ export default function BrowseProducts() {
   };
 
   return (
-    <div className="browserProducts-wrapper">
+    <div
+      className={`browserProducts-wrapper w-full bg-base-100 sm:w-2/3 md:w-3/5 mx-auto sm:my-6 sm:rounded-xl py-6 lg:w-2/5`}
+    >
       <div className="flex flex-col gap-4 bg-base px-12 py-3">
         {/* Search */}
         <div className="w-full">

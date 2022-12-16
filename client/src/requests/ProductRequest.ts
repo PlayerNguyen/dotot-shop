@@ -49,6 +49,10 @@ function postCreateOrder(addressId: string, products: any[]) {
   return AxiosInstance.post(`/products/purchase`, { addressId, products });
 }
 
+function getMyPurchase() {
+  return AxiosInstance.get(`/products/my-purchase`);
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
@@ -57,5 +61,6 @@ const ProductRequest = {
   createProduct,
   getProductImages,
   postCreateOrder,
+  getMyPurchase,
 };
 export default ProductRequest;

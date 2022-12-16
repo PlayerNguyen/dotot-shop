@@ -12,7 +12,7 @@ const {
   updateCategory,
   getCategoryById,
 } = require("./CategoryController");
-const { createOrder } = require("./OrderController");
+const { createOrder, getOrderFromRequestUser } = require("./OrderController");
 const {
   createProduct,
   getProductFromId,
@@ -77,6 +77,8 @@ router.put(
 );
 
 router.post(`/purchase`, requestAuthenticate, createOrder);
+
+router.get(`/my-purchase`, requestAuthenticate, getOrderFromRequestUser);
 
 router.get(`/product-image/:productId`, getProductImages);
 

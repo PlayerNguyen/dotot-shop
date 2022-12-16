@@ -37,6 +37,10 @@ import AuthenticateRequest from "./components/Wrapper/AuthenticateRequest";
 import UserRequest from "./requests/UserRequest";
 import { ResponseInterceptor } from "./helpers/ResponseInterceptor";
 import { setUser } from "./slices/UserSlice";
+import { clearCartItem } from "./slices/CartSlice";
+const ProfileReceipt = React.lazy(() =>
+  import("./components/Profile/ProfileReceipt")
+);
 const CheckoutSuccess = React.lazy(() =>
   import("./components/Checkout/CheckoutSuccess")
 );
@@ -168,6 +172,15 @@ function AppRoutes() {
                 </Suspense>
               }
             />
+            {/* Receipt */}
+            <Route
+              path="/profile/receipt"
+              element={
+                <Suspense>
+                  <ProfileReceipt />
+                </Suspense>
+              }
+            />
           </Route>
         </Route>
 
@@ -241,6 +254,7 @@ export default function App() {
   });
 
   useEffect(() => {
+    // Debug: dispatch(clearCartItem()); for bug
     // Mock item from local storage to it
     if (localStorage.getItem(process.env.CART_ITEM_KEY_NAME) === null) {
       localStorage.setItem(process.env.CART_ITEM_KEY_NAME, JSON.stringify([]));

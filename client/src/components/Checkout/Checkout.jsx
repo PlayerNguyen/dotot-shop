@@ -40,14 +40,16 @@ function CheckoutRender() {
   // Get data information
   useEffect(() => {
     if (cartItems) {
-      console.log(cartItems);
+      // console.log(cartItems);
       // Fetch product information
       Promise.all(
         [...cartItems].map((itemId) =>
-          ProductRequest.fetchProduct(itemId).then((response) => {
-            const { data } = ResponseInterceptor.filterSuccess(response);
-            return data;
-          })
+          ProductRequest.fetchProduct(itemId)
+            .then((response) => {
+              const { data } = ResponseInterceptor.filterSuccess(response);
+              return data;
+            })
+            .catch((response) => {})
         )
       ).then((results) => setItems([...results]));
     }
@@ -131,7 +133,7 @@ function CheckoutRender() {
           {/* List of items */}
           {items && items.length > 0 ? (
             items.map((item, _index) => {
-              return <CheckoutItem item={item} />;
+              return <CheckoutItem key={_index} item={item} />;
             })
           ) : (
             <div className="my-6 sm:my-8 md:my-10 lg:my-14">
@@ -210,7 +212,7 @@ function CheckoutRender() {
                     return (
                       <div
                         className="form-control bg-zinc-50 px-4 rounded-xl mb-2 text-sm"
-                        key={Id}
+                        key={_index}
                       >
                         <label className="label cursor-pointer">
                           <input

@@ -8,6 +8,7 @@ import {
 import { ImExit } from "react-icons/im";
 import { FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { TbShoppingCart, TbShoppingCartPlus } from "react-icons/tb";
 
 export default function Navbar() {
   const [cartSize, setCartSize] = useState(0);
@@ -86,10 +87,15 @@ export default function Navbar() {
                 </ul>
               </div>
             )}
+            <li>
+              <Link to={"/sell"} className="relative">
+                <TbShoppingCartPlus />
+              </Link>
+            </li>
 
             <li>
               <Link to={"/checkout"} className="relative">
-                <AiOutlineShoppingCart />
+                <TbShoppingCart />
                 {cartSize && cartSize > 0 ? (
                   <span className="text-sm ">{cartSize}</span>
                 ) : null}
@@ -104,22 +110,22 @@ export default function Navbar() {
         <div className="menu menu-horizontal p-2 rounded-box text-xl">
           {/* Shopping cart */}
           <li>
-            <a className="relative">
+            <Link to="/checkout" className="relative">
               <span>
-                <AiOutlineShoppingCart />
+                <TbShoppingCart />
               </span>
               {cartSize && cartSize > 0 ? (
                 <span className="absolute text-sm left-2 top-2 bg-red-400 px-2 rounded-full text-white">
                   {cartSize}
                 </span>
               ) : null}
-            </a>
+            </Link>
           </li>
-          {/* Search */}
+          {/* Sell */}
           <li>
-            <a className="relative">
-              <AiOutlineSearch />
-            </a>
+            <Link to="/sell" className="relative">
+              <TbShoppingCartPlus />
+            </Link>
           </li>
         </div>
       </div>

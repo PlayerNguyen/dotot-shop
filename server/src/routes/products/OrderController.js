@@ -117,13 +117,71 @@ async function getOrderByUserId(req, res, next) {
  */
 async function getAllOrders(req, res, next) {}
 /**
- * Get order using request . Must be an admin to execute this
+ * Get order using request.
  *
  * @param {express.Request} req the request parameter
  * @param {express.Response} res  the response parameter
  * @param {express.NextFunction} next the next function
  */
-async function getOrderFromRequestUser(req, res, next) {}
+async function getOrderFromRequestUser(req, res, next) {
+  const user = getUserFromAuth(req);
+
+  const orderList = await KnexDriver.select(
+    "or.Id as OrderId",
+    `or.UserId as OrderUserId`,
+    `or.ProvinceName as OrderProvinceName`,
+    `or.DistrictName as OrderDistrictName`,
+    `or.WardName as OrderWardName`,
+  )
+    .from(`${Tables.Order} as or`)
+    // .leftJoin(`${Tables.ProductOrders} as po`, `po.OrderId`, `or.Id`)
+    // .leftJoin(`${Tables.ProductStatus} as ps`, `ps.ProductId`, `po.ProductId`)
+    .where({ UserId: user.id });
+  // .groupBy("po.ProductId");
+
+  let products = null;
+  for (const order of orderList) {
+    const productOrders = await KnexDriver.select("*")
+      .from(`${Tables.ProductOrders} as po`)
+      .where({ OrderId: order.OrderId })
+      .leftJoin(`${Tables.Products} as p`, `po.ProductId`, `p.Id`)
+      .leftJoin(`${Tables.ProductStatus} as ps`, `ps.ProductId`, `p.Id`);
+
+    const fetchItems = productOrders.map((productOrder) => {
+      // console.log(productOrder);
+      const {
+        Status,
+        Id: ProductId,
+        ProductName,
+        ProductPrice,
+        Condition: ProductCondition,
+      } = productOrder;
+      return {
+        Status,
+        ProductId,
+        ProductName,
+        ProductPrice,
+        ProductCondition,
+      };
+    });
+    products = fetchItems;
+    // console.log(fetchItems);
+    // products.push();
+  }
+  const responseItem = orderList.map((order) => {
+    return {
+      Order: {
+        Id: order.OrderId,
+        UserId: order.OrderUserId,
+        Province: order.OrderProvinceName,
+        District: order.OrderDistrictName,
+        WardName: order.OrderWardName,
+      },
+      Products: products,
+    };
+  });
+  res.json(createSuccessResponse(responseItem));
+}
 
 module.exports = {
   createOrder,
