@@ -56,9 +56,11 @@ export default function Navbar() {
         <div className="menu menu-horizontal p-2 rounded-box text-md">
           <div className="flex items-stretch gap-3">
             {!signedIn ? (
-              <Link to={"/users/"}>
-                <AiOutlineUser />
-              </Link>
+              <li>
+                <Link to={"/users/"}>
+                  <AiOutlineUser />
+                </Link>
+              </li>
             ) : (
               <div className="dropdown dropdown-end ">
                 <label tabIndex={0} className="btn btn-ghost text-xl">
