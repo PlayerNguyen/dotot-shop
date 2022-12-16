@@ -157,7 +157,7 @@ async function createProduct(req, res, next) {
     // Insert product status
     await KnexDriver.insert({
       ProductId: generatedUniqueProductId,
-      Status: "PENDING",
+      Status: "selling",
     }).into(Tables.ProductStatus);
 
     res.json(createSuccessResponse({ id: generatedUniqueProductId }));
@@ -327,6 +327,7 @@ async function getProductFromId(req, res, next) {
       },
       images: resourceList,
       salePrice: product.SalePrice,
+      condition: product.Condition,
     };
 
     // Increase product view

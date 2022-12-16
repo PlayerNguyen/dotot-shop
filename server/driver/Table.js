@@ -15,5 +15,7 @@ const Tables = {
   UserAddresses: "UserAddresses",
   ProductStatus: "ProductStatus",
   ProductImage: "ProductImages",
+  Order: "Orders",
+  ProductOrders: "ProductOrders",
 };
 module.exports = Tables;

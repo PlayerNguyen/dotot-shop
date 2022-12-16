@@ -45,6 +45,10 @@ function getProductImages(productId: string) {
   return AxiosInstance.get(`/products/product-image/${productId}`);
 }
 
+function postCreateOrder(addressId: string, products: any[]) {
+  return AxiosInstance.post(`/products/purchase`, { addressId, products });
+}
+
 const ProductRequest = {
   fetchAllProducts,
   fetchProduct,
@@ -52,5 +56,6 @@ const ProductRequest = {
   deleteProduct,
   createProduct,
   getProductImages,
+  postCreateOrder,
 };
 export default ProductRequest;

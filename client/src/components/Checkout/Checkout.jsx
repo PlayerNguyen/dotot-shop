@@ -5,11 +5,11 @@ import AddressManagerDialog from "../AddressManagerDialog/AddressManagerDialog";
 import UserRequest from "../../requests/UserRequest";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import { useSelector, useDispatch } from "react-redux";
-import { removeCartItem } from "../../slices/CartSlice";
+import { removeCartItem, clearCartItem } from "../../slices/CartSlice";
 import useRequestAuthenticate from "../../hooks/useRequestAuthenticate";
 import { TbShoppingCartOff } from "react-icons/tb";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProductRequest from "../../requests/ProductRequest";
 
 function CheckoutWrapper({ children }) {
@@ -29,6 +29,7 @@ function CheckoutRender() {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cart.items);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (cartItems) {
@@ -62,7 +63,7 @@ function CheckoutRender() {
       UserRequest.getUserAddressList().then((response) => {
         const { data } = ResponseInterceptor.filterSuccess(response);
         setAddressList(data);
-        setSelectedAddress(0);
+        setSelectedAddress(data.length === 0 ? null : data[0].Id);
       });
     }
 
@@ -83,12 +84,36 @@ function CheckoutRender() {
     setAddressVisible(true);
   };
 
-  const handleChangeAddress = (index) => {
-    setSelectedAddress(index);
+  const handleChangeAddress = (id, index) => {
+    setSelectedAddress(id);
   };
 
   const handleRemoveCartItem = (itemId) => {
     dispatch(removeCartItem(itemId));
+  };
+
+  const handlePurchase = () => {
+    // console.log(selectedAddress, items);
+    const products = [...items].map((item) => {
+      return {
+        ProductName: item.name,
+        ProductId: item.id,
+        ProductPrice: item.salePrice !== null ? item.salePrice : item.price,
+        ProductCondition: item.condition,
+      };
+    });
+
+    ProductRequest.postCreateOrder(selectedAddress, products).then(
+      (response) => {
+        // console.log(response);
+        const { data } = ResponseInterceptor.filterSuccess(response);
+        // Clear cart item
+        dispatch(clearCartItem());
+
+        // Navigate to success
+        navigate(`/checkout-success/?id=${data.Id}`);
+      }
+    );
   };
 
   return (
@@ -192,9 +217,9 @@ function CheckoutRender() {
                             type="radio"
                             name={`address-${Id}`}
                             className="radio checked:bg-primary mr-4"
-                            checked={selectedAddress === _index}
+                            checked={selectedAddress === Id}
                             onChange={() => {
-                              handleChangeAddress(_index);
+                              handleChangeAddress(Id, _index);
                             }}
                           />
                           <div className="w-full">
@@ -266,7 +291,8 @@ function CheckoutRender() {
               <div className="flex flex-row-reverse">
                 <button
                   className="btn btn-primary flex flex-row gap-4"
-                  disabled={items.length === 0 || false}
+                  disabled={items.length === 0}
+                  onClick={handlePurchase}
                 >
                   <span>
                     <FaMoneyBillAlt />

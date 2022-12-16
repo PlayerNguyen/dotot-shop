@@ -135,12 +135,38 @@ async function setupDatabase() {
 
   await createTableIfNotExists(Tables.ProductStatus, (table) => {
     table.string("ProductId").references(`${Tables.Products}.Id`);
-    table.enum("Status", ["PENDING", "APPROVED", "SOLD"]);
+    table.enu("Status", [
+      "selling",
+      "pending",
+      "accepted",
+      "delivering",
+      "sold",
+    ]);
   });
 
   await createTableIfNotExists(Tables.ProductImage, (table) => {
     table.string("ProductId").references(`${Tables.Products}.Id`);
     table.string("ResourceId").references(`${Tables.Resources}.Id`);
+  });
+
+  await createTableIfNotExists(Tables.Order, (table) => {
+    table.string("Id").primary().unique();
+    table.string("UserId").references(`${Tables.Users}.Id`);
+
+    table.string("ProvinceName").notNullable();
+    table.string("DistrictName").notNullable();
+    table.string("WardName").notNullable();
+    table.string("AddressName").notNullable();
+    table.string("PhoneNumber");
+  });
+
+  await createTableIfNotExists(Tables.ProductOrders, (table) => {
+    table.string("OrderId").references(`${Tables.Order}.Id`);
+
+    table.string("ProductId").references(`${Tables.Products}.Id`);
+    table.string("ProductName").notNullable();
+    table.double("ProductPrice").notNullable();
+    table.integer("ProductCondition").notNullable();
   });
 }
 

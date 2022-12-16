@@ -37,6 +37,9 @@ import AuthenticateRequest from "./components/Wrapper/AuthenticateRequest";
 import UserRequest from "./requests/UserRequest";
 import { ResponseInterceptor } from "./helpers/ResponseInterceptor";
 import { setUser } from "./slices/UserSlice";
+const CheckoutSuccess = React.lazy(() =>
+  import("./components/Checkout/CheckoutSuccess")
+);
 const Sell = React.lazy(() => import("./components/Sell/Sell"));
 const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
@@ -174,6 +177,14 @@ function AppRoutes() {
           element={
             <Suspense>
               <Checkout />
+            </Suspense>
+          }
+        ></Route>
+        <Route
+          path="/checkout-success"
+          element={
+            <Suspense>
+              <CheckoutSuccess />
             </Suspense>
           }
         ></Route>

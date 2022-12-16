@@ -12,6 +12,7 @@ const {
   updateCategory,
   getCategoryById,
 } = require("./CategoryController");
+const { createOrder } = require("./OrderController");
 const {
   createProduct,
   getProductFromId,
@@ -74,6 +75,8 @@ router.put(
     .withMessage("The product id must be in a format of uuid v4"),
   updateProduct,
 );
+
+router.post(`/purchase`, requestAuthenticate, createOrder);
 
 router.get(`/product-image/:productId`, getProductImages);
 
