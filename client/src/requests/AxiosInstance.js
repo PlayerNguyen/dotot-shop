@@ -24,7 +24,7 @@ AxiosInstance.interceptors.request.use(
 AxiosInstance.interceptors.response.use(undefined, function (error) {
   if (error.response) {
     const { message } = ResponseInterceptor.filterError(error);
-    toast.error(message);
+    console.error(`ERR from Server: `, message);
   }
 
   return Promise.reject(error);

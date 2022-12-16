@@ -29,20 +29,22 @@ export default function AddressManagerDialog({ visible, onUpdate, onClose }) {
    * Get user address list and print out
    */
   useEffect(() => {
-    const userAbortController = new AbortController();
-    setLoading(true);
-    UserRequest.getUserAddressList(userAbortController.signal)
-      .then((response) => {
-        const { data } = ResponseInterceptor.filterSuccess(response);
-        // console.log(data);
-        setAddresses(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // const userAbortController = new AbortController();
+    if (localStorage.getItem("token") !== null) {
+      setLoading(true);
+      UserRequest.getUserAddressList()
+        .then((response) => {
+          const { data } = ResponseInterceptor.filterSuccess(response);
+          // console.log(data);
+          setAddresses(data);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
 
     return () => {
-      userAbortController.abort();
+      // userAbortController.abort();
     };
   }, []);
 

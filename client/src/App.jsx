@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 const Home = React.lazy(() => import("./components/Home/Home"));
 const Credentials = React.lazy(() =>
   import("./components/Credentials/Credentials")
@@ -31,9 +31,12 @@ const RequestSignedIn = React.lazy(() =>
 
 import { AiFillHome, AiOutlineUser } from "react-icons/ai";
 const Checkout = React.lazy(() => import("./components/Checkout/Checkout"));
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useUnload from "./hooks/useUnload";
 import AuthenticateRequest from "./components/Wrapper/AuthenticateRequest";
+import UserRequest from "./requests/UserRequest";
+import { ResponseInterceptor } from "./helpers/ResponseInterceptor";
+import { setUser } from "./slices/UserSlice";
 const Sell = React.lazy(() => import("./components/Sell/Sell"));
 const BrowseProducts = React.lazy(() =>
   import("./components/BrowseProducts/BrowseProducts")
@@ -77,9 +80,7 @@ function AppRoutes() {
           path="/sell"
           element={
             <Suspense>
-              <AuthenticateRequest>
-                <Sell />
-              </AuthenticateRequest>
+              <Sell />
             </Suspense>
           }
         ></Route>
@@ -172,9 +173,7 @@ function AppRoutes() {
           path="/checkout"
           element={
             <Suspense>
-              <AuthenticateRequest>
-                <Checkout />
-              </AuthenticateRequest>
+              <Checkout />
             </Suspense>
           }
         ></Route>
@@ -214,6 +213,9 @@ function AppRoutes() {
 
 export default function App() {
   const items = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   useUnload((event) => {
     event.preventDefault();
@@ -228,8 +230,27 @@ export default function App() {
   });
 
   useEffect(() => {
+    // Mock item from local storage to it
     if (localStorage.getItem(process.env.CART_ITEM_KEY_NAME) === null) {
       localStorage.setItem(process.env.CART_ITEM_KEY_NAME, JSON.stringify([]));
+    }
+
+    // Request an authenticate if found token
+    if (localStorage.getItem("token") !== null) {
+      UserRequest.getCurrentProfile()
+        .then((response) => {
+          const { data } = ResponseInterceptor.filterSuccess(response);
+          // console.log(data);
+          dispatch(setUser(data));
+        })
+        .catch((err) => {
+          // Error from system, mean
+          if (err.response && err.response.status === 500) {
+            // clear the token from localStorage
+            localStorage.removeItem("token");
+            navigate("/");
+          }
+        });
     }
   }, []);
 

@@ -6,8 +6,15 @@ import UserRequest from "../../requests/UserRequest";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import { useSelector, useDispatch } from "react-redux";
 import { removeCartItem } from "../../slices/CartSlice";
+import useRequestAuthenticate from "../../hooks/useRequestAuthenticate";
 
-export default function Checkout() {
+function CheckoutWrapper({ children }) {
+  useRequestAuthenticate("/users/?redirect_from=cart");
+
+  return children;
+}
+
+function CheckoutRender() {
   const [items, setItems] = useState(["", "", ""]);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [paymentType, setPaymentType] = useState(1);
@@ -18,6 +25,7 @@ export default function Checkout() {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cart.items);
+
   useEffect(() => {
     if (cartItems) {
       setItems(cartItems);
@@ -25,15 +33,17 @@ export default function Checkout() {
   }, [cartItems]);
 
   useEffect(() => {
-    const abortController = new AbortController();
-    UserRequest.getUserAddressList().then((response) => {
-      const { data } = ResponseInterceptor.filterSuccess(response);
-      setAddressList(data);
-      setSelectedAddress(0);
-    });
+    // const abortController = new AbortController();
+    if (localStorage.getItem("token") !== null) {
+      UserRequest.getUserAddressList().then((response) => {
+        const { data } = ResponseInterceptor.filterSuccess(response);
+        setAddressList(data);
+        setSelectedAddress(0);
+      });
+    }
 
     return () => {
-      abortController.abort();
+      // abortController.abort();
     };
   }, []);
 
@@ -175,7 +185,7 @@ export default function Checkout() {
             <div>
               {/* List  */}
               <ul>
-                {["a", "b", "c", "d"].map((item, index) => {
+                {["a", "b", "c", "d"].map((item, _index) => {
                   return (
                     <li>
                       <span className="mr-3 text-base-300">Product {item}</span>
@@ -206,5 +216,12 @@ export default function Checkout() {
         onClose={handleCloseAddressManager}
       />
     </div>
+  );
+}
+export default function Checkout() {
+  return (
+    <CheckoutWrapper>
+      <CheckoutRender />
+    </CheckoutWrapper>
   );
 }

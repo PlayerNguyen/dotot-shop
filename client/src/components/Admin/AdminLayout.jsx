@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiFillSetting, AiFillTags } from "react-icons/ai";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import useRequestAuthenticate from "../../hooks/useRequestAuthenticate";
 
 export default function AdminLayout() {
   const { pathname } = useLocation();
@@ -12,8 +13,14 @@ export default function AdminLayout() {
     },
     { name: `Categories`, url: `/admin/categories`, icon: <AiFillTags /> },
   ]);
+  useRequestAuthenticate("/not-found");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Has an account
+    
+  }, [])
 
   return (
     <div className="adminLayout-wrapper">

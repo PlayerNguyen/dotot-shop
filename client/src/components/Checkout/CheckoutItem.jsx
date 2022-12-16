@@ -42,10 +42,10 @@ export default function CheckoutItem({ itemId, onRemove }) {
         <div className="flex-1">
           {/* Info group */}
           <div className="text-xl font-bold">
-            {productData && productData.name}
+            {productData ? productData.name : `[The product is deleted]`}
           </div>
           <div className="text-xl text-primary font-bold">
-            $ {productData && productData.price}
+            $ {productData ? productData.price : `[The product is deleted]`}
           </div>
         </div>
 

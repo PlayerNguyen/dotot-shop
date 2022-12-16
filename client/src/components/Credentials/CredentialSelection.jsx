@@ -1,15 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiFillFacebook,
   AiFillGoogleSquare,
   AiFillMobile,
   AiOutlineUserAdd,
 } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function CredentialSelection() {
   const navigate = useNavigate();
+
+  const [redirectMessage, setRedirectMessage] = useState("");
 
   useEffect(() => {
     if (localStorage.getItem("token") !== null) {
@@ -17,11 +19,42 @@ export default function CredentialSelection() {
     }
   }, []);
 
+  const location = useLocation();
+
+  /**
+   * Capture value ?redirect_from=value
+   */
+  useEffect(() => {
+    if (location.search !== "") {
+      const searchParams = new URLSearchParams(location.search);
+      if (searchParams.has("redirect_from")) {
+        let redirectMessage = "";
+        switch (searchParams.get("redirect_from")) {
+          case "cart": {
+            redirectMessage =
+              "In order to purchase your stuffs, it would be great if you log in";
+            break;
+          }
+          case "sell": {
+            redirectMessage =
+              "We understand you are a wise person when decide to choose us. One-more-step is just <b style='font-bold'>logging in</b> to sell your own products";
+            break;
+          }
+        }
+
+        setRedirectMessage(redirectMessage);
+      }
+    }
+  }, [location]);
+
   return (
     <div className="credentialSelection-wrapper">
-      <div className="mx-auto w-full md:w-1/4 my-32 md:my-48">
+      <div className="mx-auto w-full sm:w-4/5 md:w-2/4 lg:w-2/4 my-32 md:my-48">
         {/* Title */}
-        <div className="font-bold text-3xl"></div>
+        <div
+          className="text-3xl mb-12"
+          dangerouslySetInnerHTML={{ __html: redirectMessage }}
+        ></div>
 
         <div className="flex flex-col gap-4">
           <button
