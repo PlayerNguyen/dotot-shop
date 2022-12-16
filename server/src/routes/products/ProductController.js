@@ -508,6 +508,7 @@ async function getAllProducts(req, res, next) {
     "p.CreatedAt",
     "p.Condition",
     "sp.SalePrice",
+    "ps.Status",
   )
     .from(`${Tables.Products} as p`)
     .limit(limit === undefined ? 10 : Number.parseInt(limit))
@@ -518,7 +519,8 @@ async function getAllProducts(req, res, next) {
         ? `p.Name LIKE '%${search}%' OR p.Description LIKE '%${search}%'`
         : ``,
     )
-    .leftJoin(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`);
+    .leftJoin(`${Tables.SaleProducts} as sp`, `sp.ProductId`, `p.Id`)
+    .leftJoin(`${Tables.ProductStatus} as ps`, `ps.ProductId`, `p.Id`);
 
   res.status(200).json(
     createSuccessResponse({

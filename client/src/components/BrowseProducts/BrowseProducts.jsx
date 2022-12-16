@@ -81,7 +81,11 @@ export default function BrowseProducts() {
           {products &&
             products.length > 0 &&
             products.map((product) => {
-              return <ProductItem key={product.Id} product={product} />;
+              return (
+                product.Status === `selling` && (
+                  <ProductItem key={product.Id} product={product} />
+                )
+              );
             })}
         </div>
 

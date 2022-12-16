@@ -29,11 +29,11 @@ export default function Profile() {
       name: "Receipt",
       to: "/profile/receipt",
     },
-    {
-      icon: <FaLocationArrow />,
-      name: "Address",
-      to: "/profile/addresses",
-    },
+    // {
+    //   icon: <FaLocationArrow />,
+    //   name: "Address",
+    //   to: "/profile/addresses",
+    // },
   ]);
   const [profile, setProfile] = useState(null);
   const [uploadAvatarVisible, setUploadAvatarVisible] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ResponseInterceptor } from "../../helpers/ResponseInterceptor";
 import ProductRequest from "../../requests/ProductRequest";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiFillCodeSandboxCircle, AiOutlineEdit } from "react-icons/ai";
 import {
   CgTrash,
   CgChevronLeft,
@@ -12,11 +12,26 @@ import {
 import useDelayInput from "../../hooks/useDelayInput";
 import useSetState from "../../hooks/useSetState";
 import AdminProductEditModal from "./AdminProductEditModal";
+import LazyImageLoader from "../LazyImageLoader/LazyImageLoader";
 
 function ProductCardItem({ product, selected, onSelect }) {
+  const [productImageUrl, setProductImageUrl] = useState(null);
+
+  useEffect(() => {
+    console.log(product);
+    ProductRequest.getProductImages(product.Id).then((response) => {
+      const { data } = ResponseInterceptor.filterSuccess(response);
+
+      if (data.length > 0) {
+        setProductImageUrl(data[0].Url);
+      }
+    });
+  }, [product]);
+
   const handleOnSelect = () => {
     onSelect(product.Id);
   };
+
   return (
     <div className="productCardItem-wrapper">
       <div className="productCardItem-container flex flex-row py-3 gap-4">
@@ -37,7 +52,14 @@ function ProductCardItem({ product, selected, onSelect }) {
         </div>
         {/* Image */}
         <div className="w-1/3">
-          <img src="http://localhost:3000/default.png" />
+          {/* <img src="http://localhost:3000/default.png" /> */}
+          <LazyImageLoader
+            src={
+              productImageUrl
+                ? productImageUrl
+                : `http://localhost:3000/default.png`
+            }
+          />
         </div>
         {/* Info */}
         <div className="w-2/3">{product.Name}</div>

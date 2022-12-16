@@ -8,7 +8,7 @@ export default function ProfileReceipt() {
     ProductRequest.getMyPurchase().then((response) => {
       const { data } = ResponseInterceptor.filterSuccess(response);
       setData(data);
-      console.log(data);
+      // console.log(data);
     });
   }, []);
 
@@ -20,7 +20,9 @@ export default function ProfileReceipt() {
           <div className="text-xl">You are not purchase anything yet</div>
         ) : (
           data.map(({ Order, Products }) => {
-            console.log(Products);
+            {
+              /* console.log(Products); */
+            }
             return (
               <div key={Order.Id} className="flex flex-col py-3">
                 {/* Header */}
