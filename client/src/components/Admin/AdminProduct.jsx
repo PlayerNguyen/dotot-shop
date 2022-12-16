@@ -23,8 +23,8 @@ function ProductCardItem({ product, selected, onSelect }) {
         <div className="flex flex-col items-center justify-center gap-2 text-2xl">
           {/* Selected or not */}
           <div
-            className={`w-[20px] h-[20px] rounded-full ${
-              selected ? `bg-primary` : `bg-zinc-200`
+            className={`w-[20px] h-[20px] rounded-full cursor-pointer hover:scale-105 focus:scale-110 ${
+              selected ? `bg-base-content` : `bg-primary-focus`
             }`}
             onClick={handleOnSelect}
           ></div>
@@ -101,7 +101,7 @@ export default function AdminProduct() {
   const [searchBarValue, setSearchBarValue] = useState("");
   const [InputDelayToSearch] = useState(600);
   const productListRef = useRef(null);
-
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
   const selectedItem = useSetState();
 
   const fetchProducts = async () => {
@@ -262,7 +262,7 @@ export default function AdminProduct() {
               {[...Array(limit)].map((_e, i) => {
                 return (
                   <div key={i}>
-                    <div className="w-full h-[200px] bg-zinc-100 animate-pulse"></div>
+                    <div className="w-full h-[200px] bg-base-content animate-pulse"></div>
                   </div>
                 );
               })}
@@ -296,7 +296,15 @@ export default function AdminProduct() {
           totalPage={totalPage}
         />
       </div>
-      <AdminProductEditModal />
+      <AdminProductEditModal
+        visible={isEditModalVisible}
+        onClose={() => {
+          setEditModalVisible(false);
+        }}
+        onCancel={() => {
+          setEditModalVisible(false);
+        }}
+      />
     </div>
   );
 }

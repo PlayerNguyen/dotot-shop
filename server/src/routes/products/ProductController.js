@@ -365,7 +365,7 @@ async function removeProduct(req, res, next) {
     )
       .from(Tables.Products)
       .where(`${Tables.Products}.Id`, productId)
-      .join(
+      .leftJoin(
         `${Tables.UserProducts}`,
         `${Tables.Products}.Id`,
         "=",
@@ -383,7 +383,10 @@ async function removeProduct(req, res, next) {
 
     // Not the owner and not admin
     if (
-      !(user && user.role !== "admin" && user.id !== selectedProduct.UserId)
+      // !(user && user.role !== "admin" && user.id !== selectedProduct.UserId)
+      !user ||
+      user.role !== "admin" ||
+      user.id !== selectedProduct.UserId
     ) {
       res
         .status(401)
@@ -394,6 +397,12 @@ async function removeProduct(req, res, next) {
     // Remove the product
     await KnexDriver.del()
       .from(Tables.UserProducts)
+      .where("ProductId", productId);
+    await KnexDriver.del()
+      .from(Tables.ProductImage)
+      .where("ProductId", productId);
+    await KnexDriver.del()
+      .from(Tables.ProductStatus)
       .where("ProductId", productId);
     await KnexDriver.del()
       .from(Tables.ProductCategory)

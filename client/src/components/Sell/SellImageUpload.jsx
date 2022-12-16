@@ -3,7 +3,12 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import "react-image-crop/dist/ReactCrop.css";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 
-export default function SellImageUpload({ visible, onSelect, onClose }) {
+export default function SellImageUpload({
+  visible,
+  onSelect,
+  onClose,
+  onCancel,
+}) {
   const [cropValue, setCropValue] = useState({
     unit: "%",
     x: 25,
@@ -53,7 +58,7 @@ export default function SellImageUpload({ visible, onSelect, onClose }) {
           {/* Header */}
           <div className="flex flex-row items-center">
             <div className="flex-1">
-              <b className="text-2xl">Title</b>
+              <b className="text-2xl">Select image</b>
             </div>
             <button className="btn btn-ghost text-2xl" onClick={onClose}>
               <AiFillCloseCircle />
@@ -107,7 +112,9 @@ export default function SellImageUpload({ visible, onSelect, onClose }) {
             >
               Select
             </button>
-            <button className="btn btn-accent">Cancel</button>
+            <button className="btn btn-accent" onClick={onCancel}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>

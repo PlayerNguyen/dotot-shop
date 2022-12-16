@@ -135,7 +135,7 @@ function InfoContainer({ visible, onToggle }) {
   );
 }
 
-export default function AdminProductEditModal({ visible, onClose }) {
+export default function AdminProductEditModal({ visible, onClose, onCancel }) {
   const [visibleImageContainer, setVisibleImageContainer] = useState(false);
   const [visibleInfoContainer, setVisibleInfoContainer] = useState(false);
 
@@ -149,45 +149,47 @@ export default function AdminProductEditModal({ visible, onClose }) {
     setVisibleInfoContainer((prev) => !prev);
   };
   return (
-    <div className="adminProductEditModal-wrapper bg-black bg-opacity-70 w-full h-full fixed top-0 left-0">
-      {/* container form */}
-      <div className="w-full sm:mt-12 mx-auto sm:rounded-xl sm:w-4/5 md:w-1/3 bg-white px-6 py-4 flex flex-col">
-        {/* header */}
-        <div className="flex flex-row items-center text-xl font-bold">
-          <div className="flex-1">Edit product</div>
-          {/* close btn */}
-          <div>
-            <button className="btn btn-ghost text-xl">
-              <CgCloseO />
+    visible && (
+      <div className="adminProductEditModal-wrapper bg-black bg-opacity-70 w-full h-full fixed top-0 left-0">
+        {/* container form */}
+        <div className="w-full sm:mt-12 mx-auto sm:rounded-xl sm:w-4/5 md:w-1/3 bg-base-200 px-6 py-4 flex flex-col">
+          {/* header */}
+          <div className="flex flex-row items-center text-xl font-bold">
+            <div className="flex-1">Edit product</div>
+            {/* close btn */}
+            <div>
+              <button className="btn btn-ghost text-xl">
+                <CgCloseO />
+              </button>
+            </div>
+          </div>
+          <div className="divider"></div>
+          {/* body, vh-80 */}
+          <div className=" max-h-[80vh] sm:max-h-[60vh] overflow-y-auto flex flex-col gap-4">
+            {/* Image section */}
+            <ImageContainer
+              visible={visibleImageContainer}
+              onToggle={handleToggleVisibleImageContainer}
+            />
+
+            {/* Info container */}
+            <InfoContainer
+              visible={visibleInfoContainer}
+              onToggle={handleToggleVisibleInfoContainer}
+            />
+          </div>
+
+          <div className="divider"></div>
+
+          {/* footer with buttons */}
+          <div className="flex flex-row-reverse gap-4">
+            <button className="btn btn-accent">Cancel</button>
+            <button className="btn btn-primary" disabled={!anyChange}>
+              Save
             </button>
           </div>
         </div>
-        <div className="divider"></div>
-        {/* body, vh-80 */}
-        <div className=" max-h-[80vh] sm:max-h-[60vh] overflow-y-auto flex flex-col gap-4">
-          {/* Image section */}
-          <ImageContainer
-            visible={visibleImageContainer}
-            onToggle={handleToggleVisibleImageContainer}
-          />
-
-          {/* Info container */}
-          <InfoContainer
-            visible={visibleInfoContainer}
-            onToggle={handleToggleVisibleInfoContainer}
-          />
-        </div>
-
-        <div className="divider"></div>
-
-        {/* footer with buttons */}
-        <div className="flex flex-row-reverse gap-4">
-          <button className="btn btn-accent">Cancel</button>
-          <button className="btn btn-primary" disabled={!anyChange}>
-            Save
-          </button>
-        </div>
       </div>
-    </div>
+    )
   );
 }

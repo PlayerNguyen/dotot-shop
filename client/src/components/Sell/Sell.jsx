@@ -470,6 +470,7 @@ export default function Sell() {
         visible={visibleFileUpload}
         onSelect={handleSelectedImage}
         onClose={handleCloseUploadDialog}
+        onCancel={handleCloseUploadDialog}
       />
     </div>
   );
