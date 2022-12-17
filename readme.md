@@ -32,11 +32,11 @@ In case you get any issue with this script, you can run the sql file including i
 ## Authors
 
 Contributors names and contact info
-Huynh Nguyen -  ITITIU20261@student.hcmiu.edu.vn
-Huy Mai   - ITITIU20046@student.hcmiu.edu.vn
-Hung Quan - ITITIU20068@student.hcmiu.edu.vn
-Tan thien -  ITITIU20020@student.hcmiu.edu.vn
-Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
+* Huynh Nguyen -  ITITIU20261@student.hcmiu.edu.vn
+* Huy Mai   - ITITIU20046@student.hcmiu.edu.vn
+* Hung Quan - ITITIU20068@student.hcmiu.edu.vn
+* Tan thien -  ITITIU20020@student.hcmiu.edu.vn
+* Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
 
 ## Version History
 
