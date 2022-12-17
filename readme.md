@@ -1,7 +1,5 @@
 # Khmer Furniture
-
-Simple overview of use/purpose.
-
+Most covenient, fast and trustworthy place for buying/ sell old furniture stuff
 ## Description
 
   Our software solely provides a platform for sellers, buyers, and advertisers to trade used furniture first in Vietnam, then proceeds internationally. We aim for direct usage of the app since the proposed customers range from 20 to 60 years old. The app is free, and there might be a paid feature that allows sellers and buyers to bump up their products and reach out to others. Also, our app makes money from an advertisement by displaying companies’ banners or events on the app itself. 
