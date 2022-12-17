@@ -13,23 +13,23 @@ Support Web environment
 
 ### Installing/Executing program
 
-*Run server (Back-end)
-**Step 1: Open Integrated Terminal in Server
+* Run server (Back-end)
+** Step 1: Open Integrated Terminal in Server
 
-**Step 2: run "npm i " then "npm i react-scripts"
+** Step 2: run "npm i " then "npm i react-scripts"
 
-**Step 3: run "npm run setup" to set up the DB
+** Step 3: run "npm run setup" to set up the DB
 
-**Step 4: run "node user-generator" then "node product-generator" in this order
+** Step 4: run "node user-generator" then "node product-generator" in this order
 
 In case you get any issue with this script, you can run the sql file including in project file
 
-*Run client (Pront-end)
-**Step 1: Open Integrated Terminal in Client
+* Run client (Pront-end)
+** Step 1: Open Integrated Terminal in Client
 
-**step 2: run "yarn add react-script" to add the pakages
+** step 2: run "yarn add react-script" to add the pakages
 
-**step 3: npm start
+** step 3: npm start
 
 ## Authors
 
@@ -51,11 +51,3 @@ Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
 
 This project is licensed under the Khmer Furniture License - see the LICENSE.md file for details
 
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
