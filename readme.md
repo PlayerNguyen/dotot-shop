@@ -1,27 +1,61 @@
-# Introduction
+# Khmer Furniture
 
-Dotot is a fast, beautiful, and elegant commerce web-based application to sell and purchase old stuffs.
+Simple overview of use/purpose.
 
-Do following steps below to run the web app:
-- Run server (Back-end)
+## Description
 
-Step 1: Open Integrated Terminal in Server
+  Our software solely provides a platform for sellers, buyers, and advertisers to trade used furniture first in Vietnam, then proceeds internationally. We aim for direct usage of the app since the proposed customers range from 20 to 60 years old. The app is free, and there might be a paid feature that allows sellers and buyers to bump up their products and reach out to others. Also, our app makes money from an advertisement by displaying companies’ banners or events on the app itself. 
 
-Step 2: run "npm i " then "npm i react-scripts"
+## Getting Started
 
-Step 3: run "npm run setup" to set up the DB
+### Dependencies
+Support Web environment
 
-Step 4: run "node user-generator" then "node product-generator" in this order
+### Installing/Executing program
+
+*Run server (Back-end)
+**Step 1: Open Integrated Terminal in Server
+
+**Step 2: run "npm i " then "npm i react-scripts"
+
+**Step 3: run "npm run setup" to set up the DB
+
+**Step 4: run "node user-generator" then "node product-generator" in this order
 
 In case you get any issue with this script, you can run the sql file including in project file
 
-- Run client (Pront-end)
+*Run client (Pront-end)
+**Step 1: Open Integrated Terminal in Client
 
-Step 1: Open Integrated Terminal in Client
+**step 2: run "yarn add react-script" to add the pakages
 
-step 2: run "yarn add react-script" to add the pakages
+**step 3: npm start
 
-step 3: npm start
+## Authors
 
-Then access to the link in the terminal console below.
+Contributors names and contact info
+Huynh Nguyen -  ITITIU20261@student.hcmiu.edu.vn
+Huy Mai   - ITITIU20046@student.hcmiu.edu.vn
+Hung Quan - ITITIU20068@student.hcmiu.edu.vn
+Tan thien -  ITITIU20020@student.hcmiu.edu.vn
+Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
 
+## Version History
+
+* 0.2
+    * Various bug fixes and optimizations
+* 0.1
+    * Initial Release
+
+## License
+
+This project is licensed under the Khmer Furniture License - see the LICENSE.md file for details
+
+## Acknowledgments
+
+Inspiration, code snippets, etc.
+* [awesome-readme](https://github.com/matiassingers/awesome-readme)
+* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
+* [dbader](https://github.com/dbader/readme-template)
+* [zenorocha](https://gist.github.com/zenorocha/4526327)
+* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
