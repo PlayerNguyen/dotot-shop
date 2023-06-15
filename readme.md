@@ -1,5 +1,5 @@
 # Khmer Furniture
-The mainly JavaScript commercial client-to-client web application project for selling second-hand furniture. This project is on experimental work for both Principle of Database Management and Web Application Development course at International University. The application is building on microservices architechture using the most-modern technologies including ExpressJS, ReactJS and running Node environment.
+The mainly JavaScript commercial client-to-client web application project for selling second-hand furniture. This project is on experimental work for both Principle of Database Management and Web Application Development course at International University. The application is building on microservices architecture  using the most-modern technologies including ExpressJS, ReactJS and running Node environment.
 <!-- ## Description
   Our software solely provides a platform for sellers, buyers, and advertisers to trade used furniture first in Vietnam, then proceeds internationally. We aim for direct usage of the app since the proposed customers range from 20 to 60 years old. The app is free, and there might be a paid feature that allows sellers and buyers to bump up their products and reach out to others. Also, our app makes money from an advertisement by displaying companies’ banners or events on the app itself.  -->
   
