@@ -38,15 +38,22 @@ $ npm run start
 
 ## Configuration
 Most of configuration was located by environment file (`.env`) in each front-end or back-end directory.
+# Contributions
+Those members are mainly created of this project:
+- Huynh Nguyen -  ITITIU20261@student.hcmiu.edu.vn
+- Huy Mai   - ITITIU20046@student.hcmiu.edu.vn
+- Hung Quan - ITITIU20068@student.hcmiu.edu.vn
+- Tan thien -  ITITIU20020@student.hcmiu.edu.vn
+- Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
+- 
+However, any contributions are always welcome as a merge request. Please following commit naming convention and branch naming convention as follows:
+## Branchs
+- `feat/name-of-new-feature`: To add new feature
+- `refactor/name-of-refactor`: To refactor things such as files, directory
+- `stuff/for-others`: To do others thing that not contain on the list above.
+## Commits
+We are using [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) to organize our code and for better readability. 
 
-## Authors
-Contributors names and contact information
-* Huynh Nguyen -  ITITIU20261@student.hcmiu.edu.vn
-* Huy Mai   - ITITIU20046@student.hcmiu.edu.vn
-* Hung Quan - ITITIU20068@student.hcmiu.edu.vn
-* Tan thien -  ITITIU20020@student.hcmiu.edu.vn
-* Dai Nghia -  ITITIU20148@student.hcmiu.edu.vn
-
-## License
-This project is licensed under the Khmer Furniture License - see the LICENSE.md file for details
+# License
+This project is licensed under MIT License - see the [LICENSE.md](./LICENSE.md).
 
