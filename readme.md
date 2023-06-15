@@ -26,6 +26,18 @@ The setup idea is similar to any NodeJS server.
 ```
 $ npm install && cd client && npm install && cd .. && cd server && npm install
 ```
+- After the installation was succeeeded, create a new database configuration by creating 
+`./.env` file at the root of the project. Check out `./.default.env` for environment file template.
+
+**[!] Ensure that** you are creating a database or schema for MySQL before run the application. Otherwise it will crash.
+
+- After set up, run the application by
+```
+$ npm run start
+```
+
+## Configuration
+Most of configuration was located by environment file (`.env`) in each front-end or back-end directory.
 
 ## Authors
 Contributors names and contact information
